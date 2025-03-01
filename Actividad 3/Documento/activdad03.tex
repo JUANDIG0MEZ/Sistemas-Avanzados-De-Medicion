@@ -17,20 +17,93 @@
 	
 	\maketitle  % Genera el título del documento
 	
-	\section{Propagaci\'on de incertidumbre}
-	Aquí va el texto de la introducción.
+	\section{Propagaci\'on de la incertidumbre}
+	Para calcular la varianza para $f(A, B)$, se utilizar\'a la forma general de propagaci\'on del error para dos variables.
 	
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.5\textwidth]{imagenes/imagenPrueba.png}
-		\caption{Descripción de la imagen}
-		\label{fig:ejemplo}
-	\end{figure}
+	\[
+	\sigma_f^2 = \left( \frac{\partial f}{\partial A} \right)^2 \sigma_A^2 + \left( \frac{\partial f}{\partial B} \right)^2 \sigma_B^2 + 2 \left( \frac{\partial f}{\partial A} \right) \left( \frac{\partial f}{\partial B} \right) \sigma_A \sigma_B
+	\]
 	
-	\section{Desarrollo}
-	Aquí va el contenido principal.
-	
-	\section{Conclusión}
-	Aquí va la conclusión del documento.
+		\subsection{Demostraci\'on $f = \frac{A}{A + B}$}
+		
+		Para realizar la demostraci\'on se deriva $f = \frac{A}{A + B}$ con respecto a $A$ y $B$.
+		
+		
+		\[
+		\frac{\partial f}{\partial A} = \frac{(A+B)(1) - A(1)}{(A+B)^2} = \frac{B}{(A+B)^2}
+		\]
+		
+		\[
+		\frac{\partial f}{\partial B} = \frac{(A+B)(0) - A(1)}{(A+B)^2} = -\frac{A}{(A+B)^2}
+		\]
+		
+		
+		Se sustituye estas derivadas parciales en la formula de propagaci\'on del error
+		
+		\[
+		\sigma_f^2 \approx \left(\frac{B}{(A+B)^2} \right)^2 \sigma_A^2 + \left(-\frac{A}{(A+B)^2} \right)^2 \sigma_B^2 + 2 \left(\frac{B}{(A+B)^2} \right) \left(-\frac{A}{(A+B)^2} \right) \sigma_A \sigma_B
+		\]
+		
+		
+		Factorizando $\frac{1}{(A+B)^4}$ y multiplicando por $\frac{A^2}{A^2}$
+		
+		
+		\[
+		\sigma_f^2 \approx \frac{A^2}{A^2} \frac{1}{(A+B)^4} \left( B^2 \sigma_A^2 + A^2 \sigma_B^2 - 2 A B \sigma_A \sigma_B \right)
+		\]
+		
+		Dado que $f = \frac{A}{A + B}$
+		
+		\[
+		\sigma_f^2 \approx  \frac{f^2}{(A+B)^2} \frac{1}{A^2} \left( B^2 \sigma_A^2 + A^2 \sigma_B^2 - 2 A B \sigma_A \sigma_B \right)
+		\]
+		
+		\[
+		\sigma_f^2 \approx \frac{f^2}{(A+B)^2} \left( \frac{B^2}{A^2}  +  \sigma_B^2 - 2 \frac{B}{A} \sigma_A \sigma_B \right)
+		\]
+		
+		Considerando $\sigma_{AB} = \sigma_A\sigma_B$
+		
+		\[
+		\sigma_f^2 \approx \frac{f^2}{(A+B)^2} \left( \frac{B^2}{A^2}  +  \sigma_B^2 - 2 \frac{B}{A} \sigma_A \sigma_B \right)
+		\]
+		
+		\subsection{Demostraci\'on $f = aA^{b}$}
+		
+		Derivando $f = aA^{b}$ respecto a $A$ y $B$.
+		
+		\[
+		\frac{\partial f}{\partial A} =  a b A^{b-1}
+		\]
+		
+		\[
+		\frac{\partial f}{\partial B} = 0
+		\]
+		
+		Sustituyendo en la formula de propagaci\'on 
+		
+		\[
+		\sigma_f^2 \approx \left( \frac{\partial f}{\partial A}  \right)^2 \sigma_A^2
+		\]
+		
+		\[
+		\sigma_f^2 \approx \left( a b A^{b-1} \right)^2 \sigma_A^2
+		\]
+		
+		\[
+		\sigma_f^2 \approx \left(\frac{a b A^{b}}{A}  \right)^2 \sigma_A^2
+		\]
+		
+		Dado que $f = aA^{b}$ 
+		
+		
+		
+		\[
+		\sigma_f^2 \approx \left( \frac{f b \sigma_A}{A} \right)^2
+		\]
+		
+		
+		\subsection{Demostraci\'on ---------}
+
 	
 \end{document}
