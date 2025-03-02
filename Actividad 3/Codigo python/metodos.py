@@ -14,7 +14,60 @@ def boxMuller(mu= 0, sigma=1):
     return z0, z1
 
 
+# Metodo de Runge-Kutta de cuarto orden (RK4)
+def rk4_step(f, t, x, h, u):
+    k1 = f(t, x, u)
+    print(k1)
+    x_temp = [x[i] + (h/2) * k1[i] for i in range(3)]
+    k2 = f(t + h/2, x_temp, u)
+    x_temp = [x[i] + (h/2) * k2[i] for i in range(3)]
+    k3 = f(t + h/2, x_temp, u)
+    x_temp = [x[i] + h * k3[i] for i in range(3)]
+    k4 = f(t + h, x_temp, u)
+    # Actualizar x
+    x_new = [x[i] + (h/6) * (k1[i] + 2*k2[i] + 2*k3[i] + k4[i]) for i in range(3)]
+    return x_new
+
+# Funcion para multiplicar dos matrices
+def mult(A, B):
+    # Obtener las dimensiones de las matrices
+    filas_A = len(A)
+    columnas_A = len(A[0])
+    filas_B = len(B)
+    columnas_B = len(B[0])
+
+    # Verificar que las dimensiones sean compatibles
+    if columnas_A != filas_B:
+        raise ValueError("Las dimensiones de las matrices no son compatibles para la multiplicación.")
+
+    # Inicializar la matriz resultante con ceros
+    resultado = [[0 for _ in range(columnas_B)] for _ in range(filas_A)]
+
+    # Realizar la multiplicación
+    for i in range(filas_A):
+        for j in range(columnas_B):
+            for k in range(columnas_A):
+                resultado[i][j] += A[i][k] * B[k][j]
+
+    return resultado
 
 
-def rungeKutta4():
-    print("Metodod de runge-kutta 4")
+def sumM(A, B):
+    # Obtener las dimensiones de las matrices
+    filas_A = len(A)
+    columnas_A = len(A[0])
+    filas_B = len(B)
+    columnas_B = len(B[0])
+
+    # Verificar que las dimensiones sean iguales
+    if filas_A != filas_B or columnas_A != columnas_B:
+        raise ValueError("Las dimensiones de las matrices no son iguales.")
+
+    # Inicializar la matriz resultante con ceros
+    resultado = [[0 for _ in range(columnas_A)] for _ in range(filas_A)]
+
+    # Realizar la suma
+    for i in range(filas_A):
+        for j in range(columnas_A):
+            resultado[i][j] = A[i][j] + B[i][j]
+    return resultado
