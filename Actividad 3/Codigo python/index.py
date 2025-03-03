@@ -1,15 +1,15 @@
 from metodos import mult, sumM
-
+import matplotlib.pyplot as plt
 
 # Parametros
 
-R_1 = 1
-R_2 = 2
+R_1 = 5
+R_2 = 20
 
-C_1 = 1e-10
-C_2 = 20e-6
+C_1 = 100e-6
+C_2 = 50e-6
 
-L = 5e-3
+L = 15e-3
 
 C= [1, -1, -R_2]
 
@@ -42,10 +42,10 @@ def f(t, x, u):
 
 # Condiciones iniciales
 x = [0.0, 0.0, 0.0]  # Vector de estado inicial
-u = [1.0, 0.0]  # Vector de entradas (constante)
-h = 0.1  # Tamaño del paso
+u = [0.2, 0.1]  # Vector de entradas (constante)
+h = 0.01  # Tamaño del paso
 t = 0.0  # Tiempo inicial
-tiempo_total = 5/h
+tiempo_total = int(0.8/h)  # Tiempo total de simulación
 
 # Método de Runge-Kutta de cuarto orden (RK4)
 def rk4_step(t, x, h, u):
@@ -61,22 +61,49 @@ def rk4_step(t, x, h, u):
     return x_new
 
 
-datos =[]
+datos =dict()
+
+# Almacenamiento de datos
+tiempos = []  # Lista para almacenar los tiempos
+x1_vals = []  # Lista para almacenar x1
+x2_vals = []  # Lista para almacenar x2
+x3_vals = []  # Lista para almacenar x3
 
 # Iterar el método RK4
 for i in range(tiempo_total):
-    print(f"Iteración {i + 1}: t = {t:.1f}, x = {x}")
+    
+    print(f"Iteración {i + 1}: t = {t:.2f}, x = {x}")
+    
+    # Almacenar datos
+    tiempos.append(t)
+    x1_vals.append(x[0])
+    x2_vals.append(x[1])
+    x3_vals.append(x[2])
+    
+    # Calcular el siguiente paso
     x_nuevo = rk4_step(t, x, h, u)
-   
+    
+    
     # Actualizar x y t
     x = x_nuevo
     t += h
 
-    
-    
-datos.append([x[0], x[1], x[2]])
 
 
+# Graficar resultados
+plt.figure(figsize=(10, 6))
+plt.plot(tiempos, x1_vals, label='x1')
+plt.plot(tiempos, x2_vals, label='x2')
+plt.plot(tiempos, x3_vals, label='x3')
 
-# Resultado final
-print(f"Resultado final: t = {t:.1f}, x = {x}")
+# Personalizar la gráfica
+plt.title("Evolución de las variables de estado")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Valor de x")
+plt.legend()
+plt.grid()
+plt.show()
+
+delta_x = f(t, x, u)
+datos['x'] = x
+datos['delta_x'] = delta_x
