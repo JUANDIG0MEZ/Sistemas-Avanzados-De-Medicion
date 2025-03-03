@@ -1,6 +1,15 @@
 import math
 import random
 
+def elementos(R_1, R_2, C_1, C_2, L):
+    r_1, _ = boxMuller(R_1[0], R_1[1])
+    r_2, _ = boxMuller(R_2[0], R_2[1])
+    c_1, _ = boxMuller(C_1[0], C_1[1])
+    c_2, _ = boxMuller(C_2[0], C_2[1])
+    L, _ = boxMuller(L[0], L[1])
+
+    return r_1, r_2, c_1, c_2, L
+
 def boxMuller(mu= 0, sigma=1):
     u1 = random.random()
     u2 = random.random()
@@ -12,6 +21,7 @@ def boxMuller(mu= 0, sigma=1):
     z1 = sigma * z1 + mu
 
     return z0, z1
+
 
 
 # Metodo de Runge-Kutta de cuarto orden (RK4)

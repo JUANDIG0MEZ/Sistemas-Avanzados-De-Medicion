@@ -13,8 +13,6 @@ L = 15e-3
 
 C= [1, -1, -R_2]
 
-
-
 # Definir las matrices A y B
 A = [[ -1/(R_1*C_1), 0, -1/C_1],
      [0, 0, 1/C_2],
