@@ -1,8 +1,9 @@
 from metodos import *
-import numpy as np
-
 # Tiempo de simulacion en segundos
-tiempo_simulacion = 0.05
+tiempo_simulacion = 0.07
+
+# Metodo de Monte Carlo
+num_simulaciones = 200  # Número de simulaciones Monte Carlo
 
 # Condiciones iniciales
 x = [0.0, 0.0, 0.0]  # Vector de estado inicial
@@ -34,14 +35,12 @@ def f(t, x, u, A, B):
     # Convertir el resultado de nuevo a una lista simple
     return [resultado[i][0] for i in range(3)]
 
-# Metodo de Monte Carlo
-num_simulaciones = 100  # Número de simulaciones Monte Carlo
-
 def monte_carlo(f, num_simulaciones, t, x, h, u, iteraciones, elementos):
     """ Ejecuta múltiples simulaciones de Monte Carlo y grafica los resultados. """
 
     R_1, R_2, C_1, C_2, L = elementos
-    resultados = []
+    result_X = []
+    result_Y =[]
 
     for i in range(num_simulaciones):
         # Generar valores de tal manera que sigan una distribucion normal
@@ -57,20 +56,21 @@ def monte_carlo(f, num_simulaciones, t, x, h, u, iteraciones, elementos):
 
         # Ejecutar simulación con RK4
         x_vals = simulacion_rk4(f, t, x, h, u, A, B, iteraciones)
+        # Calcular y
+        y_vals = [x1 - x2 - r_2 * x3 for x1, x2, x3 in x_vals]
         # Guardar resultados de esta simulación
-        resultados.append(x_vals)
-    return resultados
+        result_X.append(x_vals)
+        result_Y.append(y_vals)
+    return result_X, result_Y
 
-result = monte_carlo(f,
-                     num_simulaciones=200,
+result_X, result_Y = monte_carlo(f,
+                     num_simulaciones=num_simulaciones,
                      elementos=elementos,
                      t=t,
                      x=x,
                      h=h,
                      u=u,
-                     iteraciones=int(tiempo_simulacion/h)
-                     )
+                     iteraciones=int(tiempo_simulacion/h))
 
-graficar_x(result)
-matriz_np = np.array(result)
-print(matriz_np.shape)
+graficar_x(result_X)
+graficar_y(result_Y)

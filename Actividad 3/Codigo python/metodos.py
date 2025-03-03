@@ -1,6 +1,7 @@
 import math
 import random
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 
 def boxMuller(mu= 0, sigma=1):
     u1 = random.random()
@@ -12,6 +13,16 @@ def boxMuller(mu= 0, sigma=1):
     z1 = sigma * z1 + mu
 
     return z0, z1
+
+# Esta funcion genera diferentes valores para los elementos. Siguiendo una distribucion normal dados el promeido y
+# Desviacion estandar
+def generar_elementos(R_1, R_2, C_1, C_2, L):
+    r_1, _ = boxMuller(R_1[0], R_1[1])
+    r_2, _ = boxMuller(R_2[0], R_2[1])
+    c_1, _ = boxMuller(C_1[0], C_1[1])
+    c_2, _ = boxMuller(C_2[0], C_2[1])
+    L, _ = boxMuller(L[0], L[1])
+    return r_1, r_2, c_1, c_2, L
 
 # Metodo de Runge-Kutta de cuarto orden (RK4)
 def rk4_step(f, t, x, h, u, A, B):
@@ -26,29 +37,17 @@ def rk4_step(f, t, x, h, u, A, B):
     x_new = [x[i] + (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]) for i in range(3)]
     return x_new
 
-
-def generar_elementos(R_1, R_2, C_1, C_2, L):
-    r_1, _ = boxMuller(R_1[0], R_1[1])
-    r_2, _ = boxMuller(R_2[0], R_2[1])
-    c_1, _ = boxMuller(C_1[0], C_1[1])
-    c_2, _ = boxMuller(C_2[0], C_2[1])
-    L, _ = boxMuller(L[0], L[1])
-    return r_1, r_2, c_1, c_2, L
-
-
-def simulacion_rk4(f, t, x, h, u, A, B, tiempo_total, tolerancia=1e-3):
+# Repite el metodo rk4 hasta llegar a un tiempo dado
+def simulacion_rk4(f, t, x, h, u, A, B, tiempo_total):
     """ Ejecuta una simulación con Runge-Kutta 4 y criterio de parada. """
-
     x_sim = x
     t_sim = t
     x_vals = []
-
     for i in range(tiempo_total):
         x_nuevo = rk4_step(f, t_sim, x_sim, h, u, A, B)
         x_vals.append(x_nuevo)
         x_sim = x_nuevo
         t_sim += h
-
     return x_vals
 
 # Funcion para multiplicar dos matrices
@@ -74,7 +73,7 @@ def mult(A, B):
 
     return resultado
 
-
+# Funcion para sumar dos matrices
 def sumM(A, B):
     # Obtener las dimensiones de las matrices
     filas_A = len(A)
@@ -96,6 +95,7 @@ def sumM(A, B):
     return resultado
 
 
+# Funcion para graficar cada componente de X
 def graficar_x(resultados):
     # Colores personalizados
     colores = ["#A0A0A0", "#E53935", "orange"]  # Negro, Rojo, Naranja
@@ -132,20 +132,61 @@ def graficar_x(resultados):
     promedio_x3 = [v / num_simulaciones for v in promedio_x3]
 
     # Graficar los promedios con líneas más gruesas, punteadas y con marcadores
-    plt.plot(range(num_iteraciones), promedio_x1, color="k", linewidth=1, alpha=1, marker="o", markersize=1, markeredgewidth=1, markeredgecolor="white", label="Promedio X1")
-    plt.plot(range(num_iteraciones), promedio_x2, color="k", linewidth=1, alpha=1, marker="s", markersize=1, markeredgewidth=1, markeredgecolor="white", label="Promedio X2")
-    plt.plot(range(num_iteraciones), promedio_x3, color="k", linewidth=1, alpha=1, marker="D", markersize=1, markeredgewidth=1, markeredgecolor="white", label="Promedio X3")
+    plt.plot(range(num_iteraciones), promedio_x1, color="k", linewidth=1.3, alpha=1, marker="o", markersize=1, markeredgewidth=1, markeredgecolor="white", label="X1")
+    plt.plot(range(num_iteraciones), promedio_x2, color="k", linewidth=1.3, alpha=1, marker="o", markersize=1, markeredgewidth=1, markeredgecolor="white", label="X2")
+    plt.plot(range(num_iteraciones), promedio_x3, color="k", linewidth=1.3, alpha=1, marker="o", markersize=1, markeredgewidth=1, markeredgecolor="white", label="X3")
 
     plt.title("Evolución de X en múltiples simulaciones de Monte Carlo")
     plt.xlabel("Tiempo (ms)")
     plt.ylabel("Valor de x")
-    import matplotlib.lines as mlines
     # Definir los elementos de la leyenda manualmente
-    legend_x1 = mlines.Line2D([], [], color="r", label="X1 Promedio")
-    legend_x2 = mlines.Line2D([], [], color="silver", label="X2 Promedio")
-    legend_x3 = mlines.Line2D([], [], color="orange", label="X3 Promedio")
+    legend_x1 = mlines.Line2D([], [], color="r", label="X1")
+    legend_x2 = mlines.Line2D([], [], color="silver", label="X2")
+    legend_x3 = mlines.Line2D([], [], color="orange", label="X3")
 
     # Agregar la leyenda sin depender de los datos
     plt.legend(handles=[legend_x1, legend_x2, legend_x3], loc="best")  # Agregar leyenda para los promedios
     plt.grid()
-    plt.savefig("grafica.png")
+    plt.savefig("x.png")
+
+# Funcio para graficar los valores de Y
+def graficar_y(result_Y):
+    num_simulaciones = len(result_Y)
+    num_pasos = len(result_Y[0])
+
+    plt.figure(figsize=(14, 8))
+    for i in range(num_simulaciones):
+        plt.plot(result_Y[i], alpha=0.08, linewidth=0.8, color="#A0A0A0")
+
+
+    # Calcular el promedio manualmente usando un bucle for
+    promedio_Y = []
+    for paso in range(num_pasos):
+        suma_paso = 0
+        for i in range(num_simulaciones):
+            suma_paso += result_Y[i][paso]
+        promedio_paso = suma_paso / num_simulaciones
+        promedio_Y.append(promedio_paso)
+
+    # Graficar el promedio
+    plt.plot(
+        promedio_Y,
+        color='k',
+        linewidth=1.5,
+        marker='o',  # Usar un marcador (círculos)
+        markersize=4,  # Tamaño del marcador
+        markeredgewidth=1,  # Grosor del borde del marcador
+        markeredgecolor="white",  # Color del borde del marcador
+        label='Promedio'
+    )
+    legend_y = mlines.Line2D([], [], color="k", label="Y Promedio")
+    plt.legend(handles=[legend_y], loc="best")  # Agregar leyenda para los promedios
+
+
+    plt.xlabel("Tiempo (ms)")
+    plt.ylabel("y(t)")
+    plt.title("Evolución de y(t) en diferentes simulaciones")
+
+    if num_simulaciones <= 5:  # Si hay pocas simulaciones, mostramos la leyenda
+        plt.legend()
+    plt.savefig("y.png")
