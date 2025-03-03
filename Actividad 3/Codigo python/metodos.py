@@ -14,11 +14,12 @@ def boxMuller(mu= 0, sigma=1):
     return z0, z1
 
 
+
 # Metodo de Runge-Kutta de cuarto orden (RK4)
 def rk4_step(f, t, x, h, u):
     k1 = f(t, x, u)
     print(k1)
-    x_temp = [x[i] + (h/2) * k1[i] for i in range(3)]
+    x_temp = [ (h/2) * k1[0][i] for i in range(3)]
     k2 = f(t + h/2, x_temp, u)
     x_temp = [x[i] + (h/2) * k2[i] for i in range(3)]
     k3 = f(t + h/2, x_temp, u)
