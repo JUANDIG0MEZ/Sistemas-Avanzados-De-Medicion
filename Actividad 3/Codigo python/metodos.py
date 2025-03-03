@@ -1,6 +1,15 @@
 import math
 import random
 
+def elementos(R_1, R_2, C_1, C_2, L):
+    r_1, _ = boxMuller(R_1[0], R_1[1])
+    r_2, _ = boxMuller(R_2[0], R_2[1])
+    c_1, _ = boxMuller(C_1[0], C_1[1])
+    c_2, _ = boxMuller(C_2[0], C_2[1])
+    L, _ = boxMuller(L[0], L[1])
+
+    return r_1, r_2, c_1, c_2, L
+
 def boxMuller(mu= 0, sigma=1):
     u1 = random.random()
     u2 = random.random()
@@ -19,14 +28,17 @@ def boxMuller(mu= 0, sigma=1):
 def rk4_step(f, t, x, h, u):
     k1 = f(t, x, u)
     print(k1)
-    x_temp = [ (h/2) * k1[0][i] for i in range(3)]
+    print(u)
+    x_temp = [[x[i][0] + (h/2) * k1[i][0]] for i in range(3)]
+    print(x_temp)
     k2 = f(t + h/2, x_temp, u)
-    x_temp = [x[i] + (h/2) * k2[i] for i in range(3)]
+
+    x_temp = [[x[i][0] + (h/2) * k2[i][0]] for i in range(3)]
     k3 = f(t + h/2, x_temp, u)
-    x_temp = [x[i] + h * k3[i] for i in range(3)]
+    x_temp = [[x[i][0] + h * k3[i][0]] for i in range(3)]
     k4 = f(t + h, x_temp, u)
     # Actualizar x
-    x_new = [x[i] + (h/6) * (k1[i] + 2*k2[i] + 2*k3[i] + k4[i]) for i in range(3)]
+    x_new = [[x[i][0] + (h/6) * (k1[i][0] + 2*k2[i][0] + 2*k3[i][0] + k4[i][0])] for i in range(3)]
     return x_new
 
 # Funcion para multiplicar dos matrices
