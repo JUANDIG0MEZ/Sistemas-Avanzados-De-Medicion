@@ -149,44 +149,112 @@ def graficar_x(resultados):
     plt.grid()
     plt.savefig("x.png")
 
-# Funcio para graficar los valores de Y
+# Función para calcular la media manualmente
+def calcular_media(datos):
+    return sum(datos) / len(datos)
+
+# Función para calcular la desviación estándar manualmente
+def calcular_desviacion(datos, media):
+    suma_cuadrados = sum((x - media) ** 2 for x in datos)
+    return (suma_cuadrados / len(datos)) ** 0.5  # Raíz cuadrada
+
+# Función para calcular la mediana manualmente
+def calcular_mediana(datos):
+    datos_ordenados = sorted(datos)
+    n = len(datos)
+    if n % 2 == 0:
+        return (datos_ordenados[n // 2 - 1] + datos_ordenados[n // 2]) / 2
+    else:
+        return datos_ordenados[n // 2]
+
+# Función para calcular percentiles manualmente
+def calcular_percentil(datos, percentil):
+    datos_ordenados = sorted(datos)
+    k = (len(datos) - 1) * (percentil / 100)
+    f = int(k)
+    c = k - f
+    if f + 1 < len(datos):
+        return datos_ordenados[f] + c * (datos_ordenados[f + 1] - datos_ordenados[f])
+    else:
+        return datos_ordenados[f]
+
+# Función para graficar los valores de Y y su histograma
 def graficar_y(result_Y):
     num_simulaciones = len(result_Y)
     num_pasos = len(result_Y[0])
 
     plt.figure(figsize=(14, 8))
+
+    # Graficar cada simulación en gris con transparencia
     for i in range(num_simulaciones):
         plt.plot(result_Y[i], alpha=0.08, linewidth=0.8, color="#A0A0A0")
 
-
-    # Calcular el promedio manualmente usando un bucle for
+    # Calcular el promedio manualmente
     promedio_Y = []
     for paso in range(num_pasos):
-        suma_paso = 0
-        for i in range(num_simulaciones):
-            suma_paso += result_Y[i][paso]
-        promedio_paso = suma_paso / num_simulaciones
-        promedio_Y.append(promedio_paso)
+        suma_paso = sum(result_Y[i][paso] for i in range(num_simulaciones))
+        promedio_Y.append(suma_paso / num_simulaciones)
 
     # Graficar el promedio
     plt.plot(
         promedio_Y,
         color='k',
         linewidth=1.5,
-        marker='o',  # Usar un marcador (círculos)
-        markersize=4,  # Tamaño del marcador
-        markeredgewidth=1,  # Grosor del borde del marcador
-        markeredgecolor="white",  # Color del borde del marcador
+        marker='o',
+        markersize=4,
+        markeredgewidth=1,
+        markeredgecolor="white",
         label='Promedio'
     )
-    legend_y = mlines.Line2D([], [], color="k", label="Y Promedio")
-    plt.legend(handles=[legend_y], loc="best")  # Agregar leyenda para los promedios
 
+    # Agregar leyenda
+    legend_y = mlines.Line2D([], [], color="k", label="Y Promedio")
+    plt.legend(handles=[legend_y], loc="best")
 
     plt.xlabel("Tiempo (ms)")
     plt.ylabel("y(t)")
     plt.title("Evolución de y(t) en diferentes simulaciones")
 
-    if num_simulaciones <= 5:  # Si hay pocas simulaciones, mostramos la leyenda
+    if num_simulaciones <= 5:
         plt.legend()
+
     plt.savefig("y.png")
+
+    # ===================== HISTOGRAMA =====================
+    plt.figure(figsize=(10, 6))
+
+    # Tomar los valores finales de cada simulación para el histograma
+    valores_finales = [result_Y[i][-1] for i in range(num_simulaciones)]
+
+    # Calcular estadísticas clave sin numpy
+    media = calcular_media(valores_finales)
+    desviacion = calcular_desviacion(valores_finales, media)
+    mediana = calcular_mediana(valores_finales)
+    percentil_25 = calcular_percentil(valores_finales, 25)
+    percentil_75 = calcular_percentil(valores_finales, 75)
+
+    # Histograma
+    plt.hist(valores_finales, bins=20, color="cyan", edgecolor="black", alpha=0.7)
+
+    # Agregar líneas de referencia
+    plt.axvline(media, color="red", linestyle="dashed", linewidth=2, label=f"Media: {media:.4f}")
+    plt.axvline(mediana, color="green", linestyle="dashed", linewidth=2, label=f"Mediana: {mediana:.4f}")
+    plt.axvline(media + desviacion, color="orange", linestyle="dotted", linewidth=1.5, label=f"±1σ ({desviacion:.4f})")
+    plt.axvline(media - desviacion, color="orange", linestyle="dotted", linewidth=1.5)
+    plt.axvline(percentil_25, color="purple", linestyle="dashdot", linewidth=1.5, label=f"Percentil 25: {percentil_25:.4f}")
+    plt.axvline(percentil_75, color="purple", linestyle="dashdot", linewidth=1.5, label=f"Percentil 75: {percentil_75:.4f}")
+
+    plt.xlabel("Valores finales de y")
+    plt.ylabel("Frecuencia")
+    plt.title("Distribución de los valores finales de y(t)")
+    plt.legend()
+    plt.grid(alpha=0.3)
+    
+    plt.savefig("y_histograma.png")
+
+    # Imprimir estadísticas en consola
+    print(f"Media: {media:.4f}")
+    print(f"Desviación estándar: {desviacion:.4f}")
+    print(f"Mediana: {mediana:.4f}")
+    print(f"Percentil 25: {percentil_25:.4f}")
+    print(f"Percentil 75: {percentil_75:.4f}")
