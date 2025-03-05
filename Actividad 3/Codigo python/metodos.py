@@ -187,7 +187,7 @@ def graficar_y(result_Y):
 
     # Graficar cada simulación en gris con transparencia
     for i in range(num_simulaciones):
-        plt.plot(result_Y[i], alpha=0.08, linewidth=0.8, color="#A0A0A0")
+        plt.plot(result_Y[i], alpha=0.06, linewidth=0.9, color="red")
 
     # Calcular el promedio manualmente
     promedio_Y = []

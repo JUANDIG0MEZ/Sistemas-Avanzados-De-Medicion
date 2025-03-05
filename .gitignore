@@ -1,5 +1,16 @@
+# Ignorar pdfs
 *.pdf
 
+# Ignorar carpetas
 Materiales del curso/
+
+# Ignorar imágenes
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.svg
 
 
