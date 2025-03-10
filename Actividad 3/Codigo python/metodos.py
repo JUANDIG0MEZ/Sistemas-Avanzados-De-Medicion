@@ -98,7 +98,7 @@ def sumM(A, B):
 # Funcion para graficar cada componente de X
 def graficar_x(resultados):
     # Colores personalizados
-    colores = ["#A0A0A0", "#E53935", "orange"]  # Negro, Rojo, Naranja
+    colores = ["#A0A0A0", "red", "orange"]  # Negro, Rojo, Naranja
 
     plt.figure(figsize=(14, 8))
 
@@ -116,7 +116,7 @@ def graficar_x(resultados):
         for j in range(3):
             x_vals = range(num_iteraciones)
             y_vals = [fila[j] for fila in resultados[i]]  # Obtener valores de la variable j
-            plt.plot(x_vals, y_vals, color=colores[j], alpha=0.08, linewidth=0.8)  # Líneas individuales
+            plt.plot(x_vals, y_vals, color=colores[j], alpha=0.3, linewidth=0.9)  # Líneas individuales
 
             # Acumular valores para el promedio
             if j == 0:
@@ -187,7 +187,7 @@ def graficar_y(result_Y):
 
     # Graficar cada simulación en gris con transparencia
     for i in range(num_simulaciones):
-        plt.plot(result_Y[i], alpha=0.06, linewidth=0.9, color="red")
+        plt.plot(result_Y[i], alpha=0.2, linewidth=0.9, color="red")
 
     # Calcular el promedio manualmente
     promedio_Y = []
@@ -217,8 +217,9 @@ def graficar_y(result_Y):
 
     if num_simulaciones <= 5:
         plt.legend()
-
+    plt.grid()
     plt.savefig("y.png")
+
 
     # ===================== HISTOGRAMA =====================
     plt.figure(figsize=(10, 6))
