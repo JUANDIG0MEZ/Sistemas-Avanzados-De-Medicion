@@ -3,7 +3,7 @@ from metodos import *
 tiempo_simulacion = 0.07
 
 # Metodo de Monte Carlo
-num_simulaciones = 200  # Número de simulaciones Monte Carlo
+num_simulaciones = 100  # Número de simulaciones Monte Carlo
 
 # Condiciones iniciales
 x = [0.0, 0.0, 0.0]  # Vector de estado inicial
@@ -35,14 +35,19 @@ def f(t, x, u, A, B):
     # Convertir el resultado de nuevo a una lista simple
     return [resultado[i][0] for i in range(3)]
 
-def monte_carlo(f, num_simulaciones, t, x, h, u, iteraciones, elementos):
+def monte_carlo(f, num_simulaciones, t, x, h, u, iteraciones, elementos, tolerancia=0.0001):
     """ Ejecuta múltiples simulaciones de Monte Carlo y grafica los resultados. """
 
     R_1, R_2, C_1, C_2, L = elementos
     result_X = []
-    result_Y =[]
+    result_Y = []
+
+    medias = []
+    varianzas = []
 
     for i in range(num_simulaciones):
+        # Iteraciones
+        print(f"Simulación {i + 1}/{num_simulaciones}")
         # Generar valores de tal manera que sigan una distribucion normal
         r_1, r_2, c_1, c_2, l = generar_elementos(R_1, R_2, C_1, C_2, L)
 
@@ -61,6 +66,21 @@ def monte_carlo(f, num_simulaciones, t, x, h, u, iteraciones, elementos):
         # Guardar resultados de esta simulación
         result_X.append(x_vals)
         result_Y.append(y_vals)
+
+        # Calcular media y varianza de la iteración actual
+        media_actual = sum(y_vals) / len(y_vals)
+        varianza_actual = sum((y - media_actual) ** 2 for y in y_vals) / len(y_vals)
+        medias.append(media_actual)
+        varianzas.append(varianza_actual)
+
+        # Calcular media y varianza global
+        media_global = sum(medias) / len(medias)
+        varianza_global = sum(varianzas) / len(varianzas)
+
+        # Verificar criterio de tolerancia
+        if i>1 and (abs(media_actual - media_global) < tolerancia and abs(varianza_actual - varianza_global) < tolerancia):
+            break
+
     return result_X, result_Y
 
 result_X, result_Y = monte_carlo(f,

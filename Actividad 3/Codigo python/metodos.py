@@ -256,5 +256,3 @@ def graficar_y(result_Y):
     print(f"Media: {media:.4f}")
     print(f"Desviación estándar: {desviacion:.4f}")
     print(f"Mediana: {mediana:.4f}")
-    print(f"Percentil 25: {percentil_25:.4f}")
-    print(f"Percentil 75: {percentil_75:.4f}")
