@@ -250,10 +250,11 @@ def graficar_y(result_Y):
     plt.title("Distribución de los valores finales de y(t)")
     plt.legend()
     plt.grid(alpha=0.3)
+    plt.show()
     
     plt.savefig("y_histograma.png")
 
     # Imprimir estadísticas en consola
-    print(f"Media: {media:.4f}")
+    print(f"\nMedia: {media:.4f}")
     print(f"Desviación estándar: {desviacion:.4f}")
     print(f"Mediana: {mediana:.4f}")

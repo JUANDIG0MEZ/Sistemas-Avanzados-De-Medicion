@@ -1,3 +1,18 @@
+"""
+JUAN DIEGO GOMEZ Y JUAN CAMILO VASCO
+
+Actividad Sesión 03
+Enunciado 2:
+Simulación de Montecarlo
+
+Sistemas Avanzados de medición
+Universidad Tecnológica de Pereira
+Maestria en Ingeniería Electrica
+2025-1
+"""
+
+# Importar funciones de metodos.py
+
 from metodos import *
 # Tiempo de simulacion en segundos
 tiempo_simulacion = 0.07
