@@ -1,11 +1,14 @@
 import numpy as np
 
-def generarLineaRecta(range, puntos, m, b):
-    x = np.linspace(range[0], range[1], puntos)
-    y = m * x + b
-    return x, y
+def generarY(x, a, b , c, rango, puntos):
+    # ax + by + c = 0
+    m = -a / b
+    b = -c / b
+    y = m* x + b
+    return y
 
-def agregarRuidoUniforme(y, min, max, outliers=0.1):
+
+def agregarOutliers(y, min, max, outliers=0.1):
     for i in range(len(y)):
         if np.random.rand() < outliers:
             y[i] = y[i] + np.random.uniform(min, max)
