@@ -13,3 +13,8 @@ def agregarRuidoUniforme(y, min, max, outliers=0.1):
 def agregarRuidoGaussiano(y, mu, sigma):
     for i in range(len(y)):
         y[i] = y[i] + np.random.normal(mu, sigma)
+
+def normalizacion(data):
+    media = np.mean(data)
+    desviacion = np.std(data)
+    return (data - media) / desviacion
