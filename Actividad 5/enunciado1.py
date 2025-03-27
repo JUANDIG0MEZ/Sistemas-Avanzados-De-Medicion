@@ -12,33 +12,54 @@ Maestria en Ingeniería Electrica
 """
 
 import numpy as np
-from scikit-learn.linear_model import RANSACRegressor
-from scikit-learn.datasets import make_regression
-from scikit-learn.preprocessing import MinMaxScaler
+from sklearn.linear_model import RANSACRegressor
+from sklearn.linear_model import RANSACRegressor
+from sklearn.datasets import make_regression
+from sklearn.preprocessing import MinMaxScaler
 
 import matplotlib.pyplot as plt
 
 # Generar datos de ejemplo
 np.random.seed(42)
-X, y = make_regression(n_samples=100, n_features=1, noise=10)
-outliers = np.random.uniform(low=-3, high=3, size=(20, 1))
-X = np.vstack([X, outliers])
-y = np.append(y, np.random.uniform(low=-200, high=200, size=20))
+b, c = -7, 10
+rango = (0, 5)
+xlinspace = np.linspace(rango[0], rango[1], 100)
+
+X = np.random.uniform(rango[0], rango[1], 100).reshape(-1, 1)
+
+y2 = b * X + c
+
+ruido = np.random.uniform(-5, 5, len(y2)).reshape(-1, 1)
+
+y1 = y2 + ruido
+
+outliers = np.zeros_like(y1)
+num_outliers = len(y1) // 10  # Por ejemplo, 10% de los datos serán outliers
+outlier_indices = np.random.choice(len(y1), num_outliers, replace=False)
+outliers[outlier_indices] = np.random.uniform(-100, 100, num_outliers).reshape(-1, 1)
+
+y = y1 + outliers
 
 # Normalización tipo max-min
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
+scaler_X = MinMaxScaler()
+scaler_y = MinMaxScaler()
+X_scaled = scaler_X.fit_transform(X)
+Y_scaled = scaler_y.fit_transform(y)
 
 # Implementación de RANSAC
 ransac = RANSACRegressor()
-ransac.fit(X_scaled, y)
+ransac.fit(X_scaled, Y_scaled.ravel())
 
 # Obtener inliers y outliers
 inlier_mask = ransac.inlier_mask_
 outlier_mask = ~inlier_mask
 
 # Estimación final
-x_estimated = ransac.estimator_.coef_
+if hasattr(ransac.estimator_, 'coef_'):
+    x_estimated = ransac.estimator_.coef_
+else:
+    x_estimated = None
+    print("The base estimator does not have a 'coef_' attribute.")
 
 # Crear subgráficas
 fig, axs = plt.subplots(2, 2, figsize=(10, 8))
@@ -49,39 +70,37 @@ axs[0, 0].scatter(X, y, color='blue', label='Datos originales')
 axs[0, 0].set_title("Datos originales")
 axs[0, 0].set_xlabel("X")
 axs[0, 0].set_ylabel("y")
-axs[0, 0].set_xlim(-3, 3)
-axs[0, 0].set_ylim(-250, 250)
 
 # Gráfica 2: Datos normalizados
-axs[0, 1].scatter(X_scaled, y, color='green', label='Datos normalizados')
+axs[0, 1].scatter(X_scaled, Y_scaled, color='green', label='Datos normalizados')
 axs[0, 1].set_title("Datos normalizados")
 axs[0, 1].set_xlabel("X (normalizado)")
 axs[0, 1].set_ylabel("y")
 axs[0, 1].set_xlim(0, 1)
-axs[0, 1].set_ylim(-250, 250)
+axs[0, 1].set_ylim(0, 1)
 
 # Gráfica 3: Inliers y outliers
-axs[1, 0].scatter(X_scaled[inlier_mask], y[inlier_mask], color='blue', label='Inliers')
-axs[1, 0].scatter(X_scaled[outlier_mask], y[outlier_mask], color='red', label='Outliers')
+axs[1, 0].scatter(X_scaled[inlier_mask], Y_scaled[inlier_mask], color='blue', label='Inliers')
+axs[1, 0].scatter(X_scaled[outlier_mask], Y_scaled[outlier_mask], color='red', label='Outliers')
 axs[1, 0].set_title("Inliers y Outliers")
 axs[1, 0].set_xlabel("X (normalizado)")
 axs[1, 0].set_ylabel("y")
 axs[1, 0].legend()
-axs[1, 0].set_xlim(0, 1)
-axs[1, 0].set_ylim(-250, 250)
+axs[0, 1].set_xlim(0, 1)
+axs[0, 1].set_ylim(0, 1)
 
 # Gráfica 4: Línea ajustada por RANSAC
 line_X = np.linspace(0, 1, 100).reshape(-1, 1)
 line_y = ransac.predict(line_X)
-axs[1, 1].scatter(X_scaled[inlier_mask], y[inlier_mask], color='blue', label='Inliers')
-axs[1, 1].scatter(X_scaled[outlier_mask], y[outlier_mask], color='red', label='Outliers')
+axs[1, 1].scatter(X_scaled[inlier_mask], Y_scaled[inlier_mask], color='blue', label='Inliers')
+axs[1, 1].scatter(X_scaled[outlier_mask], Y_scaled[outlier_mask], color='red', label='Outliers')
 axs[1, 1].plot(line_X, line_y, color='black', label='Línea ajustada')
 axs[1, 1].set_title("Línea ajustada por RANSAC")
 axs[1, 1].set_xlabel("X (normalizado)")
 axs[1, 1].set_ylabel("y")
 axs[1, 1].legend()
-axs[1, 1].set_xlim(0, 1)
-axs[1, 1].set_ylim(-250, 250)
+axs[0, 1].set_xlim(0, 1)
+axs[0, 1].set_ylim(0, 1)
 
 # Ajustar diseño y mostrar
 plt.tight_layout(rect=[0, 0, 1, 0.96])
