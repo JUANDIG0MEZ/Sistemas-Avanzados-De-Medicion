@@ -15,30 +15,39 @@ Universidad Tecnológica de Pereira
 Maestria en Ingeniería Electrica
 2025-1
 """
-
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 from scipy.optimize import curve_fit
 
-a, b, c, d = 1.5, 0.5, 10, 0.3
-rango = (0, 1)
+a, b, c, d = 5, 0.5, 6, 0.3
+rango = (0, 20)
 
 xlinspace = np.linspace(rango[0], rango[1], 100)
 
 x = np.random.uniform(rango[0], rango[1], 100)
 
-
 y = a * np.sin(b*x) + c * np.cos(d*x)
 
-ruidonormal = np.random.normal(0, 5, len(y))
-ruidouniforme = np.random.uniform(-5, 5, len(y))
+ruidonormal = np.random.normal(0, 0.2, len(y))
+ruidouniforme = np.random.uniform(-0.1, 0.2, len(y))
 
 y_ruido_normal = y + ruidonormal
 y_ruido_uniforme = y + ruidouniforme
 
 y_ruidosa = y + ruidonormal + ruidouniforme
 
-A = np.array([np.sin(b*x), np.cos(d*x), np.ones(len(x))]).T
+
+
+
+# Normalización de quartiles
+def normalizar_quartiles(data):
+    q1, q3 = np.percentile(data, [25, 75])
+    iqr = q3 - q1
+    return (data - q1) / iqr
+
+x_normalizado = normalizar_quartiles(x)
+y_ruidosa_normalizada = normalizar_quartiles(y_ruidosa)
 
 
 # Definición de la función modelo
@@ -78,8 +87,8 @@ def LM(x, y_obs, p0, mu0, tol=1e-6, max_iter=100):
 
 # Parámetros iniciales y ejecución del algoritmo
 p0 = [1, 1, 1, 1]  # Valores iniciales para a, b, c, d
-mu0 = 1e-2
-params_opt = LM(x, y_ruidosa, p0, mu0)
+mu0 = 1e-3  # Parámetro de regularización
+params_opt = LM(x, y_ruidosa_normalizada, p0, mu0)
 
 print("Parámetros óptimos:", params_opt)
 
@@ -88,6 +97,38 @@ def modelo_curve_fit(x, a, b, c, d):
     return a * np.sin(b * x) + c * np.cos(d * x)
 
 # Ajuste con curve_fit
-params_curve_fit, _ = curve_fit(modelo_curve_fit, x, y_ruidosa, p0=p0)
+params_curve_fit, _ = curve_fit(modelo_curve_fit, x, y_ruidosa_normalizada, p0=p0)
 
 print("Parámetros óptimos con curve_fit:", params_curve_fit)
+
+# Graficar los resultados
+plt.figure(figsize=(12, 8))
+
+# Datos originales
+plt.subplot(2, 2, 1)
+plt.scatter(x, y, label="Datos originales", color="blue", alpha=0.6)
+plt.title("Datos originales")
+plt.legend()
+
+# Datos con ruido
+plt.subplot(2, 2, 2)
+plt.scatter(x, y_ruidosa, label="Datos con ruido", color="orange", alpha=0.6)
+plt.title("Datos con ruido")
+plt.legend()
+
+# Ajuste con LM
+plt.subplot(2, 2, 3)
+plt.scatter(x, y_ruidosa_normalizada, label="Datos con ruido normalizados", color="orange", alpha=0.6)
+plt.plot(xlinspace, modelo(params_opt, xlinspace), label="Ajuste LM", color="green")
+plt.title("Ajuste con LM")
+plt.legend()
+
+# Ajuste con curve_fit
+plt.subplot(2, 2, 4)
+plt.scatter(x, y_ruidosa_normalizada, label="Datos con ruido normalizados", color="orange", alpha=0.6)
+plt.plot(xlinspace, modelo_curve_fit(xlinspace, *params_curve_fit), label="Ajuste curve_fit", color="red")
+plt.title("Ajuste con curve_fit")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
