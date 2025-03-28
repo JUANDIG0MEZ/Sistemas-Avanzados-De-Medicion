@@ -1,21 +1,9 @@
-"""
-JUAN DIEGO GOMEZ Y JUAN CAMILO VASCO
-
-Actividad Sesión 05
-ENUNCIADO 1
-Seleccione la implementación de RANSAC de su predilección y cree un ejemplo de cómo se usa la función con sus propios datos. 
-
-Sistemas Avanzados de medición
-Universidad Tecnológica de Pereira
-Maestria en Ingeniería Electrica
-2025-1
-"""
-
 import numpy as np
 from sklearn.linear_model import RANSACRegressor
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import metodos
+
 
 # ax + by + c = 0 
 a, b, c = 1, -5, 0
@@ -27,9 +15,9 @@ y = metodos.generarY(x, a, b, c, rango, numPuntos)
 y_ideal = y.copy()
 
 # Agrega ruido pequeño a los datos
-metodos.agregarRuidoGaussiano(y, 0, 2)
+y = metodos.agregarRuidoGaussiano(y, 0, 2)
 # Agrega outliers a los datos
-metodos.agregarOutliers(y, -20, 20, 0.1)
+y =metodos.agregarOutliers(y, -20, 20, 0.1)
 
 
 # Se le agrega una dimension a x para que pueda ser utilizado en RANSAC
@@ -45,12 +33,12 @@ ransac = RANSACRegressor(
 )
 ransac.fit(x, y)
 
-
-
 # Es un vector de dimensiones (100,) con valores booleanos
 # True si es un inlier, False si es un outlier 
 mascara = ransac.inlier_mask_
 y_ransac = ransac.predict(x)
+
+
 
 plt.figure(figsize=(7, 5))
 # Graficar resultados
