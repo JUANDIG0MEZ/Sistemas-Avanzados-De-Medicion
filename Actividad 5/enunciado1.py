@@ -2,33 +2,58 @@ import numpy as np
 from sklearn.linear_model import RANSACRegressor
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
-import metodos
 
+
+def generarY(x, a, b , c):
+    # ax + by + c = 0
+    m = -a / b
+    b = -c / b
+    y = m* x + b
+    return y
+
+
+def agregarOutliers(y, min, max, outliers=0.1):
+    y_outliers = y.copy()
+    for i in range(len(y)):
+        if np.random.rand() < outliers:
+            y_outliers[i] = y_outliers[i] + np.random.uniform(min, max)
+    return y_outliers
+
+def agregarRuidoGaussiano(y, mu, sigma):
+    y_ruido = y.copy()
+    for i in range(len(y)):
+        y_ruido[i] = y_ruido[i] + np.random.normal(mu, sigma)
+    return y_ruido
+
+def normalizacion(data):
+    media = np.mean(data)
+    desviacion = np.std(data)
+    return (data - media) / desviacion
 
 # ax + by + c = 0 
 a, b, c = 1, -5, 0
+# Range de valores de x
 rango = (-10, 10)
+# Numero de puntos a generar
 numPuntos = 40
 
 x = np.linspace(rango[0], rango[1], numPuntos)
-y = metodos.generarY(x, a, b, c, rango, numPuntos)
+y = generarY(x, a, b, c)
 y_ideal = y.copy()
 
 # Agrega ruido pequeño a los datos
-y = metodos.agregarRuidoGaussiano(y, 0, 2)
+y = agregarRuidoGaussiano(y, 0, 2)
 # Agrega outliers a los datos
-y =metodos.agregarOutliers(y, -20, 20, 0.1)
-
+y =agregarOutliers(y, -20, 20, 0.1)
 
 # Se le agrega una dimension a x para que pueda ser utilizado en RANSAC
 x = x.reshape(-1, 1)
 
-
-# Se crea una isntancia de RANSAC
+# Se crea una instancia de RANSAC
 ransac = RANSACRegressor(
     estimator= LinearRegression(),
-    min_samples = 0.5,
-    residual_threshold = 5.0,
+    min_samples = 0.6, # Porcentaje de muestras necesarias para estimar el modelo
+    residual_threshold = 5.0, # Umbral de residuo
     random_state = 42
 )
 ransac.fit(x, y)
@@ -37,8 +62,6 @@ ransac.fit(x, y)
 # True si es un inlier, False si es un outlier 
 mascara = ransac.inlier_mask_
 y_ransac = ransac.predict(x)
-
-
 
 plt.figure(figsize=(7, 5))
 # Graficar resultados
