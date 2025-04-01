@@ -78,4 +78,5 @@ plt.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
 # Leyenda con fondo blanco y borde negro
 plt.legend(facecolor='white', edgecolor='black', fontsize= 10)
 plt.title("Regresión robusta con RANSAC")
+plt.show()
 plt.savefig("RANSAC.svg")

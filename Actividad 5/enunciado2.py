@@ -100,6 +100,7 @@ plt.title("Ajuste de modelo con ruido gaussiano y uniforme")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.7)
 plt.tight_layout()
+plt.show()
 
 # Mostrar la gráfica
 plt.savefig("AJUSTE_NO_LINEAL.svg")
