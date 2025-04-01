@@ -29,11 +29,13 @@ def gradiente_descendente(x, y, a, b, c, d, learning_rate=0.001, epochs=1000):
         d -= learning_rate * grad_d
     return a, b, c, d
 
+
 def agregarRuidoUniform(y, min, max):
     y_uniforme = y.copy()
     for i in range(len(y)):
         y_uniforme[i] = y_uniforme[i] + np.random.uniform(min, max)
     return y_uniforme
+
 
 def agregarRuidoGaussiano(y, mu, sigma):
     y_ruido = y.copy()
@@ -49,18 +51,19 @@ y = modelo(x, a, b, c, d)
 # Agrega ruido gaussiano
 yRuidoGaussiano = agregarRuidoGaussiano(y, 0, 0.1)
 # Agrega ruido uniforme
-yRuidoUniforme = agregarRuidoGaussiano(y, -0.4, 0.4)
+yRuidoUniforme = agregarRuidoUniform(y, -1.0, 1.0)
 
-
-# Valores inciales
-a_inicial = random.uniform(-5, 5)
-b_inicial = random.uniform(-5, 5)
-c_inicial = random.uniform(-5, 5)
-d_inicial = random.uniform(-5, 5)
+# Valores iniciales aleatorios para los parámetros
+a_inicial =  random.uniform(-5, 5)
+b_inicial =  random.uniform(-5, 5)
+c_inicial =  random.uniform(-5, 5)
+d_inicial =  random.uniform(-5, 5)
 
 parametros_iniciales = (a_inicial, b_inicial, c_inicial, d_inicial)
 parametros_gauss = gradiente_descendente(x, yRuidoGaussiano, a_inicial, b_inicial, c_inicial, d_inicial, lr, epochs)
 parametros_uniformes = gradiente_descendente(x, yRuidoUniforme, a_inicial, b_inicial, c_inicial, d_inicial, lr, epochs)
+
+print("\n -------Resultados-------\n")
 
 print("Parámetros iniciales:", *parametros_iniciales)
 print("Parámetros óptimos con ruido gaussiano:", *parametros_gauss)
@@ -99,4 +102,13 @@ plt.grid(True, linestyle="--", alpha=0.7)
 plt.tight_layout()
 
 # Mostrar la gráfica
-plt.savefig("ajuste_modelo_ruido.svg")
+plt.savefig("AJUSTE_NO_LINEAL.svg")
+print()
+# Interprete los resultados obtenidos y discuta la influencia los parámetros del ruido en la estimación de los parámetros del modelo.
+print("----------Interpretación de resultados:----------\n")
+print("Los resultados muestran que los parámetros obtenidos se mantienen relativamente constantes a pesar de la variación del ruido.\n"
+      "Esto se observa porque los valores estimados a partir de los datos con ruido gaussiano y ruido uniforme son similares a pesar\n"
+      "que el ruido uniforme tiene una magnitud mas grande. En consecuencia, se puede concluir que el modelo es robusto frente a  \ndiferentes tipos de ruido.\n\n"
+      "Por otro lado, uno de los factores que más influye en la estimación de los parámetros es la elección de los valores iniciales.\n"
+      "Si estos están demasiado alejados de los valores reales, el modelo puede no converger a la solución óptima,\n"
+      "posiblemente debido a que se queda atrapado en mínimos locales. \n")
