@@ -12,7 +12,7 @@ Materiales del curso/
 *.bmp
 *.tiff
 *.svg
-
+*.synctex.gz
 .idea/
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,pycharm,python
