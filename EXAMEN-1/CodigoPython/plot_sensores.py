@@ -428,13 +428,7 @@ def convertir_a_temperatura(valores_medidos, info_ajuste):
     params = info_ajuste['params']
     funcion = info_ajuste['funcion']
     
-    # Desnormalizar si es necesario
-    if info_ajuste['normalizado']:
-        min_orig = info_ajuste['min_original']
-        max_orig = info_ajuste['max_original']
-        valores_normalizados = (np.array(valores_medidos) - min_orig) / (max_orig - min_orig)
-    else:
-        valores_normalizados = valores_medidos
+    valores_normalizados = valores_medidos
     
     # Función para resolver el modelo inverso (encontrar T para un valor dado)
     def resolver_inversa(valor_medido):
