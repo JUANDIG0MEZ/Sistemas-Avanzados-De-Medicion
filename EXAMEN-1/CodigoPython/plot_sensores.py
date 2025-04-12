@@ -96,7 +96,7 @@ def plot_sensores_ajuste(datos_sensor, rango_sensor, tipo_ajuste='linear', guard
         return a * np.exp(b * x) + c
         
     def func_logarithmic(x, a, b, c):
-        return a * np.log(b * x) + c
+        return a * np.log10(b * x) + c
         
     def func_polynomial(x, a, b, c, d):
         return a*x**3 + b*x**2 + c*x + d
@@ -137,8 +137,8 @@ def plot_sensores_ajuste(datos_sensor, rango_sensor, tipo_ajuste='linear', guard
     valores_ordenados = valores[indices_orden]
     
     # Generar gráfica de dispersión
-    plt.figure(figsize=(10, 6))
-    plt.scatter(temperaturas, valores, label='Datos originales', color='blue', marker='o')
+    # plt.figure(figsize=(10, 6))
+    # plt.scatter(temperaturas, valores, label='Datos originales', color='blue', marker='o')
     
     # Obtener rango de operación del sensor
     rango_min, rango_max = rango_sensor
@@ -151,8 +151,8 @@ def plot_sensores_ajuste(datos_sensor, rango_sensor, tipo_ajuste='linear', guard
     rango_efectivo_max = centro_rango + rango_efectivo/2
     
     # Dibujar líneas para marcar rango efectivo
-    plt.axvline(x=rango_efectivo_min, color='r', linestyle='--', alpha=0.5, label='Rango efectivo (60%)')
-    plt.axvline(x=rango_efectivo_max, color='r', linestyle='--', alpha=0.5)
+    # plt.axvline(x=rango_efectivo_min, color='r', linestyle='--', alpha=0.5, label='Rango efectivo (60%)')
+    # plt.axvline(x=rango_efectivo_max, color='r', linestyle='--', alpha=0.5)
     
     
 
@@ -187,29 +187,29 @@ def plot_sensores_ajuste(datos_sensor, rango_sensor, tipo_ajuste='linear', guard
         valores_curve = funcion(temp_curve, *params)
         
         # Dibujar curva ajustada
-        plt.plot(temp_curve, valores_curve, 'r-', label=etiqueta_ajuste)
+        # plt.plot(temp_curve, valores_curve, 'r-', label=etiqueta_ajuste)
         
-        # Agregar ecuación como texto en la gráfica
-        plt.text(0.05, 0.95, etiqueta_ajuste, transform=plt.gca().transAxes, 
-                 verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.7))
+        # # Agregar ecuación como texto en la gráfica
+        # plt.text(0.05, 0.95, etiqueta_ajuste, transform=plt.gca().transAxes, 
+        #          verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.7))
         
     except Exception as e:
         plt.text(0.05, 0.95, f"Error en ajuste: {str(e)}", transform=plt.gca().transAxes, 
                  verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.7))
     
-    # Configurar gráfica
-    plt.title(f'Sensor {nombre_sensor} con ajuste {tipo_ajuste}')
-    plt.xlabel('Temperatura (°C)')
-    plt.ylabel('Valor del Sensor')
-    plt.grid(True, alpha=0.3)
-    plt.legend()
+    # # Configurar gráfica
+    # plt.title(f'Sensor {nombre_sensor} con ajuste {tipo_ajuste}')
+    # plt.xlabel('Temperatura (°C)')
+    # plt.ylabel('Valor del Sensor')
+    # plt.grid(True, alpha=0.3)
+    # plt.legend()
     
     # Mostrar y guardar
-    plt.tight_layout()
-    if guardar:
-        plt.savefig(f'sensor_{nombre_sensor}_{tipo_ajuste}.svg')
-    # plt.show()
-    plt.clf()
+    # plt.tight_layout()
+    # if guardar:
+    #     plt.savefig(f'sensor_{nombre_sensor}_{tipo_ajuste}.svg')
+    # # plt.show()
+    # plt.clf()
 
     # Almacenar información adicional para retornar
     info_ajuste = {
@@ -521,8 +521,7 @@ def analizar_precision(resultados_simulacion, info_ajustes):
     plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
     plt.legend()
     
-    # Métricas de error
-    plt.figure(figsize=(10, 8))
+    
     labels = []
     rmse_values = []
     max_error_values = []
@@ -547,8 +546,8 @@ def analizar_precision(resultados_simulacion, info_ajustes):
     # Gráfico de barras con métricas de error
     x = np.arange(len(labels))
     width = 0.35
-    
-    fig, ax = plt.subplots(figsize=(10, 6))
+
+    fig3, ax = plt.subplots(figsize=(10, 6))
     bar1 = ax.bar(x - width/2, rmse_values, width, label='RMSE (°C)')
     bar2 = ax.bar(x + width/2, max_error_values, width, label='Error Máximo (°C)')
     
