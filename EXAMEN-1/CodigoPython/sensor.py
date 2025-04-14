@@ -225,7 +225,7 @@ class Graficas():
     
     @staticmethod
     def grafica_basica(y):
-        plt.plot(y, "o")
+        plt.plot(y)
 
 class Ruido:
     def __init__(self, tipo_ruido, parametro1, parametro2=None, longitud=1000):
@@ -297,12 +297,18 @@ class Simulacion():
         """
         temperaturas = self.horno.temperaturas
         valores = sensor.calcularValores(temperaturas)
-        #ruido = valores * ruido
-        #valores_ruido = valores + ruido
-        valores_ruido_normalizados = (valores - np.mean(valores))/np.std(valores) + ruido
-        valores_ruido_desnormalizados = (va)
-        temperaturas_ruido = sensor.calcularTemperatura(sensor, valores_ruido)
-        return valores_ruido, temperaturas_ruido
+        # ruido = valores * ruido
+        # valores_ruido = valores + ruido
+        # temperaturas_ruido = sensor.calcularTemperatura(sensor, valores_ruido)
+
+        # return valores_ruido, temperaturas_ruido
+        mean = np.mean(valores)
+        std = np.std(valores)
+        valores_ruido_normalizados = (valores - mean)/std + ruido 
+        valores_ruido_desnormalizados = valores_ruido_normalizados * std + mean
+        
+        temperaturas_ruido = sensor.calcularTemperatura(sensor, valores_ruido_desnormalizados)
+        return valores_ruido_desnormalizados, temperaturas_ruido
         
     
     def simulacionGaussianos(self):
@@ -316,9 +322,24 @@ class Simulacion():
             }
         return lista_sensores_horno
 
-    # def simulacionVariosRuidos():
-    #     for sensor in self.lista_sensores:
-    #         for ruido in self.lista_ruidos:
+    def simulacionVariosRuidos(self):
+        lista_sensores_horno = self.lista_sensores.copy()
+        for i, (nombreSensor, sensor) in enumerate(self.lista_sensores.items()):
+            keys_ruido = list(self.lista_ruidos.keys())
+            ruido = self.lista_ruidos[keys_ruido[i]]
+
+            valores_ruido, temperata_ruido = self.simularSensor(sensor, ruido)
+            lista_sensores_horno[nombreSensor] = {
+                "valores_ruido": valores_ruido,
+                "temperaturas_ruido": temperata_ruido
+            }
+        return lista_sensores_horno
+
+
+
+
+            
+
 
 
         
@@ -349,7 +370,7 @@ sensor_TYPE_E = Sensor(TYPE_E_DICT, "Type E", "Voltaje (mV)", "polinomial")
 sensor_TYPE_TMP = Sensor(TMP235Q1DICT, "TMP235-Q1", "Voltaje (mV)", "lineal")
 sensor_NTCLE100E3338 = Sensor(NTCLE100E3338_DICT, "NTCLE100E3338", "Resistencia (Ohmios)", "exponencial")
 
-# 
+
 
 # Graficas.graficar_sensor_con_curva(sensor_PT1000)
 # Graficas.graficar_sensor_con_curva(sensor_TYPE_K)
@@ -357,7 +378,7 @@ sensor_NTCLE100E3338 = Sensor(NTCLE100E3338_DICT, "NTCLE100E3338", "Resistencia 
 # Graficas.graficar_sensor_con_curva(sensor_TYPE_TMP)
 # Graficas.graficar_sensor_con_curva(sensor_NTCLE100E3338)
 
-#
+
 
 
 
@@ -377,7 +398,7 @@ lista_sensores = {
     "PT1000": sensor_PT1000_60,
     "TYPE_K": sensor_TYPE_K_60,
     "TYPE_E": sensor_TYPE_E_60,
-    "TYPE_TMP": sensor_TYPE_TMP_60,
+    #"TYPE_TMP": sensor_TYPE_TMP_60,
     "NTCLE100E3338": sensor_NTCLE100E3338_60
 }
 
@@ -434,8 +455,8 @@ print("Lista de ruidos")
 print("--------------------------")
 ruidoGaussiano = Ruido("gaussiano", 0, 0.1, longitud).valores
 ruidoUniforme = Ruido("uniforme", 0, 0.1, longitud).valores
-ruidoExponencial = Ruido("exponencial", 0.1, longitud).valores
-ruidoPoisson = Ruido("poisson", 0.1, longitud).valores
+ruidoExponencial = Ruido("exponencial", 0.1, None, longitud).valores
+ruidoPoisson = Ruido("poisson", 0.1, None ,longitud).valores
 
 listaRuidos = {
     "gaussiano": ruidoGaussiano,
@@ -452,12 +473,35 @@ print("--------------------------")
 
 simulacion = Simulacion(horno, 100, lista_sensores, listaRuidos)
 
+print("--------------------------")
+print("Simulacion con varios gaussianos")
+print("--------------------------")
+
 sensoresSimulados = simulacion.simulacionGaussianos()
 
 
-Graficas.grafica_basica(sensoresSimulados["PT1000"]["temperaturas_ruido"] - 273.15)
-Graficas.grafica_basica(sensoresSimulados["TYPE_K"]["temperaturas_ruido"] - 273.15)
-Graficas.grafica_basica(horno.temperaturas - 273.15)
+# Graficas.grafica_basica(sensoresSimulados["PT1000"]["temperaturas_ruido"] )
+# Graficas.grafica_basica(sensoresSimulados["TYPE_K"]["temperaturas_ruido"] )
+# Graficas.grafica_basica(sensoresSimulados["TYPE_E"]["temperaturas_ruido"] )
+# Graficas.grafica_basica(sensoresSimulados["TYPE_TMP"]["temperaturas_ruido"] )
+# Graficas.grafica_basica(sensoresSimulados["NTCLE100E3338"]["temperaturas_ruido"] - 273.15)
+# Graficas.grafica_basica(horno.temperaturas )
+# plt.show()
+
+
+
+print("--------------------------")
+print("Simulacion con varios ruidos")
+print("--------------------------")
+
+sensoresSimuladosVarios = simulacion.simulacionVariosRuidos()
+
+Graficas.grafica_basica(sensoresSimuladosVarios["PT1000"]["temperaturas_ruido"] )
+Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_K"]["temperaturas_ruido"] )
+Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_E"]["temperaturas_ruido"] )
+#Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_TMP"]["temperaturas_ruido"] )
+Graficas.grafica_basica(sensoresSimuladosVarios["NTCLE100E3338"]["temperaturas_ruido"] - 273.15)
+Graficas.grafica_basica(horno.temperaturas )
 plt.show()
 # valores_PT1000_ruido = Ruido.ruidoGaussiano(sensor_PT1000, 1.5)
 # temperaturas_PT1000_ruido = Sensor.calcularTemperatura(sensor_PT1000, valores_PT1000_ruido)
