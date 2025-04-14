@@ -286,11 +286,10 @@ class Horno:
 
 
 class Simulacion():
-    def __init__(self,  horno, num_iteraciones, lista_sensores, lista_ruidos):
+    def __init__(self,  horno,  lista_sensores, num_iteraciones= 5):
         self.num_iteraciones = num_iteraciones
         self.horno = horno
         self.lista_sensores = lista_sensores
-        self.lista_ruidos = lista_ruidos
 
     def simularSensor(self, sensor, ruido):
         """
@@ -314,7 +313,7 @@ class Simulacion():
     def simulacionGaussianos(self):
         lista_sensores_horno = self.lista_sensores.copy()
         for nombreSensor, sensor in self.lista_sensores.items():
-            ruido = self.lista_ruidos["gaussiano"]
+            ruido = self.generarDiccionarioRuidos()["gaussiano"]
             valores_ruido, temperata_ruido = self.simularSensor(sensor, ruido)
             lista_sensores_horno[nombreSensor] = {
                 "valores_ruido": valores_ruido,
@@ -325,8 +324,8 @@ class Simulacion():
     def simulacionVariosRuidos(self):
         lista_sensores_horno = self.lista_sensores.copy()
         for i, (nombreSensor, sensor) in enumerate(self.lista_sensores.items()):
-            keys_ruido = list(self.lista_ruidos.keys())
-            ruido = self.lista_ruidos[keys_ruido[i]]
+            keys_ruido = list(self.generarDiccionarioRuidos().keys())
+            ruido = self.generarDiccionarioRuidos()[keys_ruido[i]]
 
             valores_ruido, temperata_ruido = self.simularSensor(sensor, ruido)
             lista_sensores_horno[nombreSensor] = {
@@ -335,14 +334,29 @@ class Simulacion():
             }
         return lista_sensores_horno
 
+    def monteCarlo(self, tipo_simulacion):
+        """
+        Esta funcion simula los sensores utilizando Monte Carlo
+        """
+        simulaciones = {} 
+        if tipo_simulacion == "gaussiano":
+            for i in range(self.num_iteraciones):
+                simulaciones[i] = self.simulacionGaussianos()
+        elif tipo_simulacion == "variosRuidos":
+            for i in range(self.num_iteraciones):
+                simulaciones[i] = self.simulacionVariosRuidos()
+        return simulaciones
 
+    
+    def generarDiccionarioRuidos(self):
 
-
-            
-
-
-
-        
+        listaRuidos = {
+        "gaussiano": Ruido("gaussiano", 0, 0.1, longitud).valores,
+        "uniforme": Ruido("uniforme", 0, 0.1, longitud).valores,
+        "exponencial": Ruido("exponencial", 0.1, None, longitud).valores,
+        "poisson": Ruido("poisson", 0.1, None ,longitud).valores
+        }
+        return listaRuidos
 
 def extraer_submuestra(diccionario, rango):
     """
@@ -451,27 +465,10 @@ horno = Horno(X, Y, Z, W, T0)
 
 
 print("--------------------------")
-print("Lista de ruidos")
-print("--------------------------")
-ruidoGaussiano = Ruido("gaussiano", 0, 0.1, longitud).valores
-ruidoUniforme = Ruido("uniforme", 0, 0.1, longitud).valores
-ruidoExponencial = Ruido("exponencial", 0.1, None, longitud).valores
-ruidoPoisson = Ruido("poisson", 0.1, None ,longitud).valores
-
-listaRuidos = {
-    "gaussiano": ruidoGaussiano,
-    "uniforme": ruidoUniforme,
-    "exponencial": ruidoExponencial,
-    "poisson": ruidoPoisson
-}
-
-
-
-print("--------------------------")
 print("Simulacion")
 print("--------------------------")
 
-simulacion = Simulacion(horno, 100, lista_sensores, listaRuidos)
+simulacion = Simulacion(horno, num_iteraciones=5, lista_sensores=lista_sensores)
 
 print("--------------------------")
 print("Simulacion con varios gaussianos")
@@ -496,13 +493,28 @@ print("--------------------------")
 
 sensoresSimuladosVarios = simulacion.simulacionVariosRuidos()
 
-Graficas.grafica_basica(sensoresSimuladosVarios["PT1000"]["temperaturas_ruido"] )
-Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_K"]["temperaturas_ruido"] )
-Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_E"]["temperaturas_ruido"] )
-#Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_TMP"]["temperaturas_ruido"] )
-Graficas.grafica_basica(sensoresSimuladosVarios["NTCLE100E3338"]["temperaturas_ruido"] - 273.15)
-Graficas.grafica_basica(horno.temperaturas )
-plt.show()
+# Graficas.grafica_basica(sensoresSimuladosVarios["PT1000"]["temperaturas_ruido"] )
+# Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_K"]["temperaturas_ruido"] )
+# Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_E"]["temperaturas_ruido"] )
+# #Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_TMP"]["temperaturas_ruido"] )
+# Graficas.grafica_basica(sensoresSimuladosVarios["NTCLE100E3338"]["temperaturas_ruido"] - 273.15)
+# Graficas.grafica_basica(horno.temperaturas )
+# plt.show()
+
+
+
+print("--------------------------")
+print("Multples simulacion con Monte Carlo")
+print("--------------------------")
+
+montecarlo = simulacion.monteCarlo("gaussiano")
+
+
+
+print()
+
+# Llamar a la función para graficar los histogramas
+graficar_histogramas_montecarlo(montecarlo, lista_sensores)
 # valores_PT1000_ruido = Ruido.ruidoGaussiano(sensor_PT1000, 1.5)
 # temperaturas_PT1000_ruido = Sensor.calcularTemperatura(sensor_PT1000, valores_PT1000_ruido)
 
