@@ -19,12 +19,13 @@ class Metodos:
         return A_inv @ b
 
     @staticmethod
-    def calcularErrores(valores, valores_calculados):
+    def rmse(valores_reales, valores_calculados):
         """
         Esta funcion calcula los errores entre los valores y los valores calculados
         """
-        errores = valores - valores_calculados
-        return errores
+        errores = valores_reales - valores_calculados
+        rmse = np.sqrt(np.mean(np.square(errores)))
+        return rmse
 
     # @staticmethod
     # def calcularIncertidumbre(valores, )
@@ -57,6 +58,7 @@ class Sensor():
         """
         Esta funcion calcula los parametros de la curva
         """
+        b = np.array(self.valores).T
         if self.tipo_curva == "lineal":
             """
             R(T) = m*T + b ==> [T, 1] * [[m], [b]]
@@ -68,6 +70,7 @@ class Sensor():
             R(T) = A * e^(B/T) ==> ln(R(T)) = ln(A) + B/T ==> ln(R(T)) = [1/T, 1] * [[B], [ln(A)]]
             """
             A = np.array([1 / self.temperaturas, np.ones(len(self.valores))]).T
+            b = np.log(b)
 
         elif self.tipo_curva == "polinomial":
             """
@@ -78,10 +81,7 @@ class Sensor():
         else: 
             raise ValueError("Tipo de curva no soportada")
         
-        
-        b = np.array(self.valores).T
-
-        parametros =Metodos.svd_obtenerParametros(A, b)
+        parametros = Metodos.svd_obtenerParametros(A, b)
         return parametros
     
     def obtenerParametros(self):
@@ -121,6 +121,13 @@ class Sensor():
             return A + B * temperaturas + C * temperaturas**2 + D * temperaturas**3
         else:
             raise ValueError("Tipo de curva no soportada")
+
+
+    def calcularTemperaturaRuido(self, funcionRuido, tipo_ruido):
+        """
+        Esta funcion calcula la temperatura a partir de los valores con ruido
+        """
+        valores_ruido = funcionRuido(self.ruido)
 
     @staticmethod
     def calcularTemperatura(sensor, valores):
@@ -207,35 +214,46 @@ class Graficas():
         if sensor.tipo_curva == "lineal":
             y = sensor.parametros[0] * T + sensor.parametros[1]
         elif sensor.tipo_curva == "exponencial":
-            y = np.exp(sensor.parametros[1] ) * np.exp(sensor.parametros[0] / (T))
+            y = np.exp(sensor.parametros[1] ) * np.exp(sensor.parametros[0] / T)
         elif sensor.tipo_curva == "polinomial":
             y = sensor.parametros[0] + sensor.parametros[1] * T + sensor.parametros[2] * T**2 + sensor.parametros[3] * T**3
         else:
             raise ValueError("Tipo de curva no soportado")
 
-        plt.plot(sensor.temperaturas, sensor.valores, "o", label="Datos")
-        plt.plot(sensor.temperaturas, y, label="Curva ajustada")
+        plt.plot(sensor.temperaturas - 273.15, sensor.valores, "o", label="Datos")
+        plt.plot(sensor.temperaturas - 273.15, y, label="Curva ajustada")
         plt.xlabel("Temperatura (°K)")
         plt.ylabel(f"{sensor.unidades_valores}")
         plt.title(f"Grafica de {sensor.nombre_sensor} con curva ajustada")
         plt.legend()
+        plt.show()
     
     @staticmethod
     def grafica_simple(temperaturas, valores):
         plt.plot(temperaturas, valores, "o")
 
 
-class Ruido():
+class Ruido:
+    def __init__(self, tipo_ruido, parametros):
+        self.valores = generarRuido(tipo_ruido, parametros)
+
+    def generarRuido(tipo_error, parametros):
+        if tipo_ruido == "gaussiano":
+            assert len(parametros) == 2
+            media = parametros[0]
+            desviacion = parametros[1]
+            return ruidoGaussiano(media, desviacion, len(valores))
+
     @staticmethod
-    def ruidoGaussiano(sensor, desviacion):
+    def ruidoGaussiano(valores, desviacion):
         """
         Esta funcion crear un nuevo sensor con ruido gaussiano
         """
-        valores = sensor.valores
-        ruido = np.random.normal(0, desviacion, len(valores))
+        ruido = np.random.normal(media, desviacion, len(valores))
         valores_ruido = valores + ruido
         # crear el diccionario con los valores y temperaturas
         return valores_ruido
+    
     
 
 
@@ -270,15 +288,120 @@ class Horno:
         Esta funcion grafica el perfil de temperatura del horno
         """
         plt.plot(self.temperaturas)
+        plt.show()
+
+
+class Simulacion():
+    def __init__(self,  Horno, num_iteraciones, sensores, ruidos):
+        self.num_iteraciones = num_iteraciones
+        self.horno = Horno
 
 
 
 
-sensor_PT1000 = Sensor(pt_1000, "PT1000", "Resistencia (Ohmios)", "lineal")
-valores_PT1000_ruido = Ruido.ruidoGaussiano(sensor_PT1000, 1.5)
-temperaturas_PT1000_ruido = Sensor.calcularTemperatura(sensor_PT1000, valores_PT1000_ruido)
 
-Graficas.graficar_sensor_con_curva(sensor_PT1000)
-Graficas.grafica_simple(temperaturas_PT1000_ruido, valores_PT1000_ruido)
-print("valores del PT_1000_ con ruido", valores_PT1000_ruido)
-plt.show()
+
+def extraer_submuestra(diccionario, rango):
+    """
+    Esta funcion extrae una submuestra de un diccionario
+    """
+    
+    t_min = min(diccionario.keys())
+    t_max = max(diccionario.keys())
+    longitud = t_max - t_min
+    distancia = (longitud * rango) // 2 
+    t_min = t_min + distancia
+    t_max = t_max - distancia
+
+    submuestra = {}
+
+    for key, value in diccionario.items():
+        if key >= t_min and key <= t_max:
+            submuestra[key] = value
+    return submuestra
+
+
+sensor_PT1000 = Sensor(PT1000_DICT, "PT1000", "Resistencia (Ohmios)", "lineal")
+sensor_TYPE_K = Sensor(TYPE_K_DICT, "Type K", "Voltaje (mV)", "polinomial")
+sensor_TYPE_E = Sensor(TYPE_E_DICT, "Type E", "Voltaje (mV)", "polinomial")
+sensor_TYPE_TMP = Sensor(TMP235Q1DICT, "TMP235-Q1", "Voltaje (mV)", "lineal")
+sensor_NTCLE100E3338 = Sensor(NTCLE100E3338_DICT, "NTCLE100E3338", "Resistencia (Ohmios)", "exponencial")
+
+# 
+
+# Graficas.graficar_sensor_con_curva(sensor_PT1000)
+# Graficas.graficar_sensor_con_curva(sensor_TYPE_K)
+# Graficas.graficar_sensor_con_curva(sensor_TYPE_E)
+# Graficas.graficar_sensor_con_curva(sensor_TYPE_TMP)
+# Graficas.graficar_sensor_con_curva(sensor_NTCLE100E3338)
+
+#
+
+
+
+PT1000_60_DICT = extraer_submuestra(PT1000_DICT, 0.6)
+TYPE_K_60_DICT = extraer_submuestra(TYPE_K_DICT, 0.6)
+TYPE_E_60_DICT = extraer_submuestra(TYPE_E_DICT, 0.6)
+TYPE_TMP_60_DICT = extraer_submuestra(TMP235Q1DICT, 0.6)
+NTCLE100E3338_DICT = extraer_submuestra(NTCLE100E3338_DICT, 0.6)
+
+sensor_PT1000_60 = Sensor(PT1000_60_DICT, "PT1000", "Resistencia (Ohmios)", "lineal")
+sensor_TYPE_K_60 = Sensor(TYPE_K_60_DICT, "Type K", "Voltaje (mV)", "polinomial")
+sensor_TYPE_E_60 = Sensor(TYPE_E_60_DICT, "Type E", "Voltaje (mV)", "polinomial")
+sensor_TYPE_TMP_60 = Sensor(TYPE_TMP_60_DICT, "TMP235-Q1", "Voltaje (mV)", "lineal")
+sensor_NTCLE100E3338_60 = Sensor(NTCLE100E3338_DICT, "NTCLE100E3338", "Resistencia (Ohmios)", "exponencial")
+
+
+
+# Puntos de la tabla con su curva
+# Graficas.graficar_sensor_con_curva(sensor_PT1000_60)
+# Graficas.graficar_sensor_con_curva(sensor_TYPE_K_60)
+# Graficas.graficar_sensor_con_curva(sensor_TYPE_E_60)
+# Graficas.graficar_sensor_con_curva(sensor_TYPE_TMP_60)
+# Graficas.graficar_sensor_con_curva(sensor_NTCLE100E3338_60)
+
+
+print("--------------------------")
+print("Parametros de los sensores")
+print("--------------------------")
+print("Parametros del sensor PT1000")
+print(sensor_PT1000_60.obtenerParametros())
+print("Parametros sensor TYPE_K")
+print(sensor_TYPE_K_60.obtenerParametros())
+print("Parametros sensor TYPE_E")
+print(sensor_TYPE_E_60.obtenerParametros())
+print("Parametros sensor TYPE_TMP")
+print(sensor_TYPE_TMP_60.obtenerParametros())
+print("Parametros sensor NTCLE100E3338")
+print(sensor_NTCLE100E3338_60.obtenerParametros())
+
+
+
+print("--------------------------")
+print("Errores de ajuste")
+print("--------------------------")
+print("PT1000:    ", Metodos.rmse(sensor_PT1000_60.valores, sensor_PT1000_60.calcularValores(sensor_PT1000_60.temperaturas)))
+print("TYPE_K:    ", Metodos.rmse(sensor_TYPE_K_60.valores, sensor_TYPE_K_60.calcularValores(sensor_TYPE_K_60.temperaturas)))
+print("TYPE_E:    ", Metodos.rmse(sensor_TYPE_E_60.valores, sensor_TYPE_E_60.calcularValores(sensor_TYPE_E_60.temperaturas)))
+print("TYPE_TMP:  ", Metodos.rmse(sensor_TYPE_TMP_60.valores, sensor_TYPE_TMP_60.calcularValores(sensor_TYPE_TMP_60.temperaturas)))
+print("NTCLE100E3338: ", Metodos.rmse(sensor_NTCLE100E3338_60.valores, sensor_NTCLE100E3338_60.calcularValores(sensor_NTCLE100E3338_60.temperaturas)))
+
+
+print("--------------------------")
+print("Crear Horno")
+horno = Horno(100, 60, 30, 50, 50)
+#horno.graficar_perfil_temperatura()
+
+
+print("--------------------------")
+print("Simulacion")
+
+
+
+# valores_PT1000_ruido = Ruido.ruidoGaussiano(sensor_PT1000, 1.5)
+# temperaturas_PT1000_ruido = Sensor.calcularTemperatura(sensor_PT1000, valores_PT1000_ruido)
+
+# Graficas.graficar_sensor_con_curva(sensor_PT1000)
+# Graficas.grafica_simple(temperaturas_PT1000_ruido, valores_PT1000_ruido)
+# print("valores del PT_1000_ con ruido", valores_PT1000_ruido)
+# plt.show()
