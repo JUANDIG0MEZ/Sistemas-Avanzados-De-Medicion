@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 class Graficas():
     @staticmethod
@@ -47,3 +47,32 @@ class Graficas():
     @staticmethod
     def grafica_basica(y):
         plt.plot(y)
+
+    @staticmethod
+    def graficar_rangos_sensores(sensores, rango_deseado):
+        """"
+        Esta funcion grafica los rangos de los sensores, mediante sus keys
+        y grafica el rango deseado por el usuario,
+        dicha grafica solo tiene un eje de valores de grados centigrados, el otro eje es el nombre de cada sensor
+        """
+        j = 0
+        for i, sensor in enumerate(sensores):
+
+            nombre_sensor = sensor.nombre_sensor
+            j = j+0.1
+            # Graficar los valores del sensor
+            plt.plot(sensor.temperaturas, np.ones(len(sensor.temperaturas))*(j), lw = 15, label=nombre_sensor)
+        
+        # Graficar el rango deseado
+        plt.plot(np.linspace(rango_deseado[0], rango_deseado[1], 100), np.ones(100)*(j+0.1), color='r', lw = 15, label='Rango deseado')
+        plt.axvline(x=rango_deseado[0], color='black', linestyle='--')
+        plt.axvline(x=rango_deseado[1], color='black', linestyle='--')
+
+        plt.xlabel("Temperatura (°C)")
+        plt.ylabel("Sensores")
+        #apago el eje y para que no se vea
+        plt.yticks([])
+        plt.title("Rangos de los sensores")
+        plt.legend()
+        plt.ylim(0, j+0.2)
+        plt.show()
