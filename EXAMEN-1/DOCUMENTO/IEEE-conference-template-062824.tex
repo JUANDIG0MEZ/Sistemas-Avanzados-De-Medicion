@@ -71,61 +71,70 @@ Seleccione los cuatro sensores de su preferencia, con base en los datasheets adj
 
 \subsection{Determinación de curva caracteristica}
 
-Lo primero que se debe realizar, es una extracción de los datos dados por los diversos fabricantes en los datasheets del sensor, y que se pueden encontrar en las tablas de cada datasheet, dichas tablas expresan el valor de salida del sensor según la temperatura de que esta midiendo. Para esto hemos creado un diccionario, con el nombre de cada sensor y sus respectivos valores de Temperatura y valor de medida (mV, V, $\omega$, ..., etc)
+Lo primero que se debe realizar, es una extracción de los datos dados por los diversos fabricantes en los datasheets del sensor, y que se pueden encontrar en las tablas de cada datasheet, dichas tablas expresan el valor de salida del sensor según la temperatura de que esta midiendo. Para esto hemos creado un diccionario, con el nombre de cada sensor y sus respectivos valores de Temperatura y valor de medida (mV, V, $\omega$, ..., etc).\\
 
-Una vez se tiene el diccionario correspondiente, se procede a graficar cada uno de los cuatro (4) sensores, con lo cual es posible de manera visual-analitica, determinar el comportamiento de medida de cada sensor:
+Una vez se tiene el diccionario correspondiente, se procede a graficar cada uno de los cuatro (4) sensores, con lo cual es posible de manera visual-analitica, determinar el comportamiento de medida de cada sensor:\\
 
 \textbf{INSERTAR IMAGENES EN REFERENCIA}
 
-De lo cual es posible determinar que:
+De lo cual es posible determinar que:\\
 
 XXX es XXX
 
 \subsection{Determinación de curva caracteristica}
 
-Para la determinación del rango de operación
+Para la determinación del rango de operación, y que este dentro de por lo menos el 60\% de todos los sensores, es necesario graficar todos los rangos de los sensores y traslaparlos, con el fin de encontrar un rango que todos posean dentro de sus datasheets, y que tambien sean de maximo el 60\%, a continuación la grafica y el rango escogido para la curva de temperatura del horno a experimentar con el elementos "X",
 
 
+\textbf{INSERTAR GRAFICA DE RANGOS DE TEMP}
+
+Es posible analizar las magmnitudes de medición del rango de cada sensor, y que el rango escogido bajo las especificaciones del ejercicio, subdimensiona o le da bajo rendimiento a los sensores de mayor rango.
 
 
+\subsection{Ecuación caracteristica para rango especifico}
 
-\section*{References}
+En este apartado, es necesario aplicar un ajuste fino a cada uno de nuestros sensores, esto debido a que ya tenemos dos datos de gran importancia, el primero saber la curva de comportamiento de cada sensor y segundo el rango en el que vamos a trabajar, esta es una practica de uso general en aplicaciones de medición en todas las escalas, debido a que el fabricante propone una tabla de uso general y en el mayor rango posible, sin embargo, las aplicaciones dadas por los diferentes usuarios necesitan un ajuste o una curva de gran presicion en el proceso especifico.\\
 
-Please number citations consecutively within brackets \cite{b1}. The 
-sentence punctuation follows the bracket \cite{b2}. Refer simply to the reference 
-number, as in \cite{b3}---do not use ``Ref. \cite{b3}'' or ``reference \cite{b3}'' except at 
-the beginning of a sentence: ``Reference \cite{b3} was the first $\ldots$''
+Para este ejercicio y los sensores escogidos las curvas generales fueron:\\
 
-Number footnotes separately in superscripts. Place the actual footnote at 
-the bottom of the column in which it was cited. Do not put footnotes in the 
-abstract or reference list. Use letters for table footnotes.
+$lineal: R(T) = m*T + b ==> [T, 1] * [[m], [b]]$\\
 
-Unless there are six authors or more give all authors' names; do not use 
-``et al.''. Papers that have not been published, even if they have been 
-submitted for publication, should be cited as ``unpublished'' \cite{b4}. Papers 
-that have been accepted for publication should be cited as ``in press'' \cite{b5}. 
-Capitalize only the first word in a paper title, except for proper nouns and 
-element symbols.
+$exponencial: R(T) = A * e^(B/T) ==> ln(R(T)) = ln(A) + B/T ==> ln(R(T)) = [1/T, 1] * [[B], [ln(A)]]$\\
+"""
 
-For papers published in translation journals, please give the English 
-citation first, followed by the original foreign-language citation \cite{b6}.
+$polinomial: V(T) = A + B * T + C * T^2 + D * T^3$\\
+
+Los parametros obtenido para cada uno de los sensores en el rango fueron:
+
+xxxx-lineal - ABC-error MSE
+xxxx-lineal - ABC-error MSE
+xxxx-exponencial - ABC-error MSE
+xxxx-polinomial - ABC-error MSE
+
+\subsection{Simulación de horno}
+
+En este punto es necesario entonces que mediante el rango escogido para los sensores se realice una curva caracteristica del proceso, en este caso la curva es:
+
+\textbf{INSERTAR CURVA ESCOGIDA}
+
+Es en esta curva donde se probara el comportamiento y la salida de cada uno de los sensores
+
+\subsection{Operación de los sensores}
+
+Para la operación de los sensores se asumira un comportamiento Gaussiano para todos, y luego un comportamiento de medida diferente para cada uno de los sensores, en este proceso es posible la inclusión de outliers con el 0.5\%
+
+\subsubsection{Comportamiento Gaussiano}
+
+\subsubsection{Comportamiento Alterno}
+
+
+\section{Conclusiones}
+
 
 \begin{thebibliography}{00}
-\bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
-\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
-\bibitem{b3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271--350.
-\bibitem{b4} K. Elissa, ``Title of paper if known,'' unpublished.
-\bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
-\bibitem{b6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740--741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
-\bibitem{b7} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 1989.
-\bibitem{b8} D. P. Kingma and M. Welling, ``Auto-encoding variational Bayes,'' 2013, arXiv:1312.6114. [Online]. Available: https://arxiv.org/abs/1312.6114
-\bibitem{b9} S. Liu, ``Wi-Fi Energy Detection Testbed (12MTC),'' 2023, gitHub repository. [Online]. Available: https://github.com/liustone99/Wi-Fi-Energy-Detection-Testbed-12MTC
-\bibitem{b10} ``Treatment episode data set: discharges (TEDS-D): concatenated, 2006 to 2009.'' U.S. Department of Health and Human Services, Substance Abuse and Mental Health Services Administration, Office of Applied Studies, August, 2013, DOI:10.3886/ICPSR30122.v2
-\bibitem{b11} K. Eves and J. Valasek, ``Adaptive control for singularly perturbed systems examples,'' Code Ocean, Aug. 2023. [Online]. Available: https://codeocean.com/capsule/4989235/tree
-\end{thebibliography}
 
-\vspace{12pt}
-\color{red}
-IEEE conference templates contain guidance text for composing and formatting conference papers. Please ensure that all template text is removed from your conference paper prior to submission to the conference. Failure to remove the template text from your paper may result in your paper not being published.
+\item Clases magistrales e información suministrada en la clase de Sistemas de medición avanzada, Maestria en ingenieria electrica, semestre 2025-1
+
+\end{thebibliography}
 
 \end{document}
