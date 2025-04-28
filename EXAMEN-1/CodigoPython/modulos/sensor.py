@@ -13,7 +13,8 @@ class Sensor():
         self.nombre_sensor = nombre_sensor
         self.unidades_valores = unidades_valores
         self.tipo_curva = tipo_curva
-        self.parametros = None
+        self.parametros = self.calcularParametros()
+    
 
     def obtener_datos(self, diccionario):
         """
@@ -37,20 +38,23 @@ class Sensor():
         b = np.array(self.valores).T
         if self.tipo_curva == "lineal":
             """
-            R(T) = m*T + b ==> [T, 1] * [[m], [b]]
+                R(T) = m * (T + deltaError) + b ==> [T, 1] * [[m], [b]]
+                R(T) = m *T + m*deltaError + b
+                R(T) = m * T + b  +- m*deltaError
             """
             A = np.array([self.temperaturas, np.ones(self.length)]).T
 
         elif self.tipo_curva == "exponencial":
             """
-            R(T) = A * e^(B/T) ==> ln(R(T)) = ln(A) + B/T ==> ln(R(T)) = [1/T, 1] * [[B], [ln(A)]]
+                R(T) = A * e^(B/T) ==> ln(R(T)) = ln(A) + B/T ==> ln(R(T)) = [1/T, 1] * [[B], [ln(A)]]
             """
             A = np.array([1 / (self.temperaturas + 273.15), np.ones(len(self.valores))]).T
             b = np.log(b)
 
         elif self.tipo_curva == "polinomial":
             """
-            V(T) = A + B * T + C * T^2 + D * T^3
+                V(T) = A + B * T + C * T^2 + D * T^3  
+                V(T)
             """
             A = np.array([np.ones(self.length), self.temperaturas, self.temperaturas**2, self.temperaturas ** 3]).T
 
@@ -64,14 +68,10 @@ class Sensor():
         """
         Esta funcion obtiene los parametros de la curva
         """
-        if self.parametros is None:
-            self.parametros = self.calcularParametros()
         return self.parametros
 
     def calcularValores(self, temperaturas):
-        if self.parametros is None:
-            self.parametros = self.calcularParametros()
-        
+       
         if self.tipo_curva == "lineal":
             """
             V(T) = m*T + b
@@ -85,7 +85,8 @@ class Sensor():
             """
             A = np.exp(self.parametros[1])
             B = self.parametros[0]
-            return A * np.exp(B / (temperaturas))
+            R = A * np.exp(B / (temperaturas + 273.15))
+            return R
         elif self.tipo_curva == "polinomial":
             """
             V(T0) = A + B * T + C * T^2 + D * T^3
@@ -103,9 +104,6 @@ class Sensor():
         """
         Esta funcion calcula la temperatura a partir de los valores
         """
-        if sensor.parametros is None:
-            sensor.parametros = sensor.calcularParametros()
-
         if sensor.tipo_curva == "lineal":
             """
             V(T) = m*T + b ==> T = (V(T) - b) / m
@@ -120,7 +118,8 @@ class Sensor():
             """
             A = np.exp(sensor.parametros[1])
             B = sensor.parametros[0]
-            return B / np.log(valores / A)
+            T = B / np.log(valores / A) - 273.15
+            return T
 
         elif sensor.tipo_curva == "polinomial":
             """
@@ -148,92 +147,3 @@ class Sensor():
 
         else: 
             raise ValueError("Tipo de curva no soportada")
-
-    def calcularIncertidumbre(self):
-        """
-        Esta funcion calcula la incertidumbre del sensor
-        """
-        pass
-
-
-if __name__ == "__main__":
-    metodo1 = Metodos.svd_obtenerParametros
-    print(metodo1)
-
-
-
-# class Simulacion():
-#     def __init__(self,  horno,  lista_sensores, num_iteraciones= 5):
-#         self.num_iteraciones = num_iteraciones
-#         self.horno = horno
-#         self.lista_sensores = lista_sensores
-
-#     def simularSensor(self, sensor, ruido):
-#         """
-#         """
-#         temperaturas = self.horno.temperaturas
-#         valores = sensor.calcularValores(temperaturas)
-#         # ruido = valores * ruido
-#         # valores_ruido = valores + ruido
-#         # temperaturas_ruido = sensor.calcularTemperatura(sensor, valores_ruido)
-
-#         # return valores_ruido, temperaturas_ruido
-#         mean = np.mean(valores)
-#         std = np.std(valores)
-#         valores_ruido_normalizados = (valores - mean)/std + ruido 
-#         valores_ruido_desnormalizados = valores_ruido_normalizados * std + mean
-        
-#         temperaturas_ruido = sensor.calcularTemperatura(sensor, valores_ruido_desnormalizados)
-#         return valores_ruido_desnormalizados, temperaturas_ruido
-        
-    
-#     def simulacionGaussianos(self):
-#         lista_sensores_horno = self.lista_sensores.copy()
-#         for nombreSensor, sensor in self.lista_sensores.items():
-#             ruido = self.generarDiccionarioRuidos()["gaussiano"]
-#             valores_ruido, temperata_ruido = self.simularSensor(sensor, ruido)
-#             lista_sensores_horno[nombreSensor] = {
-#                 "valores_ruido": valores_ruido,
-#                 "temperaturas_ruido": temperata_ruido
-#             }
-#         return lista_sensores_horno
-
-#     def simulacionVariosRuidos(self):
-#         lista_sensores_horno = self.lista_sensores.copy()
-#         for i, (nombreSensor, sensor) in enumerate(self.lista_sensores.items()):
-#             keys_ruido = list(self.generarDiccionarioRuidos().keys())
-#             ruido = self.generarDiccionarioRuidos()[keys_ruido[i]]
-
-#             valores_ruido, temperata_ruido = self.simularSensor(sensor, ruido)
-#             lista_sensores_horno[nombreSensor] = {
-#                 "valores_ruido": valores_ruido,
-#                 "temperaturas_ruido": temperata_ruido
-#             }
-#         return lista_sensores_horno
-
-#     def monteCarlo(self, tipo_simulacion):
-#         """
-#         Esta funcion simula los sensores utilizando Monte Carlo
-#         """
-#         simulaciones = {} 
-#         if tipo_simulacion == "gaussiano":
-#             for i in range(self.num_iteraciones):
-#                 simulaciones[i] = self.simulacionGaussianos()
-#         elif tipo_simulacion == "variosRuidos":
-#             for i in range(self.num_iteraciones):
-#                 simulaciones[i] = self.simulacionVariosRuidos()
-#         return simulaciones
-
-    
-#     def generarDiccionarioRuidos(self):
-
-#         listaRuidos = {
-#         "gaussiano": Ruido("gaussiano", 0, 0.1, longitud).valores,
-#         "uniforme": Ruido("uniforme", 0, 0.1, longitud).valores,
-#         "exponencial": Ruido("exponencial", 0.1, None, longitud).valores,
-#         "poisson": Ruido("poisson", 0.1, None ,longitud).valores
-#         }
-#         return listaRuidos
-
-
-

@@ -18,35 +18,28 @@ class Graficas():
         """
         Esta funcion grafica los datos del sensor junto con la curva ajustada
         """
-        T = sensor.temperaturas
-        if sensor.parametros is None: 
-            sensor.parametros = sensor.calcularParametros()
-        
+        T = sensor.temperaturas      
+        y = sensor.calcularValores(sensor.temperaturas)
 
-        if sensor.tipo_curva == "lineal":
-            y = sensor.parametros[0] * T + sensor.parametros[1]
-        elif sensor.tipo_curva == "exponencial":
-            y = np.exp(sensor.parametros[1] ) * np.exp(sensor.parametros[0] / T)
-        elif sensor.tipo_curva == "polinomial":
-            y = sensor.parametros[0] + sensor.parametros[1] * T + sensor.parametros[2] * T**2 + sensor.parametros[3] * T**3
-        else:
-            raise ValueError("Tipo de curva no soportado")
-
-        plt.plot(sensor.temperaturas - 273.15, sensor.valores, "o", label="Datos")
-        plt.plot(sensor.temperaturas - 273.15, y, label="Curva ajustada")
-        plt.xlabel("Temperatura (°K)")
+        plt.plot(sensor.temperaturas, sensor.valores, "o", label="Datos")
+        plt.plot(sensor.temperaturas, y, label="Curva ajustada")
+        plt.xlabel("Temperatura (°C)")
         plt.ylabel(f"{sensor.unidades_valores}")
         plt.title(f"Grafica de {sensor.nombre_sensor} con curva ajustada")
         plt.legend()
         plt.show()
     
     @staticmethod
-    def grafica_simple(x, y):
-        plt.plot(x, y - 273.15, "o")
+    def grafica_xy(x, y, show=True, estilo='o'):
+        plt.plot(x, y, estilo)
+        if show:
+            plt.show()
     
     @staticmethod
-    def grafica_basica(y):
-        plt.plot(y)
+    def grafica_y(y, show=True, estilo='o'):
+        plt.plot(y, estilo)
+        if show:
+            plt.show()
 
     @staticmethod
     def graficar_rangos_sensores(sensores, rango_deseado):
@@ -76,3 +69,29 @@ class Graficas():
         plt.legend()
         plt.ylim(0, j+0.2)
         plt.show()
+
+    @staticmethod
+    def graficar_xy_con_error(x, y, error, show=True):
+        plt.plot(x, y, color='gray')
+        plt.fill_between(x, y - error, y + error, color='red')
+
+        plt.title('Ajuste Continuo con Área de Error')
+        plt.xlabel('X')
+        plt.ylabel('Y')
+        plt.grid()
+        if show:
+            plt.show()
+    
+    @staticmethod
+    def graficar_y_con_error(y, error, show=True):
+
+        print(y)
+        plt.plot(y, color='gray')
+        plt.fill_between(range(len(y)), y - error, y + error, color='red')
+
+        plt.title('Ajuste Continuo con Área de Error')
+        plt.xlabel('X')
+        plt.ylabel('Y')
+        plt.grid()
+        if show:
+            plt.show()

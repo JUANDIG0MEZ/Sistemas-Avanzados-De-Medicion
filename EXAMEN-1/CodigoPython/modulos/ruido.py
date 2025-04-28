@@ -20,6 +20,8 @@ class Ruido:
             ruido = np.random.exponential(self.parametro1, self.longitud)
         elif self.tipo_ruido == "poisson":
             ruido = np.random.poisson(self.parametro1, self.longitud)
-        
-        print(self.tipo_ruido)
+            
         return ruido
+    
+    
+        

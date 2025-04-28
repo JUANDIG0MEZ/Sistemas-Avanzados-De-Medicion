@@ -20,3 +20,19 @@ class Funciones:
             if key >= t_min and key <= t_max:
                 submuestra[key] = value
         return submuestra
+    
+    @staticmethod
+    def superposicionRangos(*sensores):
+        minT = -1000
+        maxT = 1000
+        for sensor in sensores:
+            min_T_sensor = min(sensor.temperaturas)
+            max_T_sensor = max(sensor.temperaturas)
+
+            if min_T_sensor > minT:
+                minT = min_T_sensor
+            if max_T_sensor < maxT:
+                maxT = max_T_sensor
+
+        return int(minT), int(maxT)
+            

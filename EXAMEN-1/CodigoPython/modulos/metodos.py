@@ -12,11 +12,11 @@ class Metodos:
         return A_inv @ b
 
     @staticmethod
-    def rmse(valores_reales, valores_calculados):
+    def rmse(ground_true, prediccion):
         """
         Esta funcion calcula los errores entre los valores y los valores calculados
         """
-        errores = valores_reales - valores_calculados
+        errores = ground_true - prediccion
         rmse = np.sqrt(np.mean(np.square(errores)))
         return rmse
 
