@@ -171,6 +171,78 @@ if __name__ == "__main__":
     valores_NTCLE100E3338_con_error = valores_NTCLE100E3338 + (valores_NTCLE100E3338 * ruido_heterocedastico_NTCLE100E3338) + ruido_NTCLE100E3338 + ruido_homocedastico_NTCLE100E3338
 
 
+    # Graficas.grafica_y(valores_PT_1000_con_error, show=False)
+    # Graficas.grafica_y(valores_PT_1000, estilo='-')
+
+    # Graficas.grafica_y(valores_TYPE_K_con_error, show=False)
+    # Graficas.grafica_y(valores_TYPE_K, estilo='-')
+
+    # Graficas.grafica_y(valores_TYPE_E_con_error, show=False)
+    # Graficas.grafica_y(valores_TYPE_E, estilo='-')
+
+
+
+
+
+
+    print("--------------------------")
+    print("Crear los ruidos variados")
+
+    len_temperaturas = len(horno.temperaturas)
+    ruido_PT1000 = Ruido("gaussiano", 0.0, rmse_PT1000, len_temperaturas).valores
+    ruido_TYPE_K = Ruido("uniforme", -rmse_TYPE_K, rmse_TYPE_K, len_temperaturas).valores
+    ruido_TYPE_E = Ruido("cauchy", 0.0, rmse_TYPE_E, len_temperaturas).valores
+    ruido_TYPE_TMP = Ruido("poisson", 0.0, rmse_TYPE_TMP, len_temperaturas).valores
+    ruido_NTCLE100E3338 = Ruido("laplace", 0.0, rmse_TYPE_NTCLE, len_temperaturas).valores
+
+
+    print("--------------------------")
+    print("Ruido homocedastico")
+
+    error_PT1000 = 0.1
+    error_TYPE_K = 2.2
+    error_TYPE_E = 1.7
+    error_TYPE_TMP = 2.5
+    error_NTCLE100E3338 = 0.0
+    ruido_homocedastico_PT1000 = Ruido("gaussiano", 0.0, error_PT1000, len_temperaturas).valores
+    ruido_homocedastico_TYPE_K = Ruido("uniforme", -rmse_TYPE_K, error_TYPE_K, len_temperaturas).valores
+    ruido_homocedastico_TYPE_E = Ruido("cauchy", 0.0, error_TYPE_E, len_temperaturas).valores
+    ruido_homocedastico_TYPE_TMP = Ruido("poisson", 0.0, error_TYPE_TMP, len_temperaturas).valores
+    ruido_homocedastico_NTCLE100E3338 = Ruido("laplace", 0.0, error_NTCLE100E3338, len_temperaturas).valores
+
+    print("--------------------------")
+    print("Ruido heterocedastico")
+
+
+
+    error_PT1000 = 0.0 / 10
+    error_TYPE_K = 0.75 / 10
+    error_TYPE_E = 0.5 /10
+    error_TYPE_TMP = 0.0 / 10
+    error_NTCLE100E3338 = 5 /10
+    ruido_heterocedastico_PT1000 = Ruido("gaussiano", 0.0, error_PT1000, len_temperaturas).valores
+    ruido_heterocedastico_TYPE_K = Ruido("uniforme", -rmse_TYPE_K, error_TYPE_K, len_temperaturas).valores
+    ruido_heterocedastico_TYPE_E = Ruido("cauchy", 0.0, error_TYPE_E, len_temperaturas).valores
+    ruido_heterocedastico_TYPE_TMP = Ruido("poisson", 0.0, error_TYPE_TMP, len_temperaturas).valores
+    ruido_heterocedastico_NTCLE100E3338 = Ruido("laplace", 0.0, error_NTCLE100E3338, len_temperaturas).valores
+
+
+    valores_PT_1000 = np.array([i for i in PT_1000_simulado.values()])
+    valores_TYPE_K = np.array([i for i in TYPE_K_simulado.values()])
+    valores_TYPE_E = np.array([i for i in TYPE_E_simulado.values()])
+    valores_TYPE_TMP = np.array([i for i in TYPE_TMP_simulado.values()])
+    valores_NTCLE100E3338 = np.array([i for i in NTCLE100E3338_simulado.values()])
+
+    print("VALORES PT1000", valores_PT_1000)
+    print("Error heterocestatico PT1000", ruido_heterocedastico_PT1000)
+
+    valores_PT_1000_con_error = valores_PT_1000 + (valores_PT_1000 * ruido_heterocedastico_PT1000) + ruido_PT1000 + ruido_homocedastico_PT1000
+    valores_TYPE_K_con_error = valores_TYPE_K + (valores_TYPE_K * ruido_heterocedastico_TYPE_K) + ruido_TYPE_K + ruido_homocedastico_TYPE_K
+    valores_TYPE_E_con_error = valores_TYPE_E + (valores_TYPE_E * ruido_heterocedastico_TYPE_E) + ruido_TYPE_E + ruido_homocedastico_TYPE_E
+    valores_TYPE_TMP_con_error = valores_TYPE_TMP + (valores_TYPE_TMP * ruido_heterocedastico_TYPE_TMP) + ruido_TYPE_TMP + ruido_homocedastico_TYPE_TMP
+    valores_NTCLE100E3338_con_error = valores_NTCLE100E3338 + (valores_NTCLE100E3338 * ruido_heterocedastico_NTCLE100E3338) + ruido_NTCLE100E3338 + ruido_homocedastico_NTCLE100E3338
+
+
     Graficas.grafica_y(valores_PT_1000_con_error, show=False)
     Graficas.grafica_y(valores_PT_1000, estilo='-')
 
@@ -180,64 +252,10 @@ if __name__ == "__main__":
     Graficas.grafica_y(valores_TYPE_E_con_error, show=False)
     Graficas.grafica_y(valores_TYPE_E, estilo='-')
 
+    Graficas.grafica_y(valores_TYPE_TMP_con_error, show=False)
+    Graficas.grafica_y(valores_TYPE_TMP, estilo='-')
 
-    #print("Valores del sensor PT1000 simulado")
+    Graficas.grafica_y(valores_NTCLE100E3338_con_error, show=False)
+    Graficas.grafica_y(valores_NTCLE100E3338, estilo='-')
+
     
-    #Graficas.grafica_y(horno.temperaturas)
-    # Graficas.graficar_xy_con_error(horno.temperaturas, valores_PT_1000,  rmse_PT1000)
-    #Graficas.graficar_y_con_error(valores_PT_1000, rmse_PT1000)
-
-    # # Simulacion de ruidos gaussianos
-    # desviacion_PT1000 = 0.5
-    # desviacion_TYPE_K = 
-
-    # ruido_PT1000 = Funciones.ruidoGaussiano(PT1000, 1.5)
-
-    # # sensoresSimulados = simulacion.simulacionGaussianos()
-
-
-    # # Graficas.grafica_basica(sensoresSimulados["PT1000"]["temperaturas_ruido"] )
-    # # Graficas.grafica_basica(sensoresSimulados["TYPE_K"]["temperaturas_ruido"] )
-    # # Graficas.grafica_basica(sensoresSimulados["TYPE_E"]["temperaturas_ruido"] )
-    # # Graficas.grafica_basica(sensoresSimulados["TYPE_TMP"]["temperaturas_ruido"] )
-    # # Graficas.grafica_basica(sensoresSimulados["NTCLE100E3338"]["temperaturas_ruido"] - 273.15)
-    # # Graficas.grafica_basica(horno.temperaturas )
-    # # plt.show()
-
-
-
-    # # print("--------------------------")
-    # # print("Simulacion con varios ruidos")
-    # # print("--------------------------")
-
-    # # sensoresSimuladosVarios = simulacion.simulacionVariosRuidos()
-
-    # # Graficas.grafica_basica(sensoresSimuladosVarios["PT1000"]["temperaturas_ruido"] )
-    # # Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_K"]["temperaturas_ruido"] )
-    # # Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_E"]["temperaturas_ruido"] )
-    # # #Graficas.grafica_basica(sensoresSimuladosVarios["TYPE_TMP"]["temperaturas_ruido"] )
-    # # Graficas.grafica_basica(sensoresSimuladosVarios["NTCLE100E3338"]["temperaturas_ruido"] - 273.15)
-    # # Graficas.grafica_basica(horno.temperaturas )
-    # # plt.show()
-
-
-
-    # # print("--------------------------")
-    # # print("Multples simulacion con Monte Carlo")
-    # # print("--------------------------")
-
-    # # montecarlo = simulacion.monteCarlo("gaussiano")
-
-
-
-    # # print()
-
-    # # Llamar a la función para graficar los histogramas
-    # #graficar_histogramas_montecarlo(montecarlo, lista_sensores)
-    # # valores_PT1000_ruido = Ruido.ruidoGaussiano(sensor_PT1000, 1.5)
-    # # temperaturas_PT1000_ruido = Sensor.calcularTemperatura(sensor_PT1000, valores_PT1000_ruido)
-
-    # # Graficas.graficar_sensor_con_curva(sensor_PT1000)
-    # # Graficas.grafica_simple(temperaturas_PT1000_ruido, valores_PT1000_ruido)
-    # # print("valores del PT_1000_ con ruido", valores_PT1000_ruido)
-    # # plt.show()

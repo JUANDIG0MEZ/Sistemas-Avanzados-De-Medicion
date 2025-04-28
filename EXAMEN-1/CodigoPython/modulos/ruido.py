@@ -16,11 +16,19 @@ class Ruido:
             ruido = np.random.normal(self.parametro1, self.parametro2, self.longitud)
         elif self.tipo_ruido == "uniforme":
             ruido = np.random.uniform(self.parametro1, self.parametro2, self.longitud)
-        elif self.tipo_ruido == "exponencial":
-            ruido = np.random.exponential(self.parametro1, self.longitud)
         elif self.tipo_ruido == "poisson":
             ruido = np.random.poisson(self.parametro1, self.longitud)
-            
+        elif self.tipo_ruido == "cauchy":
+            ruido = np.random.standard_cauchy(self.longitud) * 0.05
+            ruido = np.clip(ruido, -1, 1)
+        elif self.tipo_ruido == "laplace":
+            """
+                Ruido Laplace
+                parametro1: media
+                parametro2: desviacion estandar
+            """
+            ruido = np.random.laplace(self.parametro1, self.parametro2, self.longitud)
+
         return ruido
     
     
