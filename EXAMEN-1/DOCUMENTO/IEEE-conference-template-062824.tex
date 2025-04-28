@@ -111,6 +111,84 @@ xxxx-lineal - ABC-error MSE
 xxxx-exponencial - ABC-error MSE
 xxxx-polinomial - ABC-error MSE
 
+\subsection{Propagaci\'on de incertidumbre}
+
+Dado que algunos de los fabricantes presentan el error en t\'erminos de temperatura, es necesario conocer el impacto en la medida del sensor, ya sea en t\'erminos de voltaje o resistencia. Por ende, se utilizar\'a la fo\'rmula de propagac\'on de incertidumbre de primero orden de una variable.
+
+\begin{equation}
+	\sigma_f^2 = \left( \frac{df}{dT} \right)^2 \sigma_T^2
+\end{equation}
+
+donde:
+\begin{itemize}
+	\item $\sigma_f^2$ es la varianza de la funci\'on $f$,
+	\item $\frac{d f}{d x}$ es la derivada de la funci\'on respecto a la variable $x$,
+	\item $\sigma_x^2$ es la varianza de la variable $x$.
+\end{itemize}
+
+
+
+\subsubsection{Funci\'on lineal}
+	\[
+		f(T) = A * T + B
+	\]
+	\[
+		\frac{d f}{d x} = A
+	\]
+	\[
+		\sigma_f^2 = A^2 \sigma_T^2
+	\]
+
+\subsubsection{Funci\'on exponencial}
+	\[
+	f(T) = A \cdot e^{\left( \frac{B}{T} \right)}
+	\]
+	\[
+	\frac{d f}{d T} = A \cdot e^{\left( \frac{B}{T} \right)} \cdot \left( -\frac{B}{T^2} \right)
+	\]
+	\[
+	\frac{d f}{d T} = -\frac{A B}{T^2} \cdot e^{\left( \frac{B}{T} \right)}
+	\]
+	\[
+	\sigma_f^2 = \left( \frac{d f}{d T} \right)^2 \sigma_T^2
+	\]
+	\[
+	\sigma_f^2 = \left( -\frac{A B}{T^2} e^{\left( \frac{B}{T} \right)} \right)^2 \sigma_T^2
+	\]
+	\[
+	\sigma_f^2 = A^2 B^2 \frac{e^{\left( \frac{2B}{T} \right)}}{T^4} \sigma_T^2
+	\]
+
+\subsubsection{Funci\'on polinomial}
+	
+	\[
+	f(T) = A + B \cdot T + C \cdot T^2 + D \cdot T^3
+	\]
+	Calculamos la derivada de \( F(T) \) respecto a \( T \):
+	\[
+	\frac{d f}{d T} = B + 2 C T + 3 D T^2
+	\]
+	Luego, aplicando la fórmula de propagación de incertidumbre:
+	\[
+	\sigma_f^2 = \left( \frac{d f}{d T} \right)^2 \sigma_T^2
+	\]
+	por lo tanto:
+	\[
+	\sigma_f^2 = \left( B + 2 C T + 3 D T^2 \right)^2 \sigma_T^2
+	\]
+	
+	
+\subsection{Error de medida}
+	En nuestro caso, las medidas de cada sensor se ven afectadas por dos factores, tanto el error del ajuste como el error del fabricante. Dicho lo anterior, para encontrar el error se realizara una suma de errores.
+	
+	\[
+		\Delta f = \pm \sqrt{\Delta f_{fabricante} + \Delta f_{ajuste}}
+	\]
+	
+	
+	
+	
+	
 \subsection{Simulación de horno}
 
 En este punto es necesario entonces que mediante el rango escogido para los sensores se realice una curva caracteristica del proceso, en este caso la curva es:
