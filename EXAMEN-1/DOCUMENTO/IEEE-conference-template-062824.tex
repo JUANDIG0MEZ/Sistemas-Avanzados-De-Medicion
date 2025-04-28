@@ -177,7 +177,35 @@ donde:
 	\sigma_f^2 = \left( B + 2 C T + 3 D T^2 \right)^2 \sigma_T^2
 	\]
 	
+
+\subsection{Errores}
+	Cada fabricante nos presenta el error de cada sensor 
 	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			Sensor & Error \\ \hline
+			PT1000 & $\pm 0.5\ ^{\circ} \mathrm{C}$ \\ \hline
+			Tipo K & 
+			\begin{tabular}[c]{@{}c@{}}
+				Si $T > 0\ ^{\circ}\mathrm{C}$: $\pm 2.2\ ^{\circ}\mathrm{C}$ o $\pm 0.75\%$, el que sea mayor. \\ 
+				Si $T < 0\ ^{\circ}\mathrm{C}$: $\pm 2.2\ ^{\circ}\mathrm{C}$ o $\pm 2.0\%$, el que sea mayor.
+			\end{tabular} \\ \hline
+			Tipo E & 
+			\begin{tabular}[c]{@{}c@{}}
+				Si $T > 0\ ^{\circ}\mathrm{C}$: $\pm 1.7\ ^{\circ}\mathrm{C}$ o $\pm 0.5\%$, el que sea mayor. \\ 
+				Si $T < 0\ ^{\circ}\mathrm{C}$: $\pm 1.7\ ^{\circ}\mathrm{C}$ o $\pm 1.0\%$, el que sea mayor.
+			\end{tabular} \\ \hline
+			NTCLE100E3 & $ \pm 2\%$ sobre la medici\'on. \\ \hline
+			
+		\end{tabular} 
+			
+		\caption{Errores proporcionados por los fabricantes para cada sensor}
+		\label{tab:errores_sensores}
+	\end{table}
+
+
 \subsection{Error de medida}
 	En nuestro caso, las medidas de cada sensor se ven afectadas por dos factores, tanto el error del ajuste como el error del fabricante. Dicho lo anterior, para encontrar el error se realizara una suma de errores.
 	
