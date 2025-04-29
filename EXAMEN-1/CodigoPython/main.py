@@ -12,40 +12,57 @@ from tablas import *
 if __name__ == "__main__":
 
     PT1000 = Sensor(PT1000_DICT, "PT1000", "Resistencia (Ohmios)", "lineal")
-    TYPE_K = Sensor(TYPE_K_DICT, "TYPE_K", "Voltaje (mV)", "polinomial")
+    TMP235 = Sensor(TMP235Q1DICT, "TMP235", "Voltaje (mV)", "lineal")
     TYPE_E = Sensor(TYPE_E_DICT, "TYPE_E", "Voltaje (mV)", "polinomial")
-    TYPE_TMP = Sensor(TMP235Q1DICT, "TMP235-Q1", "Voltaje (mV)", "lineal")
     NTCLE100E3 = Sensor(NTCLE100E3_DICT, "NTCLE100E3", "Resistencia (Ohmios)", "exponencial")
 
-    rango = Funciones.superposicionRangos(PT1000, TYPE_K, TYPE_E, TYPE_TMP, NTCLE100E3)
+
+
+
+    rango = Funciones.superposicionRangos(PT1000, TYPE_E, TMP235, NTCLE100E3)
+    print("Rango de temperaturas", rango)
     #Graficas.graficar_rangos_sensores([PT1000, TYPE_K, TYPE_E, TYPE_TMP, NTCLE100E3338], (0, 100))
+    
 
-    # Graficas.graficar_sensor_con_curva(PT1000)
-    # Graficas.graficar_sensor_con_curva(TYPE_K)
-    # Graficas.graficar_sensor_con_curva(TYPE_E)
-    # Graficas.graficar_sensor_con_curva(TYPE_TMP)
-    # Graficas.graficar_sensor_con_curva(NTCLE100E3338)
+    Graficas.graficar_sensor_con_curva(PT1000)
+    Graficas.graficar_sensor_con_curva(TMP235)
+    Graficas.graficar_sensor_con_curva(TYPE_E)
+    Graficas.graficar_sensor_con_curva(NTCLE100E3)
 
+    print("------------------------------")
+    print("Parametros de los sensores")
+    print("------------------------------")
 
-    sub_rango = 0.6
-    PT1000_sub_DICT = Funciones.subRango(PT1000_DICT, sub_rango)
-    TYPE_K_sub_DICT = Funciones.subRango(TYPE_K_DICT, sub_rango)
-    TYPE_E_sub_DICT = Funciones.subRango(TYPE_E_DICT, sub_rango)
-    #TYPE_TMP_sub_DICT = Funciones.subRango(TMP235Q1DICT, sub_rango)
-    NTCLE100E3_sub_DICT = Funciones.subRango(NTCLE100E3_DICT, sub_rango)
+    print("PT1000", PT1000.parametros)
+    print("TYPE_TMP", TMP235.parametros)
+    print("TYPE_E", TYPE_E.parametros)
+    print("NTCLE100E3", NTCLE100E3.parametros)
+
+    sub_rango = (0, 100)
+    PT1000_sub_DICT = Funciones.subRangoSensores(PT1000_DICT, sub_rango)
+    TYPE_E_sub_DICT = Funciones.subRangoSensores(TYPE_E_DICT, sub_rango)
+    TMP235_sub_DICT = Funciones.subRangoSensores(TMP235Q1DICT, sub_rango)
+    NTCLE100E3_sub_DICT = Funciones.subRangoSensores(NTCLE100E3_DICT, sub_rango)
 
 
     PT1000 = Sensor(PT1000_sub_DICT, "PT1000", "Resistencia (Ohmios)", "lineal")
-    TYPE_K = Sensor(TYPE_K_sub_DICT, "TYPE_K", "Voltaje (mV)", "polinomial")
+    TMP235 = Sensor(TMP235_sub_DICT, "TMP235", "Voltaje (mV)", "lineal")
     TYPE_E= Sensor(TYPE_E_sub_DICT, "TYPE_E", "Voltaje (mV)", "polinomial")
-    #TYPE_TMP = Sensor(TYPE_TMP_sub_DICT, "TMP235-Q1", "Voltaje (mV)", "lineal")
+    
     NTCLE100E3338 = Sensor(NTCLE100E3_sub_DICT, "NTCLE100E3", "Resistencia (Ohmios)", "exponencial")
+
+    print("-----------------------------")
+    print("Parametros calculados en un rango especifico")
+
+    print("PT1000", PT1000.parametros)
+    print("TMP235", TMP235.parametros)
+    print("TYPE_E", TYPE_E.parametros) 
+    print("NTCLE100E3", NTCLE100E3338.parametros)
 
 
     #Puntos de la tabla con su curva
     #Graficas.graficar_sensor_con_curva(PT1000)
-    #Graficas.graficar_sensor_con_curva(TYPE_K)
-    Graficas.graficar_sensor_con_curva(TYPE_E)
+    #Graficas.graficar_sensor_con_curva(TYPE_E)
     #Graficas.graficar_sensor_con_curva(TYPE_TMP)
     #Graficas.graficar_sensor_con_curva(NTCLE100E3338)
 
@@ -94,10 +111,14 @@ if __name__ == "__main__":
     print("--------------------------")
 
     rmse_PT1000 = Metodos.rmse(PT1000.valores, PT1000.calcularValores(PT1000.temperaturas))
-    rmse_TYPE_K = Metodos.rmse(TYPE_K.valores, TYPE_K.calcularValores(TYPE_K.temperaturas))
     rmse_TYPE_E = Metodos.rmse(TYPE_E.valores, TYPE_E.calcularValores(TYPE_E.temperaturas))
-    #rmse_TYPE_TMP = Metodos.rmse(TYPE_TMP.valores, TYPE_TMP.calcularValores(TYPE_TMP.temperaturas))
+    rmse_TYPE_TMP = Metodos.rmse(TMP235.valores, TMP235.calcularValores(TMP235.temperaturas))
     rmse_TYPE_NTCLE = Metodos.rmse(NTCLE100E3.valores, NTCLE100E3.calcularValores(NTCLE100E3.temperaturas))
+
+    print("RMSE PT1000", rmse_PT1000)
+    print("RMSE TYPE_E", rmse_TYPE_E)
+    print("RMSE TYPE_TMP", rmse_TYPE_TMP)
+    print("RMSE NTCLE100E3", rmse_TYPE_NTCLE)
 
 
     def simular_sensor(horno, sensor, rmse=None,p_outlier=0.005):
@@ -115,28 +136,27 @@ if __name__ == "__main__":
 
             valor = valor + error_gaussiano + (valor * outlier_value)
 
-            dict_errores[temperatura] = error
+            dict_errores[temperatura] = Errores.sumaErrores(error, rmse)
             dict_sensor[temperatura] = float(valor)
         return dict_sensor, dict_errores
     
 
 
     PT1000_simulado, e_PT1000 = simular_sensor(horno, PT1000, rmse_PT1000 , 0.010)
-    TYPE_K_simulado, e_TYPE_K = simular_sensor(horno, TYPE_K, rmse_TYPE_K ,0.010)
     TYPE_E_simulado, e_TYPE_E = simular_sensor(horno, TYPE_E, rmse_TYPE_E,0.010)
-    #TYPE_TMP_simulado = simular_sensor(horno, TYPE_TMP, rmse_TYPE_TMP,0.010)
+    TMP235_simulado, e_TMP235 = simular_sensor(horno, TMP235, rmse_TYPE_TMP,0.010)
     NTCLE100E3_simulado, e_TYPE_NTCLE100E3 = simular_sensor(horno, NTCLE100E3338, rmse_TYPE_NTCLE ,0.010)
 
     
 
     # Graficas.grafica_y(PT1000_simulado.values(), show=True)
-    # Graficas.grafica_y(TYPE_K_simulado.values(), show=True)
     # Graficas.grafica_y(TYPE_E_simulado.values(), show=True)
+    # Graficas.grafica_y(TMP235_simulado.values(), show=True)
     # Graficas.grafica_y(NTCLE100E3_simulado.values(), show=True)
 
     Graficas.grafica_y(e_PT1000.values(), show=True)
     Graficas.grafica_y(e_TYPE_E.values(), show=True)
-    Graficas.grafica_y(e_TYPE_K.values(), show=True)
+    Graficas.grafica_y(e_TMP235.values(), show=True)
     Graficas.grafica_y(e_TYPE_NTCLE100E3.values(), show=True)
 
 

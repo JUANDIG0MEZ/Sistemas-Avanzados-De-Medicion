@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+import os
 class Graficas():
     @staticmethod
     def graficar_sensor(sensor):
@@ -25,19 +25,27 @@ class Graficas():
         plt.plot(sensor.temperaturas, y, label="Curva ajustada")
         plt.xlabel("Temperatura (°C)")
         plt.ylabel(f"{sensor.unidades_valores}")
-        plt.title(f"Grafica de {sensor.nombre_sensor} con curva ajustada")
+        plt.title(f"Gráfica de {sensor.nombre_sensor}")
         plt.legend()
+        plt.savefig(f"imagenes/{sensor.nombre_sensor}.png")
         plt.show()
     
     @staticmethod
-    def grafica_xy(x, y, show=True, estilo='o'):
+    def grafica_xy(x, y, show=True, estilo='o', title="", xlabel="", ylabel=""):
         plt.plot(x, y, estilo)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.title(title)
         if show:
             plt.show()
     
     @staticmethod
-    def grafica_y(y, show=True, estilo='o'):
+    def grafica_y(y, show=True, estilo='o', title="", ylabel="", xlabel=""):
         plt.plot(y, estilo)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.title(title)
+
         if show:
             plt.show()
 

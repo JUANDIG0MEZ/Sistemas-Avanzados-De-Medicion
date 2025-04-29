@@ -4,7 +4,7 @@ class Errores:
 
     @staticmethod
     def calcularErrorMedida(sensor, temperatura, valor, rmse=None):
-        if sensor.nombre_sensor in ["PT1000", "TYPE_K", "TYPE_E"]:
+        if sensor.nombre_sensor in ["PT1000", "TYPE_E", "TMP235"]:
             errorTemperatura = Errores.error_sobre_temperatura(sensor, temperatura)
             error = Errores.propagacionError(sensor.tipo_curva, sensor.parametros, errorTemperatura, temperatura )
         elif sensor.nombre_sensor in ["NTCLE100E3"]:
@@ -24,26 +24,10 @@ class Errores:
         if nombre_sensor == "PT1000":
             homocedastico = 0.5
             return homocedastico
-        elif nombre_sensor == "TYPE_K":
-            # error sobre 0
-            homocedastico_sobre = 2.2
-            heterocedastico_sobre = 0.75/ 100
-
-            # error debajo de 0
-            homocedastico_debajo = 2.2
-            heterocedastico_debajo = 2.0 / 100
-
-
-            if temperatura < 0:
-                if abs(temperatura * heterocedastico_debajo) > homocedastico_debajo:
-                    return abs(temperatura * heterocedastico_debajo)
-                else:
-                    return homocedastico_debajo
-            else:
-                if abs(temperatura * heterocedastico_sobre) > homocedastico_sobre:
-                    return abs(temperatura * heterocedastico_sobre)
-                else:
-                    return homocedastico_sobre
+        
+        elif nombre_sensor == "TMP235":
+            homocedastico = 2.5
+            return homocedastico
             
         elif nombre_sensor == "TYPE_E":
             # error sobre 0
@@ -99,7 +83,7 @@ class Errores:
             m = parametros[0]
             b = parametros[1]
             error = errorFabricanteTemperatura * m
-            return error
+            return abs(error)
 
         elif tipo == "exponencial":
             """
@@ -107,7 +91,7 @@ class Errores:
             """
             A = np.exp(parametros[1])
             B = parametros[0]
-            error = errorFabricanteTemperatura * A * np.exp(B / (temperatura + 273.15))
+            error = abs(errorFabricanteTemperatura * A * np.exp(B / (temperatura + 273.15)))
             return error
 
         elif tipo == "polinomial":
@@ -118,7 +102,7 @@ class Errores:
             B = parametros[1]
             C = parametros[2]
             D = parametros[3]
-            error = errorFabricanteTemperatura * (B + 2 * C * temperatura + 3 * D * temperatura**2)
+            error = abs(errorFabricanteTemperatura * (B + 2 * C * temperatura + 3 * D * temperatura**2))
             return error
         else: 
             raise ValueError("Tipo de curva no soportada")

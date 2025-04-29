@@ -22,6 +22,15 @@ class Funciones:
         return submuestra
     
     @staticmethod
+    def subRangoSensores(diccionario, rango):
+        submuestra = {}
+        for key, value in diccionario.items():
+            if key >= rango[0] and key <= rango[1]:
+                submuestra[key] = value
+        return submuestra
+
+    
+    @staticmethod
     def superposicionRangos(*sensores):
         minT = -1000
         maxT = 1000
