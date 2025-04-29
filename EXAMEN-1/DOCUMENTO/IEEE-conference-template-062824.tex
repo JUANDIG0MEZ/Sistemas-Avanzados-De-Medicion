@@ -74,11 +74,7 @@ Seleccione los cuatro sensores de su preferencia, con base en los datasheets adj
 
 Lo primero que se debe realizar, es una extracción de los datos dados por los diversos fabricantes en los datasheets del sensor, y que se pueden encontrar en las tablas de cada datasheet, dichas tablas expresan el valor de salida del sensor según la temperatura de que esta midiendo. Para esto hemos creado un diccionario, con el nombre de cada sensor y sus respectivos valores de Temperatura y valor de medida (mV, V, $\omega$, ..., etc).\\
 
-Una vez se tiene el diccionario correspondiente, se procede a graficar cada uno de los cuatro (4) sensores, con lo cual es posible de manera visual-analitica, determinar el comportamiento de medida de cada sensor:\\
-
-
-
-\textbf{INSERTAR IMAGENES EN REFERENCIA}
+Una vez se tiene el diccionario correspondiente, se procede a graficar cada uno de los cuatro (4) sensores, con lo cual es posible de manera visual-analitica, determinar el comportamiento de medida de cada sensor:
 
 
 \begin{figure}[h!]
@@ -124,10 +120,14 @@ De lo cual es posible determinar que:\\
 
 Para la determinación del rango de operación, y que este dentro de por lo menos el 60\% de todos los sensores, es necesario graficar todos los rangos de los sensores y traslaparlos, con el fin de encontrar un rango que todos posean dentro de sus datasheets, y que tambien sean de maximo el 60\%, a continuación la grafica y el rango escogido para la curva de temperatura del horno a experimentar con el elementos "X",
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{rangos_sensores.png}
+	\caption{Rangos de temperatura por sensor}
+	\label{fig:5}
+\end{figure}
 
-\textbf{INSERTAR GRAFICA DE RANGOS DE TEMP}
-
-El rango definido para la simulación del horno y para tener una igualdad de rangos en el margen de los sensores según los rangos dados es de 0° a 100° Centigrados. Lo cual en una aplicación practica puede estar relacionado con un rango de cocina de un alimento, como por ejemplo la pasteurización de la leche (donde la leche se lleva a una temperatura que oscila entre los 55 y los 75 ºC durante 17 segundos).\\
+El rango definido (rango deseado en la grafica \ref{fig:5}) para la simulación del horno y para tener una igualdad de rangos en el margen de los sensores según los rangos dados es de 0° a 100° Centigrados. Lo cual en una aplicación practica puede estar relacionado con un rango de cocina de un alimento, como por ejemplo la pasteurización de la leche (donde la leche se lleva a una temperatura que oscila entre los 55 y los 75 ºC durante 17 segundos).\\
 
 Es posible analizar las magmnitudes de medición del rango de cada sensor, y que el rango escogido bajo las especificaciones del ejercicio, subdimensiona o le da bajo rendimiento a los sensores de mayor rango.
 
