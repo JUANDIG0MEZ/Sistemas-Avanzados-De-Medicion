@@ -67,6 +67,22 @@ if __name__ == "__main__":
 
 
 
+<<<<<<< HEAD
+=======
+    print("--------------------------")
+    print("Parametros de los sensores")
+    print("--------------------------")
+    print("Parametros del sensor PT1000")
+    print(PT1000.obtenerParametros())
+    print("Parametros sensor TYPE_K")
+    print(TYPE_K.obtenerParametros())
+    print("Parametros sensor TYPE_E")
+    print(TYPE_E.obtenerParametros())
+    print("Parametros sensor TYPE_TMP")
+    print(TYPE_TMP.obtenerParametros())
+    print("Parametros sensor NTCLE100E3338")
+    print(NTCLE100E3338.obtenerParametros())
+>>>>>>> 0387cc9b2f40383983d542eced91815e884577a9
 
 
     print("--------------------------")
