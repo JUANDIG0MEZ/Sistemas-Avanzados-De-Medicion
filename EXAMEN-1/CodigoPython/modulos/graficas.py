@@ -27,7 +27,7 @@ class Graficas():
         plt.ylabel(f"{sensor.unidades_valores}")
         plt.title(f"Gráfica de {sensor.nombre_sensor}")
         plt.legend()
-        plt.savefig(f"imagenes/{sensor.nombre_sensor}.png")
+        plt.savefig(f"imagenes/{sensor.nombre_sensor}_con_ajuste.png")
         plt.show()
     
     @staticmethod
