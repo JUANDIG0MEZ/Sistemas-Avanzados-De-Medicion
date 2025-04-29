@@ -19,9 +19,9 @@ if __name__ == "__main__":
 
 
 
-    rango = Funciones.superposicionRangos(PT1000, TYPE_E, TMP235, NTCLE100E3)
-    print("Rango de temperaturas", rango)
-    #Graficas.graficar_rangos_sensores([PT1000, TYPE_K, TYPE_E, TYPE_TMP, NTCLE100E3338], (0, 100))
+    #rango = Funciones.superposicionRangos(PT1000, TYPE_E, TMP235, NTCLE100E3)
+    #print("Rango de temperaturas", rango)
+    Graficas.graficar_rangos_sensores([PT1000, TMP235, TYPE_E, NTCLE100E3], (0, 100))
     
 
     Graficas.graficar_sensor_con_curva(PT1000)
@@ -48,8 +48,7 @@ if __name__ == "__main__":
     PT1000 = Sensor(PT1000_sub_DICT, "PT1000", "Resistencia (Ohmios)", "lineal")
     TMP235 = Sensor(TMP235_sub_DICT, "TMP235", "Voltaje (mV)", "lineal")
     TYPE_E= Sensor(TYPE_E_sub_DICT, "TYPE_E", "Voltaje (mV)", "polinomial")
-    
-    NTCLE100E3338 = Sensor(NTCLE100E3_sub_DICT, "NTCLE100E3", "Resistencia (Ohmios)", "exponencial")
+    NTCLE100E3 = Sensor(NTCLE100E3_sub_DICT, "NTCLE100E3", "Resistencia (Ohmios)", "exponencial")
 
     print("-----------------------------")
     print("Parametros calculados en un rango especifico")
@@ -57,29 +56,17 @@ if __name__ == "__main__":
     print("PT1000", PT1000.parametros)
     print("TMP235", TMP235.parametros)
     print("TYPE_E", TYPE_E.parametros) 
-    print("NTCLE100E3", NTCLE100E3338.parametros)
+    print("NTCLE100E3", NTCLE100E3.parametros)
 
 
-    #Puntos de la tabla con su curva
-    #Graficas.graficar_sensor_con_curva(PT1000)
-    #Graficas.graficar_sensor_con_curva(TYPE_E)
-    #Graficas.graficar_sensor_con_curva(TYPE_TMP)
-    #Graficas.graficar_sensor_con_curva(NTCLE100E3338)
+    # Puntos de la tabla con su curva
+    Graficas.graficar_sensor_con_curva(PT1000)
+    Graficas.graficar_sensor_con_curva(TYPE_E)
+    Graficas.graficar_sensor_con_curva(TMP235)
+    Graficas.graficar_sensor_con_curva(NTCLE100E3338)
 
 
-    # print("--------------------------")
-    # print("Parametros de los sensores")
-    # print("--------------------------")
-    # print("Parametros del sensor PT1000")
-    # print(PT1000.obtenerParametros())
-    # print("Parametros sensor TYPE_K")
-    # print(TYPE_K.obtenerParametros())
-    # print("Parametros sensor TYPE_E")
-    # print(TYPE_E.obtenerParametros())
-    # print("Parametros sensor TYPE_TMP")
-    # print(TYPE_TMP.obtenerParametros())
-    # print("Parametros sensor NTCLE100E3338")
-    # print(NTCLE100E3338.obtenerParametros())
+
 
 
     print("--------------------------")

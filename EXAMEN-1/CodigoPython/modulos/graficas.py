@@ -76,6 +76,7 @@ class Graficas():
         plt.title("Rangos de los sensores")
         plt.legend()
         plt.ylim(0, j+0.2)
+        plt.savefig(f"imagenes/rangos_sensores.png")
         plt.show()
 
     @staticmethod
