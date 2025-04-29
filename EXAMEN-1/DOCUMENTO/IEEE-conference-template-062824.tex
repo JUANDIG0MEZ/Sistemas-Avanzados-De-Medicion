@@ -7,8 +7,10 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
+\usepackage{svg}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage{amsmath}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
@@ -65,7 +67,6 @@ Seleccione los cuatro sensores de su preferencia, con base en los datasheets adj
 	\item Simule que el horno sigue algún perfil de temperatura conocido. Por ejemplo, la temperatura incrementa X grados en Y segundos, para luego decrecer Z grados en W segundos. 
 	\item Simule la operación de cada sensor asumiendo primero comportamiento gaussiano y luego algún otro comportamiento (diferente en cada sensor).
 	\item Su simulador debe tener la capacidad de simular outliers a la salida del sistema de medición. 
-	\item 
 \end{itemize}
 
 
@@ -75,7 +76,17 @@ Lo primero que se debe realizar, es una extracción de los datos dados por los d
 
 Una vez se tiene el diccionario correspondiente, se procede a graficar cada uno de los cuatro (4) sensores, con lo cual es posible de manera visual-analitica, determinar el comportamiento de medida de cada sensor:\\
 
+
+
 \textbf{INSERTAR IMAGENES EN REFERENCIA}
+
+
+\begin{figure}[h]
+	\centering
+	\includesvg[width=0.7\textwidth]{PT1000}
+	\caption{Curva rango completo PT1000}
+	\label{fig:1}
+\end{figure}
 
 De lo cual es posible determinar que:\\
 
@@ -95,6 +106,8 @@ Para la determinación del rango de operación, y que este dentro de por lo meno
 
 \textbf{INSERTAR GRAFICA DE RANGOS DE TEMP}
 
+El rango definido para la simulación del horno y para tener una igualdad de rangos en el margen de los sensores según los rangos dados es de 0° a 100° Centigrados. Lo cual en una aplicación practica puede estar relacionado con un rango de cocina de un alimento, como por ejemplo la pasteurización de la leche (donde la leche se lleva a una temperatura que oscila entre los 55 y los 75 ºC durante 17 segundos).\\
+
 Es posible analizar las magmnitudes de medición del rango de cada sensor, y que el rango escogido bajo las especificaciones del ejercicio, subdimensiona o le da bajo rendimiento a los sensores de mayor rango.
 
 
@@ -113,10 +126,40 @@ $polinomial: V(T) = A + B * T + C * T^2 + D * T^3$\\
 
 Los parametros obtenido para cada uno de los sensores en el rango fueron:
 
-xxxx-lineal - ABC-error MSE
-xxxx-lineal - ABC-error MSE
-xxxx-exponencial - ABC-error MSE
-xxxx-polinomial - ABC-error MSE
+
+\begin{table}[h]
+	\centering
+	\caption{Párametros de rango ajustado de cada sensor}
+	\label{tab:my-table1}
+	\resizebox{\columnwidth}{!}{%
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			\textbf{Sensor}              & \textbf{Curva} & \textbf{A}         & \textbf{B}         & \textbf{C}         & \textbf{D}          \\ \hline
+			PT1000                       & Lineal         & 3.85               & 1000.92            & -                  & -                   \\ \hline
+			\multicolumn{1}{|c|}{TYPE E} & Polinomial     & $4.89\cdot e^{-5}$ & $5.86\cdot e^{-2}$ & $4.74\cdot e^{-5}$ & $-1.85\cdot e^{-8}$ \\ \hline
+			TYPE TMP                     & Lineal         & 10                 & 500                & -                  & -                   \\ \hline
+			NTCLE100E3338                & Exponencial    & 2873.3             & -8.45              & -                  & -                   \\ \hline
+		\end{tabular}%
+	}
+\end{table}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[h]
+	\centering
+	\caption{Error MSE (mean square error) por sensor}
+	\label{tab:my-table2}
+	\resizebox{0.5\columnwidth}{!}{%
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Sensor} & \textbf{Error MSE} \\ \hline
+			PT1000          & 0.4707             \\ \hline
+			TYPE E          & 0.0002             \\ \hline
+			TYPE TMP        & 1.6126             \\ \hline
+			NTCLE100E3338   & 0.3561             \\ \hline
+		\end{tabular}%
+	}
+\end{table}
 
 \subsection{Propagaci\'on de incertidumbre}
 
@@ -186,7 +229,7 @@ donde:
 	
 
 \subsection{Errores}
-	Cada fabricante nos presenta el error de cada sensor 
+	Cada fabricante nos presenta el error propio de cada sensor, este depende del tipo de medición, materiales tecnologia de construcción y demás, y luego probados en laboratorio, alli mediante un sensor de referencia de la más alta calidad y precisión es posible obtener los errores homocedasticos y heterocedasticos de cada sensor de la siguiente tabla.
 	
 	\begin{table}[h]
 		\centering
