@@ -28,18 +28,4 @@ class Horno:
             temperaturas.append(temperatura)
         return np.array(temperaturas)
     
-    def simular_sensor(self, sensor, outlier=0.005):
-        dict_sensor = {}
-        for temperatura in self.temperaturas:
-            valor = sensor.calcularValores(temperatura)
-            # Agregar Outliers
-            if np.random.rand() < outlier:
-                if np.random.rand() < 0.5:
-                    outlier_value = np.random.uniform(1.5, 3)
-                else:
-                    outlier_value = np.random.uniform(-1.5, -3)
-                valor = valor * outlier_value
-            
-
-            dict_sensor[temperatura] = float(valor)
-        return dict_sensor
+    

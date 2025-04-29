@@ -64,12 +64,6 @@ class Sensor():
         parametros = Metodos.svd_obtenerParametros(A, b)
         return parametros
     
-    def obtenerParametros(self):
-        """
-        Esta funcion obtiene los parametros de la curva
-        """
-        return self.parametros
-
     def calcularValores(self, temperaturas):
        
         if self.tipo_curva == "lineal":

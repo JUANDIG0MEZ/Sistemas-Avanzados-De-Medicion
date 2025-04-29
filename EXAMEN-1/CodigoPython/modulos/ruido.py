@@ -31,5 +31,13 @@ class Ruido:
 
         return ruido
     
+    @staticmethod
+    def generarOutlier(probabilidad):
+        if np.random.rand() < probabilidad:
+            if np.random.rand() < 0.5:
+                outlier_value = np.random.uniform(1.5, 3)
+            else:
+                outlier_value = np.random.uniform(-1.5, -3)
+        return outlier_value
     
         
