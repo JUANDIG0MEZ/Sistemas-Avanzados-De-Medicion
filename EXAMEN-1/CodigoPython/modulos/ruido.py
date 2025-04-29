@@ -38,6 +38,8 @@ class Ruido:
                 outlier_value = np.random.uniform(1.5, 3)
             else:
                 outlier_value = np.random.uniform(-1.5, -3)
+        else: 
+            outlier_value = 0
         return outlier_value
     
         

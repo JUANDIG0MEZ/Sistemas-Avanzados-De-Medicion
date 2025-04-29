@@ -3,14 +3,31 @@ import numpy as np
 class Errores:
 
     @staticmethod
-    def error_sobre_temperatura( nombre_sensor, temperatura):
+    def calcularErrorMedida(sensor, temperatura, valor, rmse=None):
+        if sensor.nombre_sensor in ["PT1000", "TYPE_K", "TYPE_E"]:
+            errorTemperatura = Errores.error_sobre_temperatura(sensor, temperatura)
+            error = Errores.propagacionError(sensor.tipo_curva, sensor.parametros, errorTemperatura, temperatura )
+        elif sensor.nombre_sensor in ["NTCLE100E3"]:
+            error = Errores.error_sobre_valor(sensor, valor)
+        else:
+
+            raise ValueError("Sensor no soportado")
+        
+        if rmse is not None:
+            error = Errores.sumaErrores(error, rmse)
+        return error
+        
+
+    @staticmethod
+    def error_sobre_temperatura( sensor, temperatura):
+        nombre_sensor = sensor.nombre_sensor
         if nombre_sensor == "PT1000":
             homocedastico = 0.5
             return homocedastico
         elif nombre_sensor == "TYPE_K":
             # error sobre 0
             homocedastico_sobre = 2.2
-            heterocedastico_sobre = 0.5/ 100
+            heterocedastico_sobre = 0.75/ 100
 
             # error debajo de 0
             homocedastico_debajo = 2.2
@@ -18,13 +35,13 @@ class Errores:
 
 
             if temperatura < 0:
-                if temperatura * heterocedastico_debajo > homocedastico_debajo:
-                    return temperatura * heterocedastico_debajo
+                if abs(temperatura * heterocedastico_debajo) > homocedastico_debajo:
+                    return abs(temperatura * heterocedastico_debajo)
                 else:
                     return homocedastico_debajo
             else:
-                if temperatura * heterocedastico_sobre > homocedastico_sobre:
-                    return temperatura * heterocedastico_sobre
+                if abs(temperatura * heterocedastico_sobre) > homocedastico_sobre:
+                    return abs(temperatura * heterocedastico_sobre)
                 else:
                     return homocedastico_sobre
             
@@ -39,13 +56,13 @@ class Errores:
 
 
             if temperatura < 0:
-                if temperatura * heterocedastico_debajo > homocedastico_debajo:
-                    return temperatura * heterocedastico_debajo
+                if abs(temperatura * heterocedastico_debajo) > homocedastico_debajo:
+                    return abs(temperatura * heterocedastico_debajo)
                 else:
                     return homocedastico_debajo
             else:
-                if temperatura * heterocedastico_sobre > homocedastico_sobre:
-                    return temperatura * heterocedastico_sobre
+                if abs(temperatura * heterocedastico_sobre) > homocedastico_sobre:
+                    return abs(temperatura * heterocedastico_sobre)
                 else:
                     return homocedastico_sobre
         else:
@@ -54,12 +71,13 @@ class Errores:
 
 
     @staticmethod
-    def error_sobre_valor(nombre_sensor, valor):
+    def error_sobre_valor(sensor, valor):
+        nombre_sensor = sensor.nombre_sensor
         if nombre_sensor == "NTCLE100E3":
             heterocedastico = 2.0 / 100
             return heterocedastico * valor
         else:
-            raise ValueError("Sensor no soportado")
+            raise ValueError("Error sobre valor: Sensor no soportado")
 
     @staticmethod
     def sumaErrores(error_ajuste, error_medida):
