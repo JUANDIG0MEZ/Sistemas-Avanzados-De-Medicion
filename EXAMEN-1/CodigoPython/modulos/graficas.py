@@ -40,11 +40,14 @@ class Graficas():
             plt.show()
     
     @staticmethod
-    def grafica_y(y, show=True, estilo='o', title="", ylabel="", xlabel=""):
-        plt.plot(y, estilo)
+    def grafica_y(y, show=True, estilo='o', title="", ylabel="", xlabel="", color='blue', save=False, nombre=None):
+        plt.plot(y, estilo, color=color)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.title(title)
+        if save:
+            plt.savefig(f"imagenes/{nombre}")
+
 
         if show:
             plt.show()

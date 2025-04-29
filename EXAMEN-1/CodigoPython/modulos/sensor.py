@@ -53,8 +53,7 @@ class Sensor():
 
         elif self.tipo_curva == "polinomial":
             """
-                V(T) = A + B * T + C * T^2 + D * T^3  
-                V(T)
+                V(T) = A + B * T + C * T^2 + D * T^3 
             """
             A = np.array([np.ones(self.length), self.temperaturas, self.temperaturas**2, self.temperaturas ** 3]).T
 

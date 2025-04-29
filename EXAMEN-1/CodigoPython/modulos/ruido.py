@@ -9,26 +9,28 @@ class Ruido:
     
         self.valores = self.generarRuido()
 
-    def generarRuido(self):
-        """
-        """
-        if self.tipo_ruido == "gaussiano":
-            ruido = np.random.normal(self.parametro1, self.parametro2, self.longitud)
-        elif self.tipo_ruido == "uniforme":
-            ruido = np.random.uniform(self.parametro1, self.parametro2, self.longitud)
-        elif self.tipo_ruido == "poisson":
-            ruido = np.random.poisson(self.parametro1, self.longitud)
-        elif self.tipo_ruido == "cauchy":
-            ruido = np.random.standard_cauchy(self.longitud) * 0.05
-            ruido = np.clip(ruido, -1, 1)
-        elif self.tipo_ruido == "laplace":
-            """
-                Ruido Laplace
-                parametro1: media
-                parametro2: desviacion estandar
-            """
-            ruido = np.random.laplace(self.parametro1, self.parametro2, self.longitud)
+    @staticmethod
+    def ruido_gaussiano(media, desviacion):
+        ruido = np.random.normal(media, desviacion)
+        return ruido
 
+    @staticmethod
+    def ruido_uniforme(minimo, maximo):
+        ruido = np.random.uniform(minimo, maximo)
+        return ruido
+
+    @staticmethod
+    def ruido_poisson(lam):
+        ruido = np.random.poisson(lam=lam)
+        return ruido
+    @staticmethod
+    def ruido_cauchy(media, desviacion):
+        ruido = np.random.standard_cauchy(1) * 0.05
+        ruido = np.clip(ruido, -1, 1)
+        return ruido
+    @staticmethod
+    def ruido_laplace(media, desviacion):
+        ruido = np.random.laplace(parametro1, parametro2, 1)
         return ruido
     
     @staticmethod
