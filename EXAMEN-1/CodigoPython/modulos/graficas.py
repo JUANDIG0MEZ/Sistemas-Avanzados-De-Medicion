@@ -27,9 +27,30 @@ class Graficas():
         plt.ylabel(f"{sensor.unidades_valores}")
         plt.title(f"Gráfica de {sensor.nombre_sensor}")
         plt.legend()
+        plt.grid()
         plt.savefig(f"imagenes/{sensor.nombre_sensor}_con_ajuste.png")
         plt.show()
     
+    @staticmethod
+    def graficar_dos_lineas(y1, y2, show=True, title="", ylabel="", xlabel="", save=False, nombre=None, color='orange', label1=None, label2=None):
+        """
+        Esta funcion grafica dos lineas, una con los valores de y1 y otra con los valores de y2
+        """
+        plt.plot(y1, label=label2)
+        plt.plot(y2, color=color, label=label1)
+        
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.title(title)
+        plt.legend()
+        plt.grid()
+        if save:
+            plt.savefig(f"imagenes/{nombre}")
+        
+        if show:
+            plt.show()
+        
+
     @staticmethod
     def grafica_xy(x, y, show=True, estilo='o', title="", xlabel="", ylabel=""):
         plt.plot(x, y, estilo)
@@ -45,6 +66,7 @@ class Graficas():
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.title(title)
+        plt.grid()
         if save:
             plt.savefig(f"imagenes/{nombre}")
 

@@ -104,15 +104,30 @@ if __name__ == "__main__":
     print("W:", W)
     print("T0:", T0)
     print("\n")
-    Graficas.grafica_y(horno.temperaturas, show=True, estilo='o', color="orangered",title="Temperatura del horno", ylabel="Temperatura (°C)", xlabel="Tiempo (s)", save= True, nombre="temperatura_horno.png")
+    Graficas.graficar_dos_lineas(horno.temperaturas, horno.temperaturas, show=True, title="Temperatura del horno", ylabel="Temperatura (°C)", xlabel="Tiempo (s)", color='cornflowerblue', save=True, nombre="temperatura_horno.png")
+    #Graficas.grafica_y(horno.temperaturas, show=True, estilo='o', color="orangered",title="Temperatura del horno", ylabel="Temperatura (°C)", xlabel="Tiempo (s)", save= True, nombre="temperatura_horno.png")
 
 
     print("---------------------------------------------------")
     print("PUNTO 4: SIMULACION DE SENSORES")
     print("---------------------------------------------------")
 
+    def simular_sensor_sin_error(horno, sensor):
+        dict_sensor = {}
+        for temperatura in horno.temperaturas:
+            valor = sensor.calcularValores(temperatura)
+            dict_sensor[temperatura] = float(valor)
+        return dict_sensor
+    
+    PT1000_ideal = simular_sensor_sin_error(horno, PT1000)
+    TYPE_E_ideal = simular_sensor_sin_error(horno, TYPE_E)
+    TMP235_ideal = simular_sensor_sin_error(horno, TMP235)
+    NTCLE100E3_ideal = simular_sensor_sin_error(horno, NTCLE100E3)
 
-    def simular_sensor(horno, sensor, rmse=None,p_outlier=0.005):
+
+
+
+    def simular_sensor_con_error(horno, sensor, rmse=None,p_outlier=0.005):
         dict_sensor = {}
         dict_errores = {}
         for temperatura in horno.temperaturas:
@@ -133,27 +148,30 @@ if __name__ == "__main__":
     
 
 
-    PT1000_simulado, e_PT1000 = simular_sensor(horno, PT1000, rmse_PT1000 , 0.010)
-    TYPE_E_simulado, e_TYPE_E = simular_sensor(horno, TYPE_E, rmse_TYPE_E,0.010)
-    TMP235_simulado, e_TMP235 = simular_sensor(horno, TMP235, rmse_TYPE_TMP,0.010)
-    NTCLE100E3_simulado, e_TYPE_NTCLE100E3 = simular_sensor(horno, NTCLE100E3, rmse_TYPE_NTCLE ,0.010)
+    PT1000_simulado, e_PT1000 = simular_sensor_con_error(horno, PT1000, rmse_PT1000 , 0.010)
+    TYPE_E_simulado, e_TYPE_E = simular_sensor_con_error(horno, TYPE_E, rmse_TYPE_E,0.010)
+    TMP235_simulado, e_TMP235 = simular_sensor_con_error(horno, TMP235, rmse_TYPE_TMP,0.010)
+    NTCLE100E3_simulado, e_TYPE_NTCLE100E3 = simular_sensor_con_error(horno, NTCLE100E3, rmse_TYPE_NTCLE ,0.010)
 
-    
+    Graficas.graficar_dos_lineas(PT1000_ideal.values(), PT1000_simulado.values(), show=True, title="PT1000", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='salmon', save=True, nombre="PT1000_simulado.png", label1 = "Simulado", label2 = "Ideal")
+    Graficas.graficar_dos_lineas(TYPE_E_ideal.values(), TYPE_E_simulado.values(), show=True, title="TYPE_E", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='salmon', save=True, nombre="TYPE_E_simulado.png", label1 = "Simulado", label2 = "Ideal")
+    Graficas.graficar_dos_lineas(TMP235_ideal.values(), TMP235_simulado.values(), show=True, title="TMP235", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='salmon', save=True, nombre="TMP235_simulado.png", label1 = "Simulado", label2 = "Ideal")
+    Graficas.graficar_dos_lineas(NTCLE100E3_ideal.values(), NTCLE100E3_simulado.values(), show=True, title="NTCLE100E3", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='salmon', save=True, nombre="NTCLE100E3_simulado.png", label1 = "Simulado", label2 = "Ideal")
 
-    Graficas.grafica_y(PT1000_simulado.values(), show=True, title="PT1000", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='darkturquoise', save=True, nombre="PT1000_simulado.png")
-    Graficas.grafica_y(TYPE_E_simulado.values(), show=True, title="TYPE_E", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='coral', save=True, nombre="TYPE_E_simulado.png")
-    Graficas.grafica_y(TMP235_simulado.values(), show=True, title="TMP235", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='tan', save=True, nombre="TMP235_simulado.png")
-    Graficas.grafica_y(NTCLE100E3_simulado.values(), show=True, title="NTCLE100E3", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='lightgreen', save=True, nombre="NTCLE100E3_simulado.png")
+    # Graficas.grafica_y(PT1000_simulado.values(), show=True, title="PT1000", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='coral', save=True, nombre="PT1000_simulado.png")
+    # Graficas.grafica_y(TYPE_E_simulado.values(), show=True, title="TYPE_E", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='coral', save=True, nombre="TYPE_E_simulado.png")
+    # Graficas.grafica_y(TMP235_simulado.values(), show=True, title="TMP235", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='coral', save=True, nombre="TMP235_simulado.png")
+    # Graficas.grafica_y(NTCLE100E3_simulado.values(), show=True, title="NTCLE100E3", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='coral', save=True, nombre="NTCLE100E3_simulado.png")
 
-    Graficas.grafica_y(e_PT1000.values(), show=True,  estilo='o', title="Errores PT1000", ylabel="Error (Ohmios)", xlabel="Tiempo (s)", color='gray', save=True, nombre="error_PT1000.png")
-    Graficas.grafica_y(e_TYPE_E.values(), show=True, estilo='o', title="Errores TYPE_E", ylabel="Error (mV)", xlabel="Tiempo (s)", color='gray', save=True, nombre="error_TYPE_E.png")
-    Graficas.grafica_y(e_TMP235.values(), show=True, estilo='o', title="Errores TMP235", ylabel="Error (mV)", xlabel="Tiempo (s)", color='gray', save=True, nombre="error_TMP235.png")
-    Graficas.grafica_y(e_TYPE_NTCLE100E3.values(), show=True, estilo='o', title="Errores NTCLE100E3", ylabel="Error (Ohmios)", xlabel="Tiempo (s)", color='gray', save=True, nombre="error_NTCLE100E3.png")
+    Graficas.grafica_y(e_PT1000.values(), show=True,  estilo='o', title="Errores PT1000", ylabel="Error (Ohmios)", xlabel="Tiempo (s)", color='cornflowerblue', save=True, nombre="error_PT1000.png")
+    Graficas.grafica_y(e_TYPE_E.values(), show=True, estilo='o', title="Errores TYPE_E", ylabel="Error (mV)", xlabel="Tiempo (s)", color='cornflowerblue', save=True, nombre="error_TYPE_E.png")
+    Graficas.grafica_y(e_TMP235.values(), show=True, estilo='o', title="Errores TMP235", ylabel="Error (mV)", xlabel="Tiempo (s)", color='cornflowerblue', save=True, nombre="error_TMP235.png")
+    Graficas.grafica_y(e_TYPE_NTCLE100E3.values(), show=True, estilo='o', title="Errores NTCLE100E3", ylabel="Error (Ohmios)", xlabel="Tiempo (s)", color='cornflowerblue', save=True, nombre="error_NTCLE100E3.png")
 
 
     print("\n *Simulacion con ruidos diferentes: \n")
     
-    def simular_sensores(horno,  p_outlier=0.005):
+    def simular_sensores_ruido_variados(horno,  p_outlier=0.005):
         dict_PT1000 = {}
         dict_TYPE_E = {}
         dict_TMP = {}
@@ -192,9 +210,9 @@ if __name__ == "__main__":
             dict_NTCLE100E3[temperatura] = valor_NTCLE100E3 + ruido_NTCLE100E3 + (valor_NTCLE100E3 * outlier_value_NTCLE100E3)
         return dict_PT1000, dict_TYPE_E, dict_TMP, dict_NTCLE100E3
 
+    PT_1000_simulado, TYPE_E_simulado, TMP235_simulado, NTCLE100E3_simulado = simular_sensores_ruido_variados(horno, 0.010)
 
-
-    Graficas.grafica_y(PT1000_simulado.values(), show=True, title="PT1000 (Ruido gaussiano)", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='darkturquoise', save=True, nombre="PT1000_ruido_gaussiano.png")
-    Graficas.grafica_y(TYPE_E_simulado.values(), show=True, title="TYPE_E (Ruido uniforme)", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='coral', save=True, nombre="TYPE_E_ruido_uniforme.png")
-    Graficas.grafica_y(TMP235_simulado.values(), show=True, title="TMP235 (Ruido poisson)", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='tan', save=True, nombre="TMP235_ruido_poisson.png")
-    Graficas.grafica_y(NTCLE100E3_simulado.values(), show=True, title="NTCLE100E3 (Ruido laplace)", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='lightgreen', save=True, nombre="NTCLE100E3_ruido_laplace.png")
+    Graficas.graficar_dos_lineas(PT1000_ideal.values(), PT1000_simulado.values(), show=True, title="PT1000 (Ruido gaussiano)", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color="orangered", save=True, nombre="PT1000_ruido_gaussiano.png", label1 = "Simulado", label2 = "Ideal")
+    Graficas.graficar_dos_lineas(TYPE_E_ideal.values(), TYPE_E_simulado.values(), show=True, title="TYPE_E (Ruido uniforme)", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color="orangered", save=True, nombre="TYPE_E_ruido_uniforme.png", label1 = "Simulado", label2 = "Ideal")
+    Graficas.graficar_dos_lineas(TMP235_ideal.values(), TMP235_simulado.values(), show=True, title="TMP235 (Ruido poisson)", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color="orangered", save=True, nombre="TMP235_ruido_poisson.png", label1 = "Simulado", label2 = "Ideal")
+    Graficas.graficar_dos_lineas(NTCLE100E3_ideal.values(), NTCLE100E3_simulado.values(), show=True, title="NTCLE100E3 (Ruido laplace)", ylabel="Resistencia (Ohmios)", color="orangered", xlabel="Tiempo (s)", save=True, nombre="NTCLE100E3_ruido_laplace.png", label1 = "Simulado", label2 = "Ideal")

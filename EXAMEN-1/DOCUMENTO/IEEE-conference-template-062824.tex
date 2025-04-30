@@ -262,31 +262,6 @@ Es posible analizar las magmnitudes de medición del rango de cada sensor, y que
 
 En este apartado, es necesario aplicar un ajuste fino a cada uno de nuestros sensores, esto debido a que ya tenemos dos datos de gran importancia, el primero saber la curva de comportamiento de cada sensor y segundo el rango en el que vamos a trabajar, esta es una practica de uso general en aplicaciones de medición en todas las escalas, debido a que el fabricante propone una tabla de uso general y en el mayor rango posible, sin embargo, las aplicaciones dadas por los diferentes usuarios necesitan un ajuste o una curva de gran presicion en el proceso especifico.\\
 
-Para este ejercicio y los sensores escogidos las curvas generales fueron:\\
-
-\subsubsection{Lineal}
-
-\[
-	R(T) = A \cdot T + B [T, 1] * [[m], [b]]
-\]
-
-\subsubsection{Exponencial}
-\[
-	R(T) = A \cdot e^(B/T)
-\]
-
-\[
-	ln(R(T)) = ln(A) + B/T
-\]
-
-\[	
-	ln(R(T)) = [1/T, 1] \cdot [[B], [ln(A)]]
-\]
-
-\subsubsection{Polinomial}
-\[
-	V(T) = A + B * T + C * T^2 + D * T^3
-\]
 
 Los parametros obtenido para cada uno de los sensores en el rango fueron:
 
@@ -319,7 +294,7 @@ Los parametros obtenido para cada uno de los sensores en el rango fueron:
 			\textbf{Sensor} & \textbf{Error MSE} \\ \hline
 			PT1000          & 0.4707             \\ \hline
 			TYPE E          & 0.0002             \\ \hline
-			TYPE TMP        & 1.6126             \\ \hline
+			TMP235-Q1        & 1.6126             \\ \hline
 			NTCLE100E3338   & 0.3561             \\ \hline
 		\end{tabular}%
 	}
@@ -390,13 +365,16 @@ donde:
 	\[
 	\sigma_f^2 = \left( B + 2 C T + 3 D T^2 \right)^2 \sigma_T^2
 	\]
-	
+
+Cada una de las incertidumbres anteriores ser\'an sumadas a sus correspondientes curvas caracter\'isticas. Adem\'as, se debe destacar que los errores, para el caso polinomial y exponencial, no es constante, y depender\'a de la temperatura medida en cada instante de tiempo.
 
 \subsection{Errores}
 	Cada fabricante nos presenta el error propio de cada sensor, este depende del tipo de medición, materiales tecnologia de construcción y demás, y luego probados en laboratorio, alli mediante un sensor de referencia de la más alta calidad y precisión es posible obtener los errores homocedasticos y heterocedasticos de cada sensor de la siguiente tabla.
 	
 	\begin{table}[h]
 		\centering
+		\caption{Errores proporcionados por los fabricantes para cada sensor}
+		\label{tab:errores_sensores}
 		\begin{tabular}{|c|c|}
 			\hline
 			Sensor & Error \\ \hline
@@ -411,8 +389,7 @@ donde:
 			
 		\end{tabular} 
 			
-		\caption{Errores proporcionados por los fabricantes para cada sensor}
-		\label{tab:errores_sensores}
+		
 	\end{table}
 
 
@@ -447,8 +424,93 @@ Para la operación de los sensores se asumira un comportamiento Gaussiano para t
 
 \subsubsection{Comportamiento Gaussiano}
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/PT1000_simulado.png}
+	\caption{Comportamiento PT1000.}
+	\label{fig:PT1000_simulado}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TMP235_simulado.png}
+	\caption{Comportamiento TMP235.}
+	\label{fig:TMP235_simulado}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TYPE_E_simulado.png}
+	\caption{Comportamiento TYPEE.}
+	\label{fig:TYPE_E_simulado}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/NTCLE100E3_simulado.png}
+	\caption{Comportamiento NTCLE100E3.}
+	\label{fig:NTCLE100E3_simulado}
+\end{figure}
+
+\subsection{Comportamiento error}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_PT1000.png}
+	\caption{Comportamiento error PT1000.}
+	\label{fig:error_PT1000}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_TMP235.png}
+	\caption{Comportamiento error TMP235.}
+	\label{fig:error_TMP235}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_TYPE_E.png}
+	\caption{Comportamiento error TYPEE.}
+	\label{fig:error_TYPE_E}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_NTCLE100E3.png}
+	\caption{Comportamiento error NTCLE100E3.}
+	\label{fig:error_NTCLE100E3}
+\end{figure}
+
 \subsubsection{Comportamiento Alterno}
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/PT1000_ruido_gaussiano.png}
+	\caption{Comportamiento PT1000 con ruido gaussiano.}
+	\label{fig:PT1000_ruido_gaussiano}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TMP235_ruido_poisson.png}
+	\caption{Comportamiento TMP235 ruido poisson.}
+	\label{fig:TMP235_ruido_poisson}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TYPE_E_ruido_uniforme.png}
+	\caption{Comportamiento TYPEE con ruido uniforme.}
+	\label{fig:TYPE_E_ruido_uniforme}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/NTCLE100E3_ruido_laplace.png}
+	\caption{Comportamiento NTCLE100E3 ruido laplace.}
+	\label{fig:NTCLE100E3_ruido_laplace}
+\end{figure}
 
 \section{Conclusiones}
 
