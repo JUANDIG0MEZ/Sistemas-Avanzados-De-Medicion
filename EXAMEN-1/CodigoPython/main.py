@@ -5,8 +5,8 @@ from modulos.funciones import Funciones
 from modulos.horno import Horno
 from modulos.ruido import Ruido
 from modulos.errores import Errores
+from modulos.tablas import *
 import numpy as np
-from tablas import *
 
 
 if __name__ == "__main__":

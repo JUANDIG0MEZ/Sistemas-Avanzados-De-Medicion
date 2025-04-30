@@ -19,6 +19,3 @@ class Metodos:
         errores = ground_true - prediccion
         rmse = np.sqrt(np.mean(np.square(errores)))
         return rmse
-
-    # @staticmethod
-    # def calcularIncertidumbre(valores, )

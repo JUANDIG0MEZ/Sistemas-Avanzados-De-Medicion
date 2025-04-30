@@ -28,10 +28,10 @@ class Ruido:
         ruido = np.random.standard_cauchy(1) * 0.05
         ruido = np.clip(ruido, -1, 1)
         return ruido
-    @staticmethod
-    def ruido_laplace(media, desviacion):
-        ruido = np.random.laplace(parametro1, parametro2, 1)
-        return ruido
+    # @staticmethod
+    # def ruido_laplace(media, desviacion):
+    #     ruido = np.random.laplace(parametro1, parametro2, 1)
+    #     return ruido
     
     @staticmethod
     def generarOutlier(probabilidad):
