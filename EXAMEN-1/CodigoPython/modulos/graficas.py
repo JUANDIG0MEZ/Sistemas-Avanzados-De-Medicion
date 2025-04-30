@@ -22,7 +22,7 @@ class Graficas():
         y = sensor.calcularValores(sensor.temperaturas)
 
         plt.plot(sensor.temperaturas, sensor.valores, "o", label="Datos")
-        plt.plot(sensor.temperaturas, y, label="Curva ajustada")
+        plt.plot(sensor.temperaturas, y, label="Curva caracteristica")
         plt.xlabel("Temperatura (°C)")
         plt.ylabel(f"{sensor.unidades_valores}")
         plt.title(f"Gráfica de {sensor.nombre_sensor}")

@@ -104,7 +104,7 @@ if __name__ == "__main__":
     print("W:", W)
     print("T0:", T0)
     print("\n")
-    Graficas.grafica_y(horno.temperaturas, show=True, estilo='o', title="Temperatura del horno", ylabel="Temperatura (°C)", xlabel="Tiempo (s)", color='blue', save= True, nombre="temperatura_horno.png")
+    Graficas.grafica_y(horno.temperaturas, show=True, estilo='o', color="orangered",title="Temperatura del horno", ylabel="Temperatura (°C)", xlabel="Tiempo (s)", save= True, nombre="temperatura_horno.png")
 
 
     print("---------------------------------------------------")

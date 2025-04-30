@@ -70,11 +70,145 @@ Seleccione los cuatro sensores de su preferencia, con base en los datasheets adj
 \end{itemize}
 
 
-\subsection{Determinación de curva caracteristica}
+
+
+\subsection{Extracci\'on de datos}
 
 Lo primero que se debe realizar, es una extracción de los datos dados por los diversos fabricantes en los datasheets del sensor, y que se pueden encontrar en las tablas de cada datasheet, dichas tablas expresan el valor de salida del sensor según la temperatura de que esta midiendo. Para esto hemos creado un diccionario, con el nombre de cada sensor y sus respectivos valores de Temperatura y valor de medida (mV, V, $\omega$, ..., etc).\\
 
-Una vez se tiene el diccionario correspondiente, se procede a graficar cada uno de los cuatro (4) sensores, con lo cual es posible de manera visual-analitica, determinar el comportamiento de medida de cada sensor:
+\subsection{Curvas caracter\'isticas}
+
+Para determinar la curva caracter\'istica que modela el comportamiento de los sensores en funci\'on de la temperatura, se debe consultar el datasheet o analizar el comportamiento del sensor mediante la gr\'afica de los datos extraidos. A partir de ello, se puede establecer lo siguiente (ver Tabla \ref{tab:tipoCurva}).
+
+\begin{table}[h]
+	\centering
+	\caption{Tipo de curva}
+	\label{tab:tipoCurva}
+	\resizebox{0.5\columnwidth}{!}{%
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Sensor} & \textbf{Tipo curva} \\ \hline
+			PT1000          & Lineal            \\ \hline
+			TYPE E          & Polinomial             \\ \hline
+			TYPE TMP        & Lineal            \\ \hline
+			NTCLE100E3338   & Exponencial            \\ \hline
+		\end{tabular}%
+	}
+	
+\end{table}
+
+Cada tipo de curva sera expresada de la siguiente manera.
+
+\subsubsection{Lineal}
+
+\[
+R(T) = A \cdot T + B
+\]
+
+\subsubsection{Exponencial}
+\[
+R(T) = A \cdot e^{(B/T)}
+\]
+
+\subsubsection{Polinomial}
+\[
+V(T) = A + B * T + C * T^2 + D * T^3
+\]
+
+\subsection{Descomposici\'on de valores singulares}
+
+El m\'etodo SVD permite descomponer cualquier matriz \textbf{\textit{A}} de la forma:
+
+
+\[
+	svd(\mathbf{A}) = \mathbf{U} \mathbf{D} \mathbf{V}^T
+\]
+
+SVD es ampliamente utilizado para encontrar la solución de sistemas lineales sobredeterminados \( \mathbf{A}\mathbf{x} = \mathbf{b} \), minimizando el error cuadrático.
+Una vez factorizada la matriz $\mathbf{A}$ del sistema lineal, es posible encontrar la soluci\'on de la siguiente forma:
+\[
+\mathbf{x} = \mathbf{A}^+ \mathbf{b}
+\]
+
+
+Donde $\mathbf{A}^{+} = \mathbf{V}\mathbf{D}^+ \mathbf{U}^T$ y $\mathbf{D}^+$ es 
+
+\[
+D_i^+ = 
+\begin{cases}
+	0 & \text{si } d_i = 0 \\
+	\frac{1}{d_i} & \text{si } d_i \ne 0
+\end{cases}
+\]
+
+Para utilizar el m\'etodo SVD y encontrar los coeficientes de las curvas caracteristicas, es necesario expresar estos modelos como un sistema lineal.
+
+
+\subsubsection{Lineal}
+
+\[
+	R(T) = A \cdot T + B
+\]
+
+\[
+	\begin{bmatrix} 
+		T_{i} & 1 
+	\end{bmatrix}
+	\begin{bmatrix} 
+		A \\ 
+		B
+	\end{bmatrix}
+	= 
+	\begin{bmatrix} 
+		R(T_{i})
+	\end{bmatrix}
+\]
+
+
+\subsubsection{Exponencial}
+\[
+	R(T) = A \cdot e^{(B/T)}
+\]
+
+\[
+	ln(R(T)) = ln(A) + B/T
+\]
+
+\[
+	\begin{bmatrix} 
+		1/T_i & 1
+	\end{bmatrix}
+	\begin{bmatrix} 
+		B \\
+		ln(A)
+	\end{bmatrix}
+	=
+	\begin{bmatrix} 
+		ln(R(T_i))
+	\end{bmatrix}
+\]
+
+\subsubsection{Polinomial}
+\[
+	V(T) = A + B * T + C * T^2 + D * T^3
+\]
+
+\[
+\begin{bmatrix} 
+	1 & T_i & T_{i}^2 & T_i^3 
+\end{bmatrix}
+\begin{bmatrix} 
+	A \\ 
+	B \\
+	C \\
+	D
+\end{bmatrix}
+= 
+\begin{bmatrix} 
+	V(T_{i})
+\end{bmatrix}
+\]
+
 
 
 \begin{figure}[h!]
@@ -105,14 +239,6 @@ Una vez se tiene el diccionario correspondiente, se procede a graficar cada uno 
 	\label{fig:4}
 \end{figure}
 
-De lo cual es posible determinar que:\\
-
-\begin{itemize}
-	\item El sensor PT1000 es de curva lineal
-	\item El sensor TYPE E es de curva polinomial
-	\item El sensor TYPE TMP es de curva lineal
-	\item El sensor NTCLE100E3338 es de curva exponencial
-\end{itemize}
 
 
 
@@ -132,18 +258,35 @@ El rango definido (rango deseado en la grafica \ref{fig:5}) para la simulación 
 Es posible analizar las magmnitudes de medición del rango de cada sensor, y que el rango escogido bajo las especificaciones del ejercicio, subdimensiona o le da bajo rendimiento a los sensores de mayor rango.
 
 
-\subsection{Ecuación caracteristica para rango especifico}
+\subsection{Ecuación caracter\'istica para rango espec\'ifico}
 
 En este apartado, es necesario aplicar un ajuste fino a cada uno de nuestros sensores, esto debido a que ya tenemos dos datos de gran importancia, el primero saber la curva de comportamiento de cada sensor y segundo el rango en el que vamos a trabajar, esta es una practica de uso general en aplicaciones de medición en todas las escalas, debido a que el fabricante propone una tabla de uso general y en el mayor rango posible, sin embargo, las aplicaciones dadas por los diferentes usuarios necesitan un ajuste o una curva de gran presicion en el proceso especifico.\\
 
 Para este ejercicio y los sensores escogidos las curvas generales fueron:\\
 
-$lineal: R(T) = m*T + b ==> [T, 1] * [[m], [b]]$\\
+\subsubsection{Lineal}
 
-$exponencial: R(T) = A * e^(B/T) ==> ln(R(T)) = ln(A) + B/T ==> ln(R(T)) = [1/T, 1] * [[B], [ln(A)]]$\\
-"""
+\[
+	R(T) = A \cdot T + B [T, 1] * [[m], [b]]
+\]
 
-$polinomial: V(T) = A + B * T + C * T^2 + D * T^3$\\
+\subsubsection{Exponencial}
+\[
+	R(T) = A \cdot e^(B/T)
+\]
+
+\[
+	ln(R(T)) = ln(A) + B/T
+\]
+
+\[	
+	ln(R(T)) = [1/T, 1] \cdot [[B], [ln(A)]]
+\]
+
+\subsubsection{Polinomial}
+\[
+	V(T) = A + B * T + C * T^2 + D * T^3
+\]
 
 Los parametros obtenido para cada uno de los sensores en el rango fueron:
 
@@ -193,8 +336,8 @@ Dado que algunos de los fabricantes presentan el error en t\'erminos de temperat
 donde:
 \begin{itemize}
 	\item $\sigma_f^2$ es la varianza de la funci\'on $f$,
-	\item $\frac{d f}{d x}$ es la derivada de la funci\'on respecto a la variable $x$,
-	\item $\sigma_x^2$ es la varianza de la variable $x$.
+	\item $\frac{d f}{d T}$ es la derivada de la funci\'on respecto a la variable $T$,
+	\item $\sigma_T^2$ es la varianza de la variable $T$.
 \end{itemize}
 
 
@@ -204,7 +347,7 @@ donde:
 		f(T) = A * T + B
 	\]
 	\[
-		\frac{d f}{d x} = A
+		\frac{d f}{d T} = A
 	\]
 	\[
 		\sigma_f^2 = A^2 \sigma_T^2
@@ -258,11 +401,7 @@ donde:
 			\hline
 			Sensor & Error \\ \hline
 			PT1000 & $\pm 0.5\ ^{\circ} \mathrm{C}$ \\ \hline
-			Tipo K & 
-			\begin{tabular}[c]{@{}c@{}}
-				Si $T > 0\ ^{\circ}\mathrm{C}$: $\pm 2.2\ ^{\circ}\mathrm{C}$ o $\pm 0.75\%$, el que sea mayor. \\ 
-				Si $T < 0\ ^{\circ}\mathrm{C}$: $\pm 2.2\ ^{\circ}\mathrm{C}$ o $\pm 2.0\%$, el que sea mayor.
-			\end{tabular} \\ \hline
+			TMP235-Q1 & $\pm2.5 ^{\circ}\mathrm{C}$ \\ \hline
 			Tipo E & 
 			\begin{tabular}[c]{@{}c@{}}
 				Si $T > 0\ ^{\circ}\mathrm{C}$: $\pm 1.7\ ^{\circ}\mathrm{C}$ o $\pm 0.5\%$, el que sea mayor. \\ 
