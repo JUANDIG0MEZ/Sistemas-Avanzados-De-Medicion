@@ -514,6 +514,13 @@ Para la operación de los sensores se asumira un comportamiento Gaussiano para t
 
 \section{Conclusiones}
 
+En este trabajo se realizo la simulacion de 4 sensores de temperatura (PT1000, TYPE E, TMP235-Q1 Y el NTCLE100E3) en un entorno simulado de horno industrial, teniendo en cuenta los errores del sensor. Para llevar a cabo esta simulacion se realizaron los siguientes etapas:
+
+\begin{itemize}
+	\item \textbf{Obtencion de la curva caracter\'istica}: Una vez seleccionado los 4 sensores, se establecio el tipo de curva (Lineal, Polinomial y exponencial) y se encontro sus coeficientes a partir del metodo $SVD$ en un rango de temperatura de $[0, 100]$. El ajuste realizo genero una incertidumbre de $\pm 0.47$ para el sensor PT1000, $\pm 0.00$ para el TYPE-E
+\end{itemize}
+
+se realizo una la extraccion de los datos de los datasheets, se encontro el tipo de curva del comportamiento de cada sensor respecto a la temperatura para cada sensor y se encontraron los coeficiones de cada curva utilizando el metodo de descomposcion de valores singulares.
 
 \begin{thebibliography}{00}
 

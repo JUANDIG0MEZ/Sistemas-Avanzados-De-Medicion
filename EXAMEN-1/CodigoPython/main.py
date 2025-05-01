@@ -78,10 +78,10 @@ if __name__ == "__main__":
 
     print("\n *Mean Square Error")
 
-    print("MSE PT1000", rmse_PT1000)
-    print("MSE TYPE_E", rmse_TYPE_E)
-    print("MSE TYPE_TMP", rmse_TYPE_TMP)
-    print("MSE NTCLE100E3", rmse_TYPE_NTCLE)
+    print("MSE PT1000", rmse_PT1000**2)
+    print("MSE TYPE_E", rmse_TYPE_E**2)
+    print("MSE TYPE_TMP", rmse_TYPE_TMP**2)
+    print("MSE NTCLE100E3", rmse_TYPE_NTCLE**2)
     print("\n")
 
 
