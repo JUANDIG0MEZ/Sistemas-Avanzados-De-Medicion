@@ -35,12 +35,6 @@ juandiego.gomez1@utp.edu.co}
 
 \maketitle
 
-\begin{abstract}
-This document is a model and instructions for \LaTeX.
-This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
-or Math in Paper Title or Abstract.
-\end{abstract}
-
 \begin{IEEEkeywords}
 Ajuste, error, rango, sensores
 \end{IEEEkeywords}
@@ -244,7 +238,7 @@ Para utilizar el m\'etodo SVD y encontrar los coeficientes de las curvas caracte
 
 \subsection{Determinación de curva caracteristica}
 
-Para la determinación del rango de operación, y que este dentro de por lo menos el 60\% de todos los sensores, es necesario graficar todos los rangos de los sensores y traslaparlos, con el fin de encontrar un rango que todos posean dentro de sus datasheets, y que tambien sean de maximo el 60\%, a continuación la grafica y el rango escogido para la curva de temperatura del horno a experimentar con el elementos "X",
+Para la determinación del rango de operación, y que este dentro de por lo menos el 60\% de todos los sensores, es necesario graficar todos los rangos de los sensores y traslaparlos, con el fin de encontrar un rango que todos posean dentro de sus datasheets, y que tambien sean de maximo el 60\%, a continuación la grafica y el rango escogido para la curva de temperatura del horno a experimentar con el elementos "X".\\
 
 \begin{figure}[h!]
 	\centering
@@ -286,15 +280,15 @@ Los parametros obtenido para cada uno de los sensores en el rango fueron:
 % \usepackage{graphicx}
 \begin{table}[h]
 	\centering
-	\caption{Error MSE (mean square error) por sensor}
+	\caption{Error RMSE (root mean square error) por sensor}
 	\label{tab:my-table2}
 	\resizebox{0.5\columnwidth}{!}{%
 		\begin{tabular}{|c|c|}
 			\hline
-			\textbf{Sensor} & \textbf{Error MSE} \\ \hline
+			\textbf{Sensor} & \textbf{Error RMSE} \\ \hline
 			PT1000          & 0.4707             \\ \hline
-			TYPE E          & 0.0002             \\ \hline
-			TMP235-Q1        & 1.6126             \\ \hline
+			TMP235-Q1           & 0.0002             \\ \hline
+			TYPE-E       & 1.6126             \\ \hline
 			NTCLE100E3338   & 0.3561             \\ \hline
 		\end{tabular}%
 	}
@@ -416,13 +410,15 @@ En este punto es necesario entonces que mediante el rango escogido para los sens
 	\label{fig:5}
 \end{figure}
 
-Es en esta curva donde se probara el comportamiento y la salida de cada uno de los sensores
+Es en esta curva donde se probara el comportamiento y la salida de cada uno de los sensores, se decide hacer una función compuesta por varios sub tramos, en las cuales en su mayoria son de orden 2 y demas, con el objetivo de no ver un comportamiento tradicional de curvas lineales de aumento y disminución de temperatura.
 
 \subsection{Operación de los sensores}
 
-Para la operación de los sensores se asumira un comportamiento Gaussiano para todos, y luego un comportamiento de medida diferente para cada uno de los sensores, en este proceso es posible la inclusión de outliers con el 0.5\%
+En este apartado, para la operación de los sensores se asumira un comportamiento Gaussiano para todos, y en el siguiente apartado un comportamiento del error diferente para cada uno de los sensores, en este proceso es posible la inclusión de outliers con el 0.5\% en cada subpunto.
 
 \subsubsection{Comportamiento Gaussiano}
+
+El comportamiento gaussiano se simulo utilizando los errores RMSE del ajuste del cada sensor en el rango de trabajo previamente descrito, y las componentes homocedastiscas y heterocedastica de cada sensor, incluidas dentro de una randomizador normalizado, de media cero y desviación segúm el error, cabe resaltar que mientras los errores RMSE y homocedastica son solo valores sumados a la función, la comoponente heterocedastica se debe multiplicar ya que se suele expresar como un porcentaje de la medida actual del sensor, asi mismo a mayor valor de la magnitud de medida de mayor tamaño es el error.
 
 \begin{figure}[h!]
 	\centering
@@ -452,7 +448,12 @@ Para la operación de los sensores se asumira un comportamiento Gaussiano para t
 	\label{fig:NTCLE100E3_simulado}
 \end{figure}
 
-\subsection{Comportamiento error}
+Es posible analizar de las graficas unos comportamientos poco pensados si veiamos la tabla \ref{tab:errores_sensores} sobre el error de cada sensor en el rango de operación, viendo que por ejemplo el PT1000 apesar de tener un peor desempeño en el ajuste de curva, en un evento simulado se siñe bien a la forma de curva del horno, al giual que el sensor NTCLE100E3, sin embargo, el sensor type E, no tuvo tan buen rendimiento como se podia asumir viendo la tabla en referencia.
+
+
+
+\textbf{Comportamiento del error}
+
 
 \begin{figure}[h!]
 	\centering
@@ -482,7 +483,12 @@ Para la operación de los sensores se asumira un comportamiento Gaussiano para t
 	\label{fig:error_NTCLE100E3}
 \end{figure}
 
+La explicación al parrafo anterior y el comportamiento de los sensores, se puede deber a sus componentes intrinsecas de fabricación, es decir, el error homocedastico y heterocedastico, el error de ajuste puede hasta quedar relegado en grandes magnitudes del sensor en comparación con estas otras magnitudes, lo interesante de la curva del horno, es que permite evaluar el comportamiento de los sensores en dinamismo, y en cambios "subitos" de temperatura, con ajustes y variaciones constantes.
+
+
 \subsubsection{Comportamiento Alterno}
+
+En este apartado, se evalua el comportamiento de cada sensor, esta vez integrando las componentes de error, no solo de manera lineal, sino en distribución tipo Poisson, Uniforme y Laplace.
 
 \begin{figure}[h!]
 	\centering
@@ -512,15 +518,21 @@ Para la operación de los sensores se asumira un comportamiento Gaussiano para t
 	\label{fig:NTCLE100E3_ruido_laplace}
 \end{figure}
 
+Es curioso en este caso ver el comportamiento de cada uno de los sensores, y como "mejoraron" su rendimiento en comparación con todas las componentes del error gaussianas, esto debido a como distribuye las magnitudes y componentes erroneas usadas, cabe resaltar que curiosamente se ve más influencia de los outliers en este apartado, aunque en ambas tengan la misma probabilidad.
+
 \section{Conclusiones}
 
 En este trabajo se realizo la simulacion de 4 sensores de temperatura (PT1000, TYPE E, TMP235-Q1 Y el NTCLE100E3) en un entorno simulado de horno industrial, teniendo en cuenta los errores del sensor. Para llevar a cabo esta simulacion se realizaron los siguientes etapas:
 
 \begin{itemize}
-	\item \textbf{Obtencion de la curva caracter\'istica}: Una vez seleccionado los 4 sensores, se establecio el tipo de curva (Lineal, Polinomial y exponencial) y se encontro sus coeficientes a partir del metodo $SVD$ en un rango de temperatura de $[0, 100]$. El ajuste realizo genero una incertidumbre de $\pm 0.47$ para el sensor PT1000, $\pm 0.00$ para el TYPE-E
+	\item Comprender la metodología del ajuste fino de sensores resulta fundamental para su aplicación en entornos complejos y diversos como la industria, la atmósfera o los laboratorios. Esta técnica permite personalizar los sistemas de medición según las necesidades específicas de cada contexto. Además, el ajuste de rangos mejora significativamente el rendimiento de sensores calibrados en fábrica, ya que optimizar sus parámetros dentro de un subrango puede aumentar la precisión de la medición. Este beneficio suele lograrse a cambio de una leve penalización en el error de ajuste, que en muchos casos resulta despreciable frente a la ganancia en certeza.
+	
+	\item Una vez seleccionados los cuatro sensores, se estableció el tipo de curva (lineal, polinómica o exponencial) y se encontraron sus coeficientes a partir del método SVD, en un rango de temperatura de $[0, 100]\,^\circ\mathrm{C}$. El ajuste realizado generó una incertidumbre de $\pm 0.47$ para el sensor PT1000, $\pm 0.00$ para el TMP, $\mp 1.61$ para el TYPE-3 y $\mp 0.35$ para el NTCLE100E3338.
+	
+	\item Para simular cada sensor, se evaluó la temperatura del horno en su respectiva curva característica. Para hacer la simulación más realista, se sumó el error de ajuste (incertidumbre de la curva) y el error del fabricante, calculado mediante propagación de incertidumbre. Se pudo observar, tal como lo indica la teoría, que en los sensores con comportamiento no lineal el error varía con la temperatura.
+	
+	
 \end{itemize}
-
-se realizo una la extraccion de los datos de los datasheets, se encontro el tipo de curva del comportamiento de cada sensor respecto a la temperatura para cada sensor y se encontraron los coeficiones de cada curva utilizando el metodo de descomposcion de valores singulares.
 
 \begin{thebibliography}{00}
 
