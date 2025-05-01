@@ -6,8 +6,9 @@ from modulos.horno import Horno
 from modulos.ruido import Ruido
 from modulos.errores import Errores
 from modulos.tablas import *
+import pandas as pd
 import numpy as np
-
+import csv
 
 if __name__ == "__main__":
 
@@ -127,9 +128,10 @@ if __name__ == "__main__":
 
 
 
-    def simular_sensor_con_error(horno, sensor, rmse=None,p_outlier=0.005):
+    def simular_sensor_con_error(horno, sensor, rmse=None, p_outlier=0.005):
         dict_sensor = {}
         dict_errores = {}
+        lista = []
         for temperatura in horno.temperaturas:
             valor = sensor.calcularValores(temperatura)
 
@@ -141,27 +143,36 @@ if __name__ == "__main__":
             error_gaussiano = np.random.normal(0, error, 1)[0]
 
             valor = valor + error_gaussiano + (valor * outlier_value)
-
             dict_errores[temperatura] = Errores.sumaErrores(error, rmse)
             dict_sensor[temperatura] = float(valor)
-        return dict_sensor, dict_errores
+            lista.append(valor)
+        return dict_sensor, dict_errores, lista
     
 
 
-    PT1000_simulado, e_PT1000 = simular_sensor_con_error(horno, PT1000, rmse_PT1000 , 0.010)
-    TYPE_E_simulado, e_TYPE_E = simular_sensor_con_error(horno, TYPE_E, rmse_TYPE_E,0.010)
-    TMP235_simulado, e_TMP235 = simular_sensor_con_error(horno, TMP235, rmse_TYPE_TMP,0.010)
-    NTCLE100E3_simulado, e_TYPE_NTCLE100E3 = simular_sensor_con_error(horno, NTCLE100E3, rmse_TYPE_NTCLE ,0.010)
+    PT1000_simulado, e_PT1000, lista_PT1000 = simular_sensor_con_error(horno, PT1000, rmse_PT1000 , 0.010)
+    TYPE_E_simulado, e_TYPE_E, lista_TYPE_E = simular_sensor_con_error(horno, TYPE_E, rmse_TYPE_E,0.010)
+    TMP235_simulado, e_TMP235, lista_TMP = simular_sensor_con_error(horno, TMP235, rmse_TYPE_TMP,0.010)
+    NTCLE100E3_simulado, e_TYPE_NTCLE100E3, lista_NTCLE = simular_sensor_con_error(horno, NTCLE100E3, rmse_TYPE_NTCLE ,0.010)
+
+    # guardar en un archivo csv
+    df = pd.DataFrame({
+        "PT1000": lista_PT1000,
+        "TMP235": lista_TMP,
+        "TYPE_E": lista_TYPE_E,
+        "NTCLE100E3": lista_NTCLE,
+        "Temperatura": horno.temperaturas
+    })
+    df.to_csv("datos/simulacion.csv", index=False)
+        
+    
+
 
     Graficas.graficar_dos_lineas(PT1000_ideal.values(), PT1000_simulado.values(), show=True, title="PT1000", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='salmon', save=True, nombre="PT1000_simulado.png", label1 = "Simulado", label2 = "Ideal")
     Graficas.graficar_dos_lineas(TYPE_E_ideal.values(), TYPE_E_simulado.values(), show=True, title="TYPE_E", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='salmon', save=True, nombre="TYPE_E_simulado.png", label1 = "Simulado", label2 = "Ideal")
     Graficas.graficar_dos_lineas(TMP235_ideal.values(), TMP235_simulado.values(), show=True, title="TMP235", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='salmon', save=True, nombre="TMP235_simulado.png", label1 = "Simulado", label2 = "Ideal")
     Graficas.graficar_dos_lineas(NTCLE100E3_ideal.values(), NTCLE100E3_simulado.values(), show=True, title="NTCLE100E3", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='salmon', save=True, nombre="NTCLE100E3_simulado.png", label1 = "Simulado", label2 = "Ideal")
 
-    # Graficas.grafica_y(PT1000_simulado.values(), show=True, title="PT1000", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='coral', save=True, nombre="PT1000_simulado.png")
-    # Graficas.grafica_y(TYPE_E_simulado.values(), show=True, title="TYPE_E", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='coral', save=True, nombre="TYPE_E_simulado.png")
-    # Graficas.grafica_y(TMP235_simulado.values(), show=True, title="TMP235", ylabel="Voltaje (mV)", xlabel="Tiempo (s)", color='coral', save=True, nombre="TMP235_simulado.png")
-    # Graficas.grafica_y(NTCLE100E3_simulado.values(), show=True, title="NTCLE100E3", ylabel="Resistencia (Ohmios)", xlabel="Tiempo (s)", color='coral', save=True, nombre="NTCLE100E3_simulado.png")
 
     Graficas.grafica_y(e_PT1000.values(), show=True,  estilo='o', title="Errores PT1000", ylabel="Error (Ohmios)", xlabel="Tiempo (s)", color='cornflowerblue', save=True, nombre="error_PT1000.png")
     Graficas.grafica_y(e_TYPE_E.values(), show=True, estilo='o', title="Errores TYPE_E", ylabel="Error (mV)", xlabel="Tiempo (s)", color='cornflowerblue', save=True, nombre="error_TYPE_E.png")
