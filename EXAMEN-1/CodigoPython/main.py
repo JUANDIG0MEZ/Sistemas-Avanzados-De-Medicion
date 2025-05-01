@@ -89,10 +89,10 @@ if __name__ == "__main__":
     print("PUNTO 3: SIMULACION DEL HORNO")
     print("---------------------------------------------------")
 
-    X = 100
-    Y = 30
+    X = 60
+    Y = 15
     Z = 30
-    W = 50
+    W = 25
     T0 = 0
 
     # longitud = Y + W
