@@ -533,7 +533,6 @@ Es curioso en este caso ver el comportamiento de cada uno de los sensores, y com
 En este trabajo se realizo la simulacion de 4 sensores de temperatura (PT1000, TYPE E, TMP235-Q1 Y el NTCLE100E3) en un entorno simulado de horno industrial, teniendo en cuenta los errores del sensor. Para llevar a cabo esta simulacion se realizaron los siguientes etapas:
 
 \begin{itemize}
-	\item Comprender la metodología del ajuste fino de sensores resulta fundamental para su aplicación en entornos complejos y diversos como la industria, la atmósfera o los laboratorios. Esta técnica permite personalizar los sistemas de medición según las necesidades específicas de cada contexto. Además, el ajuste de rangos mejora significativamente el rendimiento de sensores calibrados en fábrica, ya que optimizar sus parámetros dentro de un subrango puede aumentar la precisión de la medición. Este beneficio suele lograrse a cambio de una leve penalización en el error de ajuste, que en muchos casos resulta despreciable frente a la ganancia en certeza.
 	
 	\item Una vez seleccionados los cuatro sensores, se estableció el tipo de curva (lineal, polinómica o exponencial) y se encontraron sus coeficientes a partir del método SVD, en un rango de temperatura de $[0, 100]\,^\circ\mathrm{C}$. El ajuste realizado generó una incertidumbre de $\pm 0.47$ para el sensor PT1000, $\pm 0.00$ para el TMP, $\mp 1.61$ para el TYPE-3 y $\mp 0.35$ para el NTCLE100E3338.
 	
@@ -541,6 +540,9 @@ En este trabajo se realizo la simulacion de 4 sensores de temperatura (PT1000, T
 	
 	
 \end{itemize}
+
+
+Comprender la metodología del ajuste fino de sensores resulta fundamental para su aplicación en entornos complejos y diversos como la industria, la atmósfera o los laboratorios. Esta técnica permite personalizar los sistemas de medición según las necesidades específicas de cada contexto. Además, el ajuste de rangos mejora significativamente el rendimiento de sensores calibrados en fábrica, ya que optimizar sus parámetros dentro de un subrango puede aumentar la precisión de la medición. Este beneficio suele lograrse a cambio de una leve penalización en el error de ajuste, que en muchos casos resulta despreciable frente a la ganancia en certeza.
 
 \begin{thebibliography}{00}
 
