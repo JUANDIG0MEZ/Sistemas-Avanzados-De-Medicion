@@ -36,7 +36,7 @@ juandiego.gomez1@utp.edu.co}
 \maketitle
 
 \begin{IEEEkeywords}
-Ajuste, error, rango, sensores
+Filtro de kalman, 
 \end{IEEEkeywords}
 
 \section{Introducción}
@@ -207,28 +207,28 @@ Para utilizar el m\'etodo SVD y encontrar los coeficientes de las curvas caracte
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/PT1000_con_ajuste.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Curva rango completo PT1000}
 	\label{fig:1}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TYPE_E_con_ajuste.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Curva rango completo TYPE E}
 	\label{fig:2}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TMP235_con_ajuste.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Curva rango completo TYPE TMP}
 	\label{fig:3}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/NTCLE100E3_con_ajuste.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Curva rango completo NTCLE100E3338}
 	\label{fig:4}
 \end{figure}
@@ -242,7 +242,7 @@ Para la determinación del rango de operación, y que este dentro de por lo meno
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/rangos_sensores.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Rangos de temperatura por sensor}
 	\label{fig:5}
 \end{figure}
@@ -405,7 +405,7 @@ En este punto es necesario entonces que mediante el rango escogido para los sens
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/temperatura_horno.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Perfil de temperatura del horno.}
 	\label{fig:5}
 \end{figure}
@@ -428,28 +428,28 @@ El comportamiento gaussiano fue simulado utilizando los errores RMSE obtenidos d
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/PT1000_simulado.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento PT1000.}
 	\label{fig:PT1000_simulado}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TMP235_simulado.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento TMP235.}
 	\label{fig:TMP235_simulado}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TYPE_E_simulado.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento TYPEE.}
 	\label{fig:TYPE_E_simulado}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/NTCLE100E3_simulado.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento NTCLE100E3.}
 	\label{fig:NTCLE100E3_simulado}
 \end{figure}
@@ -463,28 +463,28 @@ A partir de las gráficas, es posible identificar comportamientos que no eran ev
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_PT1000.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento error PT1000.}
 	\label{fig:error_PT1000}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_TMP235.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento error TMP235.}
 	\label{fig:error_TMP235}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_TYPE_E.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento error TYPEE.}
 	\label{fig:error_TYPE_E}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_NTCLE100E3.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento error NTCLE100E3.}
 	\label{fig:error_NTCLE100E3}
 \end{figure}
@@ -500,28 +500,28 @@ En este apartado, se evalua el comportamiento de cada sensor, esta vez integrand
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/PT1000_ruido_gaussiano.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento PT1000 con ruido gaussiano.}
 	\label{fig:PT1000_ruido_gaussiano}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TMP235_ruido_poisson.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento TMP235 ruido poisson.}
 	\label{fig:TMP235_ruido_poisson}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TYPE_E_ruido_uniforme.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento TYPEE con ruido uniforme.}
 	\label{fig:TYPE_E_ruido_uniforme}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/NTCLE100E3_ruido_laplace.png}
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/sine_wave.png}
 	\caption{Comportamiento NTCLE100E3 ruido laplace.}
 	\label{fig:NTCLE100E3_ruido_laplace}
 \end{figure}
