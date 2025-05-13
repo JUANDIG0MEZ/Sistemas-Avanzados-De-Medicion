@@ -1,0 +1,553 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+%Template version as of 6/27/2024
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Examen 1: Sistemas Avanzados de medici\'on\\
+\thanks{Identify applicable funding agency here. If none, delete this.}
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Juan Camilo Vasco Leiva}
+\IEEEauthorblockA{\textit{Maestr\'ia en Ingenier\'ia El\'ectrica} \\
+\textit{Universidad T\'ecnologia de Pereira}\\
+Pereira, Colombia \\
+camilo.vasco@utp.edu.co}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Juan Diego G\'omez Chavarro}
+\IEEEauthorblockA{\textit{Maestr\'ia en Ingenier\'ia El\'ectrica} \\
+\textit{Universidad T\'ecnologica de Pereira}\\
+Periera, Colombia \\
+juandiego.gomez1@utp.edu.co}
+
+}
+
+\maketitle
+
+\begin{IEEEkeywords}
+Ajuste, error, rango, sensores
+\end{IEEEkeywords}
+
+\section{Introducción}
+
+En este examen práctico de sistemas avanzados de medición, se realizará el ajuste fino de curvas de sensores dentro de un rango especificado por el usuario. El objetivo es simular una ejecución real de una curva de temperatura durante el proceso de horneado de un elemento "X". Para este ejercicio, se considerarán diversas características, como los diferentes errores inherentes a la medición de cada sensor, incluyendo errores de calibración, errores homocedásticos y heterocedásticos, así como la presencia de valores atípicos (outliers) en las mediciones.
+
+
+
+\section{Desarrollo}
+
+A continuación se desarrollaran cada uno de los pasos para la ejecución del examen realizado en python para el desarrollo de los puntos dictados para el ejercicio:\\
+
+\textbf{ENUNCIADO:}\\
+
+En un horno industrial, hay 4 sensores de temperatura diferentes instalados, cuyos datasheets son conocidos y contienen los datos del fabricante para determinar su curva característica. \\
+
+Seleccione los cuatro sensores de su preferencia, con base en los datasheets adjuntos. Determine la curva característica de cada sensor; luego, simule el proceso de adquisición de datos para los cuatro sensores, asumiendo que cada sensor presenta ruido que no necesariamente es gaussiano, así:\\
+
+\begin{itemize}
+	\item Seleccione un rango de operación de cada sensor que no supere el 60% del rango total del dispositivo. 
+	\item Encuentre la ecuación característica exclusivamente en dicho rango y determine el intervalo de incertidumbre al usar el ajuste de su ecuación.
+	\item Simule que el horno sigue algún perfil de temperatura conocido. Por ejemplo, la temperatura incrementa X grados en Y segundos, para luego decrecer Z grados en W segundos. 
+	\item Simule la operación de cada sensor asumiendo primero comportamiento gaussiano y luego algún otro comportamiento (diferente en cada sensor).
+	\item Su simulador debe tener la capacidad de simular outliers a la salida del sistema de medición. 
+\end{itemize}
+
+
+
+
+\subsection{Extracci\'on de datos}
+
+Lo primero que se debe realizar, es una extracción de los datos dados por los diversos fabricantes en los datasheets del sensor, y que se pueden encontrar en las tablas de cada datasheet, dichas tablas expresan el valor de salida del sensor según la temperatura de que esta midiendo. Para esto hemos creado un diccionario, con el nombre de cada sensor y sus respectivos valores de Temperatura y valor de medida (mV, V, $\omega$, ..., etc).\\
+
+\subsection{Curvas caracter\'isticas}
+
+Para determinar la curva caracter\'istica que modela el comportamiento de los sensores en funci\'on de la temperatura, se debe consultar el datasheet o analizar el comportamiento del sensor mediante la gr\'afica de los datos extraidos. A partir de ello, se puede establecer lo siguiente (ver Tabla \ref{tab:tipoCurva}).
+
+\begin{table}[h]
+	\centering
+	\caption{Tipo de curva}
+	\label{tab:tipoCurva}
+	\resizebox{0.5\columnwidth}{!}{%
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Sensor} & \textbf{Tipo curva} \\ \hline
+			PT1000          & Lineal            \\ \hline
+			TYPE E          & Polinomial             \\ \hline
+			TYPE TMP        & Lineal            \\ \hline
+			NTCLE100E3338   & Exponencial            \\ \hline
+		\end{tabular}%
+	}
+	
+\end{table}
+
+Cada tipo de curva sera expresada de la siguiente manera.
+
+\subsubsection{Lineal}
+
+\[
+R(T) = A \cdot T + B
+\]
+
+\subsubsection{Exponencial}
+\[
+R(T) = A \cdot e^{(B/T)}
+\]
+
+\subsubsection{Polinomial}
+\[
+V(T) = A + B * T + C * T^2 + D * T^3
+\]
+
+\subsection{Descomposici\'on de valores singulares}
+
+El m\'etodo SVD permite descomponer cualquier matriz \textbf{\textit{A}} de la forma:
+
+
+\[
+	svd(\mathbf{A}) = \mathbf{U} \mathbf{D} \mathbf{V}^T
+\]
+
+SVD es ampliamente utilizado para encontrar la solución de sistemas lineales sobredeterminados \( \mathbf{A}\mathbf{x} = \mathbf{b} \), minimizando el error cuadrático.
+Una vez factorizada la matriz $\mathbf{A}$ del sistema lineal, es posible encontrar la soluci\'on de la siguiente forma:
+\[
+\mathbf{x} = \mathbf{A}^+ \mathbf{b}
+\]
+
+
+Donde $\mathbf{A}^{+} = \mathbf{V}\mathbf{D}^+ \mathbf{U}^T$ y $\mathbf{D}^+$ es 
+
+\[
+D_i^+ = 
+\begin{cases}
+	0 & \text{si } d_i = 0 \\
+	\frac{1}{d_i} & \text{si } d_i \ne 0
+\end{cases}
+\]
+
+Para utilizar el m\'etodo SVD y encontrar los coeficientes de las curvas caracteristicas, es necesario expresar estos modelos como un sistema lineal.
+
+
+\subsubsection{Lineal}
+
+\[
+	R(T) = A \cdot T + B
+\]
+
+\[
+	\begin{bmatrix} 
+		T_{i} & 1 
+	\end{bmatrix}
+	\begin{bmatrix} 
+		A \\ 
+		B
+	\end{bmatrix}
+	= 
+	\begin{bmatrix} 
+		R(T_{i})
+	\end{bmatrix}
+\]
+
+
+\subsubsection{Exponencial}
+\[
+	R(T) = A \cdot e^{(B/T)}
+\]
+
+\[
+	ln(R(T)) = ln(A) + B/T
+\]
+
+\[
+	\begin{bmatrix} 
+		1/T_i & 1
+	\end{bmatrix}
+	\begin{bmatrix} 
+		B \\
+		ln(A)
+	\end{bmatrix}
+	=
+	\begin{bmatrix} 
+		ln(R(T_i))
+	\end{bmatrix}
+\]
+
+\subsubsection{Polinomial}
+\[
+	V(T) = A + B * T + C * T^2 + D * T^3
+\]
+
+\[
+\begin{bmatrix} 
+	1 & T_i & T_{i}^2 & T_i^3 
+\end{bmatrix}
+\begin{bmatrix} 
+	A \\ 
+	B \\
+	C \\
+	D
+\end{bmatrix}
+= 
+\begin{bmatrix} 
+	V(T_{i})
+\end{bmatrix}
+\]
+
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/PT1000_con_ajuste.png}
+	\caption{Curva rango completo PT1000}
+	\label{fig:1}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TYPE_E_con_ajuste.png}
+	\caption{Curva rango completo TYPE E}
+	\label{fig:2}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TMP235_con_ajuste.png}
+	\caption{Curva rango completo TYPE TMP}
+	\label{fig:3}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/NTCLE100E3_con_ajuste.png}
+	\caption{Curva rango completo NTCLE100E3338}
+	\label{fig:4}
+\end{figure}
+
+
+
+
+\subsection{Determinación de curva caracteristica}
+
+Para la determinación del rango de operación, y que este dentro de por lo menos el 60\% de todos los sensores, es necesario graficar todos los rangos de los sensores y traslaparlos, con el fin de encontrar un rango que todos posean dentro de sus datasheets, y que tambien sean de maximo el 60\%, a continuación la grafica y el rango escogido para la curva de temperatura del horno a experimentar con el elementos "X".\\
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/rangos_sensores.png}
+	\caption{Rangos de temperatura por sensor}
+	\label{fig:5}
+\end{figure}
+
+El rango definido (rango deseado en la grafica \ref{fig:5}) para la simulación del horno y para tener una igualdad de rangos en el margen de los sensores según los rangos dados es de 0° a 100° Centigrados. Lo cual en una aplicación practica puede estar relacionado con un rango de cocina de un alimento, como por ejemplo la pasteurización de la leche (donde la leche se lleva a una temperatura que oscila entre los 55 y los 75 ºC durante 17 segundos).\\
+
+Es posible analizar las magmnitudes de medición del rango de cada sensor, y que el rango escogido bajo las especificaciones del ejercicio, subdimensiona o le da bajo rendimiento a los sensores de mayor rango.
+
+
+\subsection{Ecuación caracter\'istica para rango espec\'ifico}
+
+En este apartado, es necesario aplicar un ajuste fino a cada uno de nuestros sensores, esto debido a que ya tenemos dos datos de gran importancia, el primero saber la curva de comportamiento de cada sensor y segundo el rango en el que vamos a trabajar, esta es una practica de uso general en aplicaciones de medición en todas las escalas, debido a que el fabricante propone una tabla de uso general y en el mayor rango posible, sin embargo, las aplicaciones dadas por los diferentes usuarios necesitan un ajuste o una curva de gran presicion en el proceso especifico.\\
+
+
+Los parametros obtenido para cada uno de los sensores en el rango fueron:
+
+
+\begin{table}[h]
+	\centering
+	\caption{Párametros de rango ajustado de cada sensor}
+	\label{tab:my-table1}
+	\resizebox{\columnwidth}{!}{%
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			\textbf{Sensor}              & \textbf{Curva} & \textbf{A}         & \textbf{B}         & \textbf{C}         & \textbf{D}          \\ \hline
+			PT1000                       & Lineal         & 3.85               & 1000.92            & -                  & -                   \\ \hline
+			\multicolumn{1}{|c|}{TYPE E} & Polinomial     & $4.89\cdot e^{-5}$ & $5.86\cdot e^{-2}$ & $4.74\cdot e^{-5}$ & $-1.85\cdot e^{-8}$ \\ \hline
+			TYPE TMP                     & Lineal         & 10                 & 500                & -                  & -                   \\ \hline
+			NTCLE100E3338                & Exponencial    & 2873.3             & -8.45              & -                  & -                   \\ \hline
+		\end{tabular}%
+	}
+\end{table}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[h]
+	\centering
+	\caption{Error RMSE (root mean square error) por sensor}
+	\label{tab:my-table2}
+	\resizebox{0.5\columnwidth}{!}{%
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{Sensor} & \textbf{Error RMSE} \\ \hline
+			PT1000          & 0.4707             \\ \hline
+			TMP235-Q1           & 0.0002             \\ \hline
+			TYPE-E       & 1.6126             \\ \hline
+			NTCLE100E3338   & 0.3561             \\ \hline
+		\end{tabular}%
+	}
+\end{table}
+
+\subsection{Propagaci\'on de incertidumbre}
+
+Dado que algunos de los fabricantes presentan el error en t\'erminos de temperatura, es necesario conocer el impacto en la medida del sensor, ya sea en t\'erminos de voltaje o resistencia. Por ende, se utilizar\'a la fo\'rmula de propagac\'on de incertidumbre de primero orden de una variable.
+
+\begin{equation}
+	\sigma_f^2 = \left( \frac{df}{dT} \right)^2 \sigma_T^2
+\end{equation}
+
+donde:
+\begin{itemize}
+	\item $\sigma_f^2$ es la varianza de la funci\'on $f$,
+	\item $\frac{d f}{d T}$ es la derivada de la funci\'on respecto a la variable $T$,
+	\item $\sigma_T^2$ es la varianza de la variable $T$.
+\end{itemize}
+
+
+
+\subsubsection{Funci\'on lineal}
+	\[
+		f(T) = A * T + B
+	\]
+	\[
+		\frac{d f}{d T} = A
+	\]
+	\[
+		\sigma_f^2 = A^2 \sigma_T^2
+	\]
+
+\subsubsection{Funci\'on exponencial}
+	\[
+	f(T) = A \cdot e^{\left( \frac{B}{T} \right)}
+	\]
+	\[
+	\frac{d f}{d T} = A \cdot e^{\left( \frac{B}{T} \right)} \cdot \left( -\frac{B}{T^2} \right)
+	\]
+	\[
+	\frac{d f}{d T} = -\frac{A B}{T^2} \cdot e^{\left( \frac{B}{T} \right)}
+	\]
+	\[
+	\sigma_f^2 = \left( \frac{d f}{d T} \right)^2 \sigma_T^2
+	\]
+	\[
+	\sigma_f^2 = \left( -\frac{A B}{T^2} e^{\left( \frac{B}{T} \right)} \right)^2 \sigma_T^2
+	\]
+	\[
+	\sigma_f^2 = A^2 B^2 \frac{e^{\left( \frac{2B}{T} \right)}}{T^4} \sigma_T^2
+	\]
+
+\subsubsection{Funci\'on polinomial}
+	
+	\[
+	f(T) = A + B \cdot T + C \cdot T^2 + D \cdot T^3
+	\]
+	Calculamos la derivada de \( F(T) \) respecto a \( T \):
+	\[
+	\frac{d f}{d T} = B + 2 C T + 3 D T^2
+	\]
+	Luego, aplicando la fórmula de propagación de incertidumbre:
+	\[
+	\sigma_f^2 = \left( \frac{d f}{d T} \right)^2 \sigma_T^2
+	\]
+	por lo tanto:
+	\[
+	\sigma_f^2 = \left( B + 2 C T + 3 D T^2 \right)^2 \sigma_T^2
+	\]
+
+Cada una de las incertidumbres anteriores ser\'an sumadas a sus correspondientes curvas caracter\'isticas. Adem\'as, se debe destacar que los errores, para el caso polinomial y exponencial, no es constante, y depender\'a de la temperatura medida en cada instante de tiempo.
+
+\subsection{Errores}
+	Cada fabricante nos presenta el error propio de cada sensor, este depende del tipo de medición, materiales tecnologia de construcción y demás, y luego probados en laboratorio, alli mediante un sensor de referencia de la más alta calidad y precisión es posible obtener los errores homocedasticos y heterocedasticos de cada sensor de la siguiente tabla.
+	
+	\begin{table}[h]
+		\centering
+		\caption{Errores proporcionados por los fabricantes para cada sensor}
+		\label{tab:errores_sensores}
+		\begin{tabular}{|c|c|}
+			\hline
+			Sensor & Error \\ \hline
+			PT1000 & $\pm 0.5\ ^{\circ} \mathrm{C}$ \\ \hline
+			TMP235-Q1 & $\pm2.5 ^{\circ}\mathrm{C}$ \\ \hline
+			Tipo E & 
+			\begin{tabular}[c]{@{}c@{}}
+				Si $T > 0\ ^{\circ}\mathrm{C}$: $\pm 1.7\ ^{\circ}\mathrm{C}$ o $\pm 0.5\%$, el que sea mayor. \\ 
+				Si $T < 0\ ^{\circ}\mathrm{C}$: $\pm 1.7\ ^{\circ}\mathrm{C}$ o $\pm 1.0\%$, el que sea mayor.
+			\end{tabular} \\ \hline
+			NTCLE100E3 & $ \pm 2\%$ sobre la medici\'on. \\ \hline
+			
+		\end{tabular} 
+			
+		
+	\end{table}
+
+
+\subsection{Error de medida}
+	En nuestro caso, las medidas de cada sensor se ven afectadas por dos factores, tanto el error del ajuste como el error del fabricante. Dicho lo anterior, para encontrar el error se realizara una suma de errores.
+	
+	\[
+		\Delta f = \pm \sqrt{\Delta f_{fabricante} + \Delta f_{ajuste}}
+	\]
+	
+	
+	
+	
+	
+\subsection{Simulación de horno}
+
+En este punto es necesario entonces que mediante el rango escogido para los sensores se realice una curva caracteristica del proceso, en este caso la curva es:
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/temperatura_horno.png}
+	\caption{Perfil de temperatura del horno.}
+	\label{fig:5}
+\end{figure}
+
+Es sobre esta curva donde se evaluará el comportamiento y la respuesta de cada uno de los sensores. Para ello, se ha diseñado una función compuesta por múltiples subtramos, en su mayoría de segundo orden y otras formas no lineales, con el objetivo de evitar un comportamiento tradicional basado únicamente en aumentos y disminuciones lineales de temperatura, permitiendo así un análisis más completo bajo condiciones dinámicas y no triviales.
+
+
+
+\subsection{Operación de los sensores}
+
+En este apartado, se asumirá un comportamiento gaussiano para todos los sensores durante su operación. En el siguiente apartado, se considerará un modelo de error específico para cada sensor, según su naturaleza particular. Además, en ambos casos se contempla la posible inclusión de outliers con una probabilidad del $0.5 \%$ en cada punto de medición.
+
+
+
+\subsubsection{Comportamiento Gaussiano}
+
+El comportamiento gaussiano fue simulado utilizando los errores RMSE obtenidos del ajuste de cada sensor en su respectivo rango de operación, junto con las componentes homocedásticas y heterocedásticas asociadas. Estas se integraron mediante un generador de ruido aleatorio con distribución normal, de media cero y desviación estándar proporcional al error correspondiente. Es importante destacar que, mientras que los errores RMSE y la componente homocedástica se modelan como perturbaciones aditivas, la componente heterocedástica se incorpora como un término multiplicativo, ya que suele expresarse como un porcentaje de la medición actual del sensor. Por lo tanto, a medida que aumenta la magnitud de la variable medida, el impacto del error heterocedástico también se incrementa.
+
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/PT1000_simulado.png}
+	\caption{Comportamiento PT1000.}
+	\label{fig:PT1000_simulado}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TMP235_simulado.png}
+	\caption{Comportamiento TMP235.}
+	\label{fig:TMP235_simulado}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TYPE_E_simulado.png}
+	\caption{Comportamiento TYPEE.}
+	\label{fig:TYPE_E_simulado}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/NTCLE100E3_simulado.png}
+	\caption{Comportamiento NTCLE100E3.}
+	\label{fig:NTCLE100E3_simulado}
+\end{figure}
+
+A partir de las gráficas, es posible identificar comportamientos que no eran evidentes al observar únicamente la tabla \ref{tab:errores_sensores}, donde se presentan los errores de cada sensor en su rango de operación. Por ejemplo, aunque el sensor PT1000 mostró un desempeño inferior en el ajuste de curva, en una simulación dinámica siguió adecuadamente el perfil de temperatura del horno. Lo mismo ocurrió con el sensor NTCLE100E3. En contraste, el sensor tipo E, que mostraba un buen ajuste según la tabla, no tuvo un rendimiento tan favorable en la simulación como cabría esperar.
+
+
+
+\textbf{Comportamiento del error}
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_PT1000.png}
+	\caption{Comportamiento error PT1000.}
+	\label{fig:error_PT1000}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_TMP235.png}
+	\caption{Comportamiento error TMP235.}
+	\label{fig:error_TMP235}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_TYPE_E.png}
+	\caption{Comportamiento error TYPEE.}
+	\label{fig:error_TYPE_E}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/error_NTCLE100E3.png}
+	\caption{Comportamiento error NTCLE100E3.}
+	\label{fig:error_NTCLE100E3}
+\end{figure}
+
+La explicación del comportamiento descrito en el párrafo anterior puede atribuirse a las características intrínsecas de fabricación de los sensores, como los errores homocedásticos y heterocedásticos. En muchos casos, el error de ajuste queda en segundo plano frente a la magnitud de estos otros errores. Lo interesante del perfil de temperatura del horno es que permite evaluar cómo responden los sensores ante condiciones dinámicas y cambios súbitos de temperatura, lo que facilita analizar su comportamiento bajo ajustes y variaciones constantes.
+
+
+
+
+\subsubsection{Comportamiento Alterno}
+
+En este apartado, se evalua el comportamiento de cada sensor, esta vez integrando las componentes de error, no solo de manera lineal, sino en distribución tipo Poisson, Uniforme y Laplace.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/PT1000_ruido_gaussiano.png}
+	\caption{Comportamiento PT1000 con ruido gaussiano.}
+	\label{fig:PT1000_ruido_gaussiano}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TMP235_ruido_poisson.png}
+	\caption{Comportamiento TMP235 ruido poisson.}
+	\label{fig:TMP235_ruido_poisson}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/TYPE_E_ruido_uniforme.png}
+	\caption{Comportamiento TYPEE con ruido uniforme.}
+	\label{fig:TYPE_E_ruido_uniforme}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{../CodigoPython/imagenes/NTCLE100E3_ruido_laplace.png}
+	\caption{Comportamiento NTCLE100E3 ruido laplace.}
+	\label{fig:NTCLE100E3_ruido_laplace}
+\end{figure}
+
+Es curioso en este caso ver el comportamiento de cada uno de los sensores, y como "mejoraron" su rendimiento en comparación con todas las componentes del error gaussianas, esto debido a como distribuye las magnitudes y componentes erroneas usadas, cabe resaltar que curiosamente se ve más influencia de los outliers en este apartado, aunque en ambas tengan la misma probabilidad.
+
+\section{Conclusiones}
+
+En este trabajo se realizo la simulacion de 4 sensores de temperatura (PT1000, TYPE E, TMP235-Q1 Y el NTCLE100E3) en un entorno simulado de horno industrial, teniendo en cuenta los errores del sensor. Para llevar a cabo esta simulacion se realizaron los siguientes etapas:
+
+\begin{itemize}
+	
+	\item Una vez seleccionados los cuatro sensores, se estableció el tipo de curva (lineal, polinómica o exponencial) y se encontraron sus coeficientes a partir del método SVD, en un rango de temperatura de $[0, 100]\,^\circ\mathrm{C}$. El ajuste realizado generó una incertidumbre de $\pm 0.47$ para el sensor PT1000, $\pm 0.00$ para el TMP, $\mp 1.61$ para el TYPE-3 y $\mp 0.35$ para el NTCLE100E3338.
+	
+	\item Para simular cada sensor, se evaluó la temperatura del horno en su respectiva curva característica. Para hacer la simulación más realista, se sumó el error de ajuste (incertidumbre de la curva) y el error del fabricante, calculado mediante propagación de incertidumbre. Se pudo observar, tal como lo indica la teoría, que en los sensores con comportamiento no lineal el error varía con la temperatura.
+	
+	
+\end{itemize}
+
+
+Comprender la metodología del ajuste fino de sensores resulta fundamental para su aplicación en entornos complejos y diversos como la industria, la atmósfera o los laboratorios. Esta técnica permite personalizar los sistemas de medición según las necesidades específicas de cada contexto. Además, el ajuste de rangos mejora significativamente el rendimiento de sensores calibrados en fábrica, ya que optimizar sus parámetros dentro de un subrango puede aumentar la precisión de la medición. Este beneficio suele lograrse a cambio de una leve penalización en el error de ajuste, que en muchos casos resulta despreciable frente a la ganancia en certeza.
+
+\begin{thebibliography}{00}
+
+\item Clases magistrales e información suministrada en la clase de Sistemas de medición avanzada, Maestria en ingenieria electrica, semestre 2025-1
+
+\end{thebibliography}
+
+\end{document}
