@@ -16,52 +16,38 @@
 \begin{document}
 
 \title{Examen 2: Sistemas Avanzados de medici\'on\\
-\thanks{Identify applicable funding agency here. If none, delete this.}
+	\thanks{Identify applicable funding agency here. If none, delete this.}
 }
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Juan Camilo Vasco Leiva}
-\IEEEauthorblockA{\textit{Maestr\'ia en Ingenier\'ia El\'ectrica} \\
-\textit{Universidad T\'ecnologia de Pereira}\\
-Pereira, Colombia \\
-camilo.vasco@utp.edu.co}
-\and
-\IEEEauthorblockN{2\textsuperscript{nd} Juan Diego G\'omez Chavarro}
-\IEEEauthorblockA{\textit{Maestr\'ia en Ingenier\'ia El\'ectrica} \\
-\textit{Universidad T\'ecnologica de Pereira}\\
-Periera, Colombia \\
-juandiego.gomez1@utp.edu.co}
+\author{\IEEEauthorblockN{1\textsuperscript{st} Juan Camil Vasco Leiva}
+	\IEEEauthorblockA{\textit{Maestr\'ia en Ingenier\'ia El\'ectrica} \\
+		\textit{Universidad T\'ecnologia de Pereira}\\
+		Pereira, Colombia \\
+		camilo.vasco@utp.edu.co}
+	\and
+	\IEEEauthorblockN{2\textsuperscript{nd} Juan Diego G\'omez Chavarro}
+	\IEEEauthorblockA{\textit{Maestr\'ia en Ingenier\'ia El\'ectrica} \\
+		\textit{Universidad T\'ecnologica de Pereira}\\
+		Periera, Colombia \\
+		juandiego.gomez1@utp.edu.co}
 
 }
 
 \maketitle
 
 \begin{IEEEkeywords}
-Filtro de kalman, 
+	Filtro de kalman,
 \end{IEEEkeywords}
 
 \section{Introducción}
 
-En este examen práctico de sistemas avanzados de medición, se realizará el ajuste fino de curvas de sensores dentro de un rango especificado por el usuario. El objetivo es simular una ejecución real de una curva de temperatura durante el proceso de horneado de un elemento "X". Para este ejercicio, se considerarán diversas características, como los diferentes errores inherentes a la medición de cada sensor, incluyendo errores de calibración, errores homocedásticos y heterocedásticos, así como la presencia de valores atípicos (outliers) en las mediciones.
-
-
+En este trabajo se realizar\'a la recuperacion de la se\~nal de un sensor de segundo orden, el cual es un sensor de fuerza ...
 
 \section{Desarrollo}
 
-A continuación se desarrollaran cada uno de los pasos para la ejecución del examen realizado en python para el desarrollo de los puntos dictados para el ejercicio:\\
 
-\textbf{ENUNCIADO:}\\
+\textbf{ENUNCIADO:}
 
-En un horno industrial, hay 4 sensores de temperatura diferentes instalados, cuyos datasheets son conocidos y contienen los datos del fabricante para determinar su curva característica. \\
-
-Seleccione los cuatro sensores de su preferencia, con base en los datasheets adjuntos. Determine la curva característica de cada sensor; luego, simule el proceso de adquisición de datos para los cuatro sensores, asumiendo que cada sensor presenta ruido que no necesariamente es gaussiano, así:\\
-
-\begin{itemize}
-	\item Seleccione un rango de operación de cada sensor que no supere el 60% del rango total del dispositivo. 
-	\item Encuentre la ecuación característica exclusivamente en dicho rango y determine el intervalo de incertidumbre al usar el ajuste de su ecuación.
-	\item Simule que el horno sigue algún perfil de temperatura conocido. Por ejemplo, la temperatura incrementa X grados en Y segundos, para luego decrecer Z grados en W segundos. 
-	\item Simule la operación de cada sensor asumiendo primero comportamiento gaussiano y luego algún otro comportamiento (diferente en cada sensor).
-	\item Su simulador debe tener la capacidad de simular outliers a la salida del sistema de medición. 
-\end{itemize}
 
 
 \subsection{Modelo}
@@ -102,7 +88,7 @@ En forma matricial:
 	\end{bmatrix}
 	=
 	\begin{bmatrix}
-		0 & 1 \\
+		0           & 1               \\
 		-\omega_n^2 & -2\zeta\omega_n
 	\end{bmatrix}
 	\begin{bmatrix}
@@ -131,9 +117,9 @@ Donde $\dot{x}_2$ se aproxima mediante el m\'etodo de euler.
 \end{equation*}
 
 \begin{equation*}
-	\textbf{A} = 
+	\textbf{A} =
 	\begin{bmatrix}
-		0 & 1 \\
+		0           & 1               \\
 		-\omega_n^2 & -2\zeta\omega_n
 	\end{bmatrix}
 	, \textbf{B} =
@@ -141,7 +127,7 @@ Donde $\dot{x}_2$ se aproxima mediante el m\'etodo de euler.
 		0 \\
 		\frac{K_s}{m}
 	\end{bmatrix}
-	, \textbf{C} =	
+	, \textbf{C} =
 	\begin{bmatrix}
 		1 & 0
 	\end{bmatrix}
@@ -149,12 +135,22 @@ Donde $\dot{x}_2$ se aproxima mediante el m\'etodo de euler.
 \end{equation*}
 
 
+\subsection{Hardware in the loop}
+
+Imagen generada mediante hardaware in the loop(Borra esta fras)
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../CodigoPython/imagenes/SegundoOrden.png}
+    \caption{Descripción de la imagen}
+    \label{fig:etiqueta}
+\end{figure}
+
 \subsection{Filtro de Kalman Lineal(LKF)}
 
 El filtro de Kalman estima los estados $\textbf{x} = [x_1, x_2]^T$y la entrada $F(t)$, asumiendo un modelo lineal:
 
 \[
-	\mathbf{x}[n + 1] = \textbf{A} \textbf{x}[n] + \textbf{B}\textbf{F}[n] + \textbf{w} [n]
+	\mathbf{x}[n + 1] = \textbf{F} \textbf{x}[n] + \textbf{B}\textbf{F}[n] + \textbf{w} [n]
 \]
 
 \[
@@ -180,12 +176,39 @@ Donde $w$ y $v$ son ruido del proceso y medici\'on repectivamente. El LKF minimi
 \]
 
 \[
-	\hat{\mathbf{x}}_k^+ = \hat{\mathbf{x}}_k^- + \mathbf{K}_k \left( \mathbf{z}_k - \mathbf{H} \hat{\mathbf{x}}_k^- \right)	
+	\hat{\mathbf{x}}_k^+ = \hat{\mathbf{x}}_k^- + \mathbf{K}_k \left( \mathbf{z}_k - \mathbf{H} \hat{\mathbf{x}}_k^- \right)
 \]
 
 \[
 	\mathbf{P}_k^+ = \left( \mathbf{I} - \mathbf{K}_k \mathbf{H} \right) \mathbf{P}_k^-
 \]
+
+\subsection{Estimaciones}
+
+\subsubsection{Estaimacio\'on $x_1$}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/imagenes/EstimacionX1.png}
+	\caption{Descripción de la imagen.}
+	\label{fig:etiqueta}
+\end{figure}
+
+\subsubsection{Estimaci\'on $x_2$}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/imagenes/EstimacionX2.png}
+	\caption{Descripción de la imagen.}
+	\label{fig:etiqueta}
+\end{figure}
+
+\subsubsection{Estimaci\'on $F(t)$}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/imagenes/EstimacionF.png}
+	\caption{Descripción de la imagen.}
+	\label{fig:etiqueta}
+\end{figure}
 
 \section{Conclusiones}
 
@@ -193,7 +216,7 @@ Aqui van las conclusiones
 
 \begin{thebibliography}{00}
 
-\item Clases magistrales e información suministrada en la clase de Sistemas de medición avanzada, Maestria en ingenieria electrica, semestre 2025-1
+	\item Clases magistrales e información suministrada en la clase de Sistemas de medición avanzada, Maestria en ingenieria electrica, semestre 2025-1
 
 \end{thebibliography}
 
