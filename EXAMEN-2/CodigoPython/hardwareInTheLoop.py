@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def generar_fuerza(tiempo, amplitud, freq, ruido = 0.05):
-    return amplitud * np.sin(2 * np.pi * freq * tiempo) + ruido * np.random.random(len(tiempo))
+    return amplitud * np.sin(2 * np.pi * freq * tiempo) + np.random.normal(0.0, ruido,len(tiempo))
 
 class SegundoOrden:
     def __init__(self, omega_n, zeta, Ks, masa, dt):
@@ -43,7 +43,7 @@ def graficar_señales(tiempo, fuerza, x1_vector, x2_vector, save=False):
 
 
 omega_n = 2.0
-zeta = 0.1
+zeta = 0.01
 k_s = 4.0
 masa = 1.0
 
@@ -55,7 +55,7 @@ tiempo = np.linspace(0, Tmax, muestras + 1)
 
 # Parámetros de la señal de entrada Fuerza(t)
 amplitud = 0.8  # V
-freq = 1  # Hz
+freq = 1.5  # Hz
 
 fuerza = generar_fuerza(tiempo, amplitud, freq)
 

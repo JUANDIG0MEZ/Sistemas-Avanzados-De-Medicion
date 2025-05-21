@@ -30,9 +30,9 @@ if __name__ == "__main__":
     B_continua = np.array([[0], [k_s/masa]])  # Matriz de entrada continua
     B = B_continua * dt  # Matriz de entrada discreta
 
-    H = np.array([[1, 0]])  # Matriz de medición
-    Q = np.eye(2) * 0.8  # Covarianza del proceso
-    R = np.array([[0.1]])  # Covarianza del sensor
+    H = np.array([[1.0, 0.0]])  # Matriz de medición
+    Q = np.eye(2) * 0.05  # Covarianza del proceso
+    R = np.array([[0.05]])  # Covarianza del sensor
     P0 = np.eye(2) * 1.0  # Covarianza inicial
     
     
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         z = x1_vector[i]
 
         kf.predict() # Paso de prediccion
-        kf.update(np.array([[z]])) # z debe ser un vector columna
+        kf.update(np.array([[z]])) # z debe ser un vector columna y representa la meedicion de x1(t)
 
 
         x1_kalman.append(kf.x[0, 0]) # x1 estimado 
@@ -95,4 +95,12 @@ if __name__ == "__main__":
     plt.savefig('./imagenes/EstimacionF.png')
     plt.show()
 
+    plt.plot(tiempo, x2_kalman, label='x2(t) estimado')
+    plt.plot(tiempo, np.gradient(x1_kalman, dt), label='x2(t) estimado', color='limegreen')
+    plt.xlabel('Tiempo (s)')
+    plt.ylabel('Respuesta')
+    plt.legend()
+    plt.grid()
+    plt.savefig('./imagenes/EstimacionX1Fuerza.png')
+    plt.show()
 
