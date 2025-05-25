@@ -31,7 +31,7 @@ if __name__ == "__main__":
     B = B_continua * dt  # Matriz de entrada discreta
 
     H = np.array([[1.0, 0.0]])  # Matriz de medición
-    Q = np.eye(2) * 0.05  # Covarianza del proceso
+    Q = np.eye(2) * 5.0  # Covarianza del proceso
     R = np.array([[0.05]])  # Covarianza del sensor
     P0 = np.eye(2) * 1.0  # Covarianza inicial
     

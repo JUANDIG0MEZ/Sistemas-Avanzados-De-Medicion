@@ -1,9 +1,9 @@
 # Fdb version 4
-["pdflatex"] 1747718302.50258 "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" "IEEE-conference-template-062824.pdf" "IEEE-conference-template-062824" 1747718303.23912 0
-  "../CodigoPython/imagenes/EstimacionF.png" 1747716680.45559 61707 44a658445f4bd6f58a8748219fb617cd ""
-  "../CodigoPython/imagenes/EstimacionX1.png" 1747716671.28358 47924 020b2f1ffac69bb94cb4b0f2ecb57d82 ""
-  "../CodigoPython/imagenes/EstimacionX2.png" 1747716674.27458 65771 d7e02804efc6015acc10b25059b6288a ""
-  "../CodigoPython/imagenes/SegundoOrden.png" 1747718302.0305 122381 84d01aae7c59effb5940861bde2d0720 ""
+["pdflatex"] 1748212840.07918 "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" "IEEE-conference-template-062824.pdf" "IEEE-conference-template-062824" 1748212840.8166 0
+  "../CodigoPython/imagenes/EstimacionF.png" 1748212839.65163 94776 24daeaad5bae725896175d067bd54382 ""
+  "../CodigoPython/imagenes/EstimacionX1.png" 1748212836.49662 50847 2d9dcce6702bae0243ce085afe16b90f ""
+  "../CodigoPython/imagenes/EstimacionX2.png" 1748212837.52463 77388 800110c264089d922278a62c65e4be91 ""
+  "../CodigoPython/imagenes/SegundoOrden.png" 1748212833.64962 122512 9348e72dad0152844537e1ef5dcf4817 ""
   "/etc/texmf/web2c/texmf.cnf" 1733040025.17723 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" 1747697443.91964 5330 f942e2ac951996bbb619e4bf78994d56 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -113,7 +113,7 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1733040039.93121 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1733040058 8214733 ccab769c05f7268fb99667dc9f055334 ""
-  "IEEE-conference-template-062824.aux" 1747718303.1685 2275 6839e49f3771ee537a0caa6176d6d486 "pdflatex"
+  "IEEE-conference-template-062824.aux" 1748212840.76063 2275 6839e49f3771ee537a0caa6176d6d486 "pdflatex"
   "IEEE-conference-template-062824.tex" 1747697443.91964 5330 f942e2ac951996bbb619e4bf78994d56 ""
   (generated)
   "IEEE-conference-template-062824.aux"
