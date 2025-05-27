@@ -133,3 +133,48 @@ plt.legend()
 plt.grid()
 plt.savefig('SegundoOrden.png')
 plt.show()
+
+#######################################################################
+########################  ACONDICIONAMIENTO   #########################
+#######################################################################
+
+def escalar(signal, min_sim, max_sim):
+    # Escala la señal simulada al rango de [-10 V, 10 V]
+    return 20.0 * (np.array(signal) - min_sim) / (max_sim - min_sim) - 10.0
+
+def cuantizar(signal_esc, bits=8, rango_total=20.0):
+    niveles = 2 ** bits
+    paso = rango_total / niveles  # 20V / 256
+    return np.round(signal_esc / paso) * paso
+
+
+# --- Postprocesamiento para salida DAQ ±10 V, resolución 8 bits ---
+x1_min = min(x1_modelo2)
+x1_max = max(x1_modelo2)
+
+# Escalado al rango [-10V, 10V]
+x1_escalada = escalar(x1_modelo2, x1_min, x1_max)
+
+# Cuantización 8 bits
+x1_cuantizada = cuantizar(x1_escalada, bits=8, rango_total=20.0)
+
+# Guardar para posible reconstrucción o recuperación
+np.savez('salida_para_DAQ_10V.npz',
+         tiempo=tiempo_2,
+         x1_original=x1_modelo2,
+         x1_escalada=x1_escalada,
+         x1_cuantizada=x1_cuantizada,
+         rango_simulado=(x1_min, x1_max),
+         rango_daq=(-10.0, 10.0),
+         resolucion_bits=8)
+
+# Graficar comparación
+plt.figure()
+plt.plot(tiempo_2, x1_modelo2, label='Original (Simulada)')
+plt.plot(tiempo_2, x1_cuantizada, '--', label='Escalada y Cuantizada (±10V, 8 bits)')
+plt.title('Señal simulada vs acondicionada para DAQ ±10V')
+plt.xlabel('Tiempo (s)')
+plt.ylabel('Voltaje (V)')
+plt.legend()
+plt.grid()
+plt.show()

@@ -72,6 +72,35 @@ class Modelo1:
     R = np.array([[r_u]])
 
 
+def aplicar_fft(tiempo, señal):
+    """
+    Aplica la Transformada Rápida de Fourier (FFT) a una señal dada.
+
+    Parámetros:
+    - tiempo: vector de tiempo (numpy array)
+    - señal: señal a analizar (numpy array)
+
+    Retorna:
+    - freqs: frecuencias correspondientes (Hz)
+    - amplitud: espectro de amplitud (magnitud normalizada)
+    """
+    N = len(señal)                      # Número de puntos
+    dt = tiempo[1] - tiempo[0]         # Paso de tiempo
+    fs = 1 / dt                        # Frecuencia de muestreo
+
+    # FFT
+    fft_result = np.fft.fft(señal)
+    fft_result = fft_result[:N // 2]  # Solo parte positiva
+
+    # Frecuencias
+    freqs = np.fft.fftfreq(N, dt)[:N // 2]
+
+    # Amplitud normalizada
+    amplitud = np.abs(fft_result) * 2 / N
+
+    return freqs, amplitud
+
+
 if __name__ == "__main__":
     
 
@@ -160,3 +189,23 @@ if __name__ == "__main__":
     plt.grid()
     plt.savefig('EstimacionF.png')
     plt.show()
+
+
+
+
+    # Aplicar FFT a la fuerza real y estimada
+    freqs_f, amp_f = aplicar_fft(tiempo_2, fuerza_2)
+    freqs_f_est, amp_f_est = aplicar_fft(tiempo_2, fuerza_kalman)
+
+    # Graficar
+    plt.figure()
+    plt.plot(freqs_f, amp_f, label="Fuerza real")
+    plt.plot(freqs_f_est, amp_f_est, label="Fuerza estimada (Kalman)")
+    plt.xlabel("Frecuencia (Hz)")
+    plt.ylabel("Amplitud")
+    plt.title("Espectro de la fuerza")
+    plt.grid(True)
+    plt.legend()
+    plt.savefig("FFT_Fuerza.png")
+    plt.show()
+
