@@ -41,174 +41,292 @@
 
 \section{Introducción}
 
-En este trabajo se realizar\'a la recuperacion de la se\~nal de un sensor de segundo orden, el cual es un sensor de fuerza ...
+Este trabajo consiste en recuperar dos variables físicas a partir de las mediciones y de los modelos de cada sensor, utilizando el filtro de Kalman y series de Fourier. En este caso, se utilizaron dos sensores diferentes: el primero es un sensor de fuerza con un modelo de segundo orden, y el segundo es un sensor desconocido con un modelo de primer orden. Dado que no se cuenta con el hardware necesario para hacer el experimento, se realizo la simulacion mediante \textit{hardware-in-the-loop} en el cual se simula cada una de las variables fisicas y se simula sistema el sistema dinamico de cada sensor.
 
-\section{Desarrollo}
-
-
-\textbf{ENUNCIADO:}
+\section{Metodolog\'ia}
 
 
 
-\subsection{Modelo}
+
+\subsection{Modelo segundo orden}
 
 % Modelado en Espacio de Estados
-% Sensor de Segundo Orden
+% Sensor d Segundo Orden
 \begin{equation}
 	\frac{d^2y}{dt^2} + 2\zeta\omega_n \frac{dy}{dt} + \omega_n^2 y = \frac{K_s}{m} F(t)
 \end{equation}
-
-
 Donde la se\~nal $y(t)$ es la salida del sensor, $\zeta$ es un coeficiente de amortiguamiento, $\omega_n$ se conoce como la frecuencia natual de oscilaci\'on del sistema, ${K_s}$ es una constante de rigidez y $m$ es una masa asociada al sistema de amortiguamiento.
 
-Definiendo las variables de estado:
+Esta ecuaci\'on diferencial puede transformarse en un modelo en el espacio de estados
 \[
-	x_1 = y
+\dot{x}(t) = \mathbf{A}\mathbf{x}(t) + \mathbf{w}(t)
 \]
+Donde los estados son:
 \[
-	x_2 = \frac{dy}{dt}
+	\mathbf{x} = 
+	\begin{bmatrix}
+	\dot{x}_1 \\
+	\dot{x}_2 \\
+	\dot{x}_3
+	\end{bmatrix} =
+	\begin{bmatrix}
+		\dot{y} \\
+		\dot\dot{y} \\
+		\dot{F}(t)
+	\end{bmatrix}
 \]
-
-Se obtiene el modelo en espacio de estados:
-
+Cada variable de estado puede definirse de la siguiente forma:
+\[
+	\dot{x}_1 = \frac{ dx}{dt}
+\]
 \[
 	\dot{x}_1 = x_2
 \]
 \[
 	\dot{x}_2 = -2\zeta\omega_n x_2 - \omega_n^2x_1 + \frac{K_s}{m}F(t)
 \]
+Por otro lado, la variacion temporal de la fuerza se modela como un proceso estocastico.
+\[
+	\dot{x}_3 =  \omega_{F}(t)
+\]
+Dicho lo anterior, se puede establecer que el modelo de espacios de estados es el siguiente.
 
-
-En forma matricial:
 
 \begin{equation*}
-	\begin{bmatrix}
-		\dot{x}_1 \\
-		\dot{x}_2
-	\end{bmatrix}
+	\underbrace{
+		\begin{bmatrix}
+			\dot{x}_1 \\
+			\dot{x}_2 \\
+			\dot{x}_3
+		\end{bmatrix}
+	}_{\mathbf{\dot{x}}(t)}
 	=
-	\begin{bmatrix}
-		0           & 1               \\
-		-\omega_n^2 & -2\zeta\omega_n
-	\end{bmatrix}
-	\begin{bmatrix}
-		x_1 \\
-		x_2
-	\end{bmatrix}
+	\underbrace{\begin{bmatrix}
+			0           & 1                & 0 \\
+			-\omega_n^2 & -2\zeta\omega_n  &  \frac{K_s}{m} \\
+			0			& 0				   & 0
+	\end{bmatrix}}_{\mathbf{A}}
+	\underbrace{\begin{bmatrix}
+			x_1 \\
+			x_2 \\
+			x_3
+	\end{bmatrix}}_{\mathbf{x}(t)}	
 	+
+	\underbrace{
 	\begin{bmatrix}
 		0 \\
-		\frac{K_s}{m}
-	\end{bmatrix}
-	F(t)
-\end{equation*}
-
-
-A partir del modelo dinamico es posible recuperar $F(t)$, as\'i:
-\begin{equation*}
-	\textbf{F}(t) = \frac{m}{K_s} \left( \dot{x}_2 + 2\zeta\omega_n x_2 + \omega_n^2 x_1 \right)
-\end{equation*}
-
-
-Donde $\dot{x}_2$ se aproxima mediante el m\'etodo de euler.
-
-\begin{equation*}
-	\dot{x}_2 \approx \frac{x_2[n] - x_2[n-1]}{\Delta t}
-\end{equation*}
-
-\begin{equation*}
-	\textbf{A} =
-	\begin{bmatrix}
-		0           & 1               \\
-		-\omega_n^2 & -2\zeta\omega_n
-	\end{bmatrix}
-	, \textbf{B} =
-	\begin{bmatrix}
 		0 \\
-		\frac{K_s}{m}
+		w_{F}(t)
 	\end{bmatrix}
-	, \textbf{C} =
+	}_{\mathbf{w}(t)}	
+\end{equation*}
+
+dicho lo anterior:
+\[
+\mathbf{F} = 
+\begin{bmatrix}
+	1           & \Delta t            & 0 \\
+	-\omega_n^2 \cdot \Delta t   & 1 -2\zeta\omega_n \cdot \Delta t   &  \frac{K_s}{m} \cdot \Delta t  \\
+	0			& 0				   & 1
+\end{bmatrix}, 
+\mathbf{H} = 
+\begin{bmatrix}
+	1 & 0 & 0
+\end{bmatrix}
+\]
+
+
+Mientras que 
+
+
+\[
+\mathbf{Q} =  \begin{bmatrix}
+	0   & 0    & 0 \\
+	0   & 0    & 0  \\
+	0   & 0	   & q_F \cdot \Delta t
+\end{bmatrix}, \mathbf{R} = [r_F]
+\]
+
+Donde $q_f$ es la varianza de la tasa de cambio $\mathbf{\dot{F}}(t) = \omega_{F}$ y $r_F$ es la incertidumbre en la medici\'on.
+
+Por ultimo, el vector de medicion es
+
+\[
+\textbf{z}[n] = \textbf{H} \textbf{x}[n] + \textbf{v}[n] ,
+\mathbf{v} = \sqrt[]{r}
+\]
+
+
+\subsection{Modelo primero orden}
+
+\[
+\tau \frac{dy}{dt} + y = K_s u(t)
+\]
+
+Siguiendo un procedimiento similar al del modelo de segundo orden. se puede demostrar que:
+\begin{equation*}
+	\underbrace{
+		\begin{bmatrix}
+			\dot{x}_1 \\
+			\dot{u}(t)
+		\end{bmatrix}
+	}_{\mathbf{\dot{x}}(t)}
+	=
+	\underbrace{\begin{bmatrix}
+			-\frac{1}{\tau}           & \frac{K_s}{\tau}                 \\
+			0 & 0   \\
+	\end{bmatrix}}_{\mathbf{A}}
+	\underbrace{\begin{bmatrix}
+			x_1 \\
+			u(t) 
+	\end{bmatrix}}_{\mathbf{x}(t)}	
+	+
+	\underbrace{
+		\begin{bmatrix}
+			0 \\
+			w_{u}(t)
+		\end{bmatrix}
+	}_{\mathbf{w}(t)}
+\end{equation*}
+
+\[
+	\mathbf{F} = \begin{bmatrix}
+		1 -\frac{1}{\tau} \cdot \Delta t          & \frac{K_s}{\tau} \cdot \Delta t               \\
+		0 & 1 \\
+	\end{bmatrix},
+	\mathbf{H} =
 	\begin{bmatrix}
 		1 & 0
 	\end{bmatrix}
-	, \textbf{D} = 0
-\end{equation*}
+\]
+
+\[
+\mathbf{Q} = \begin{bmatrix}
+	0 & 0  \\
+	0 & q_u \cdot \Delta t \\
+\end{bmatrix}, 
+\mathbf{R} = [r_u]
+\]
 
 
-\subsection{Hardware in the loop}
 
-Imagen generada mediante hardaware in the loop(Borra esta fras)
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{../CodigoPython/imagenes/SegundoOrden.png}
-    \caption{Descripción de la imagen}
-    \label{fig:etiqueta}
-\end{figure}
+\subsection{Fourier}
+
+
 
 \subsection{Filtro de Kalman Lineal(LKF)}
 
-El filtro de Kalman estima los estados $\textbf{x} = [x_1, x_2]^T$y la entrada $F(t)$, asumiendo un modelo lineal:
+El filtro de Kalman estima los estados $\textbf{x} = [x_1, x_2, x_3]^T$ a partir de dos pasos 1) prediccion y 2) actualizacion.
 
-\[
-	\mathbf{x}[n + 1] = \textbf{F} \textbf{x}[n] + \textbf{B}\textbf{F}[n] + \textbf{w} [n]
-\]
 
-\[
-	\textbf{z}[n] = \textbf{H} \textbf{x}[n] + \textbf{v}[n]
-\]
-
-Donde $w$ y $v$ son ruido del proceso y medici\'on repectivamente. El LKF minimiza el error cuadr\'atico medio mediante dos etapas.
 
 \subsubsection{Predicci\'on}
 
 
 \[
-	\hat{\mathbf{x}}_k^- = \mathbf{F}\hat{\mathbf{x}^+_{k-1}} + \mathbf{B}u_{k-1}
+\hat{\mathbf{x}}_k^- = \mathbf{F}\hat{\mathbf{x}^+_{k-1}}
 \]
 \[
-	P^-_k = F P_{k-1}F^T + Q
+\mathbf{P^-_k} = \mathbf{F} \mathbf{P}_{k-1} \mathbf{F^T} + \mathbf{Q}
 \]
 
 \subsubsection{Actualizaci\'on}
 
 \[
-	\mathbf{K}_k = \mathbf{P}_k^- \mathbf{H}^T \left( \mathbf{H} \mathbf{P}_k^- \mathbf{H}^T + \mathbf{R} \right)^{-1}
+\mathbf{K}_k = \mathbf{P}_k^- \mathbf{H}^T \left( \mathbf{H} \mathbf{P}_k^- \mathbf{H}^T + \mathbf{R} \right)^{-1}
 \]
 
 \[
-	\hat{\mathbf{x}}_k^+ = \hat{\mathbf{x}}_k^- + \mathbf{K}_k \left( \mathbf{z}_k - \mathbf{H} \hat{\mathbf{x}}_k^- \right)
+\hat{\mathbf{x}}_k^+ = \hat{\mathbf{x}}_k^- + \mathbf{K}_k \left( \mathbf{z}_k - \mathbf{H} \hat{\mathbf{x}}_k^- \right)
 \]
 
 \[
-	\mathbf{P}_k^+ = \left( \mathbf{I} - \mathbf{K}_k \mathbf{H} \right) \mathbf{P}_k^-
+\mathbf{P}_k^+ = \left( \mathbf{I} - \mathbf{K}_k \mathbf{H} \right) \mathbf{P}_k^-
 \]
 
-\subsection{Estimaciones}
+Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de transicion, $\mathbf{H}$  la matriz de medicion, .
 
-\subsubsection{Estaimacio\'on $x_1$}
+
+\section{Resultados (hardware in the loop)}
+
+\subsection{Modelo segundo orden}
+
+\begin{table}[h]
+	\centering
+	\caption{Parametros modelo de segundo orden.}
+	\label{tab:parametros_segundo_orden}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\textbf{Parametros} & \textbf{Valores} \\
+		\hline
+		$\zeta$  &  0 \\
+		$\omega_n$      & 0 \\
+		$m$ & 0 \\
+		$\omega_F$ & 0 \\
+		$ q_F $  &  0\\
+		$\Delta t$ & 0\\  
+		$r_F$ & 0 \\ 
+		\hline
+	\end{tabular}
+	
+\end{table}
+
+
+
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/imagenes/EstimacionX1.png}
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/EstimacionX1.png}
 	\caption{Descripción de la imagen.}
 	\label{fig:etiqueta}
 \end{figure}
 
-\subsubsection{Estimaci\'on $x_2$}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/imagenes/EstimacionX2.png}
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/EstimacionX2.png}
 	\caption{Descripción de la imagen.}
 	\label{fig:etiqueta}
 \end{figure}
 
-\subsubsection{Estimaci\'on $F(t)$}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/imagenes/EstimacionF.png}
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/EstimacionF.png}
 	\caption{Descripción de la imagen.}
 	\label{fig:etiqueta}
 \end{figure}
+
+
+\subsection{Modelo de primer orden}
+
+\begin{table}[h]
+	\centering
+	\caption{Parametros modelo de primer orden}
+	\label{tab:parametros_primer_orden}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		\textbf{Parametros} & \textbf{Valores} \\
+		\hline
+		$\tau$  &  0 \\
+		$K_s$      & 0 \\
+		$q_u$ & 0 \\
+		$\Delta t$ & 0\\  
+		$r_u$ & 0 \\ 
+		\hline
+	\end{tabular}
+	
+\end{table}
+
+Imagen generada mediante hardware in the loop(Borra esta fras)
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/SegundoOrden.png}
+	\caption{Descripción de la imagen}
+	\label{fig:etiqueta}
+\end{figure}
+
+
+
 
 \section{Conclusiones}
 
