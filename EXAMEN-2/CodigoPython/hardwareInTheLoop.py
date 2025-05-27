@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def generar_fuerza(tiempo, amplitud, freq, ruido = 0.05):
-    return amplitud * np.sin(2 * np.pi * freq * tiempo) + np.random.normal(0.0, ruido,len(tiempo))
+    return amplitud * np.sin(2 * np.pi * freq * tiempo) #+ np.random.normal(0.0, ruido,len(tiempo))
 
 def generar_u(tiempo, amplitud, freq, ruido= 0.05):
     return amplitud * np.sin(2 * np.pi * freq * tiempo) + np.random.normal(0.0, ruido,len(tiempo))
@@ -39,7 +39,6 @@ class PrimerOrden:
     
     def actualizar(self, u):
         x1 = self.x1 + self.dt * ( self.k_s * u -self.x1)/ self.tau
-
         # Actualiza
         self.x1 = x1
 
@@ -54,10 +53,10 @@ class Parametros_2:
     masa = 1.0
     
     amplitud = 0.8
-    freq = 0.1
+    freq = 2
 
     dt = 0.03
-    Tmax =10
+    Tmax =20
     muestras = int(Tmax / dt)
 
 

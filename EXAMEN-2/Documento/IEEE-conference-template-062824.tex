@@ -213,6 +213,25 @@ Siguiendo un procedimiento similar al del modelo de segundo orden. se puede demo
 \subsection{Fourier}
 
 
+\[
+	\mathcal{F}\left\{ \frac{d^2y}{dt^2} \right\} + 2\zeta\omega_n \mathcal{F}\left\{\frac{dy}{dt}\right\} + \omega_n^2 \mathcal{F}\left\{y\right\} = \frac{K_s}{m} \mathcal{F}\left\{F(t)\right\}
+\]
+\[
+	-\omega^2 Y(\omega)  + 2j\zeta\omega_n\omega Y(\omega) + \omega^2 Y(\omega) = \frac{K_s}{m}F(\omega)
+\]
+	
+\[
+	\left(-\omega^2  + 2j\zeta\omega_n\omega + \omega^2 \right) Y(\omega) = \frac{K_s}{m} F(\omega)
+\]
+
+\[
+	F(\omega) = \frac{m}{K_s}  \left(-\omega^2  + 2j\zeta\omega_n\omega + \omega^2 \right) Y(\omega)
+\]
+
+
+\[
+	 F(\omega) = m/K_s [A(\omega)] = 
+\]
 
 \subsection{Filtro de Kalman Lineal(LKF)}
 
@@ -247,6 +266,9 @@ El filtro de Kalman estima los estados $\textbf{x} = [x_1, x_2, x_3]^T$ a partir
 Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de transicion, $\mathbf{H}$  la matriz de medicion, .
 
 
+
+
+
 \section{Resultados (hardware in the loop)}
 
 \subsection{Modelo segundo orden}
@@ -277,13 +299,6 @@ Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de tra
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{../CodigoPython/EstimacionX1.png}
-	\caption{Descripción de la imagen.}
-	\label{fig:etiqueta}
-\end{figure}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/EstimacionX2.png}
 	\caption{Descripción de la imagen.}
 	\label{fig:etiqueta}
 \end{figure}

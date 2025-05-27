@@ -24,12 +24,33 @@ class KalmanFilter:
         self.P = (np.eye(3) - K @ self.H) @ self.P
 
 
+def fourier_2(y):
+    dt = Parametros_2.dt
+
+    Y = np.fft.fft(y)
+    N = len(tiempo_2)
+
+    omega = 2 * np.pi * np.fft.fftfreq(N, dt)
+    omega_n = Parametros_2.omega_n
+    zeta = Parametros_2.zeta
+    k_s = Parametros_2.k_s
+    masa = Parametros_2.masa
+
+
+    F_omega = (masa)/k_s * ((-omega**2 + 2j*zeta*omega_n*omega + omega_n)* Y)
+
+    F = np.fft.ifft(F_omega).real
+
+    return F
+
+
+
 
 class Modelo2:
     # Varianza de la tasa de cambio de la fuerza 
     q_F = 0.001
     # Varianza en las mediciones del sensor
-    r_F = 0.0003
+    r_F = 0.039
     # Covarianza inicial
     P0 = np.eye(3) * 0.001  
 
@@ -56,7 +77,7 @@ class Modelo1:
     # Varianza de la tasa de cambio de u(t)
     q_u = 0.001
     # Varianza en las mediciones del sensor
-    r_u = 0.003
+    r_u = 0.039
 
     A = np.array([
         [-1/Parametros_1.k_s, Parametros_1.k_s/Parametros_1.tau],
@@ -107,7 +128,8 @@ if __name__ == "__main__":
     ####################### MODELO SEGUNDO ORDEN #####################
     ##################################################################
 
-
+    ########################################
+    ########### KALMAN #####################
     kf_2 = KalmanFilter(
         Modelo2.F,
         Modelo2.H,
@@ -131,6 +153,10 @@ if __name__ == "__main__":
         x2_kalman_2.append(kf_2.x[1, 0]) # x2 estimado
         fuerza_kalman.append(kf_2.x[2,0])
 
+    #######################################
+    ############ FOURIER ##################
+
+    fuerza_fourier = fourier_2(x1_modelo2)
 
     plt.plot(tiempo_2, x1_modelo2, label='x1(t)')
     plt.plot(tiempo_2, x1_kalman_2, label='x1(t) estimado')
@@ -141,19 +167,9 @@ if __name__ == "__main__":
     plt.savefig('EstimacionX1.png')
     plt.show()
 
-
-    plt.plot(tiempo_2, x2_modelo2, label='x2(t)')
-    plt.plot(tiempo_2, x2_kalman_2, label='x2(t) estimado')
-    plt.xlabel('Tiempo (s)')
-    plt.ylabel('Respuesta')
-    plt.legend()
-    plt.grid()
-    plt.savefig('EstimacionX2.png')
-    plt.show()
-
-
     plt.plot(tiempo_2, fuerza_2, label='Fuerza')
-    plt.plot(tiempo_2, fuerza_kalman, label='Fuerza estimada')
+    plt.plot(tiempo_2, fuerza_kalman, label='Fuerza kalman')
+    plt.plot(tiempo_2, fuerza_fourier, label='Fuerza Fourier')
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Respuesta')
     plt.legend()
