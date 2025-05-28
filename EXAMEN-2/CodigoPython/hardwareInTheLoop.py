@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 #         fuerza.append(perfiles[min(t // 600, len(perfiles)-1)])
 #     return np.array(fuerza)
 
-def generar_fuerza(tiempo, amplitud, freq, ruido = 0.05):
+def generar_fuerza(tiempo, amplitud, freq, ruido = 0.02):
 
-    return amplitud * np.sin(2 * np.pi * freq * tiempo) #+ np.random.normal(0.0, ruido,len(tiempo))
+    return amplitud * np.sin(2 * np.pi * freq * tiempo) + np.random.normal(0.0, ruido,len(tiempo))
 
-def generar_u(tiempo, amplitud, freq, ruido= 0.05):
+def generar_u(tiempo, amplitud, freq, ruido= 0.02):
     return amplitud * np.sin(2 * np.pi * freq * tiempo) + np.random.normal(0.0, ruido,len(tiempo))
 
 class SegundoOrden:
@@ -63,7 +63,7 @@ class Parametros_2:
     amplitud = 0.8
     freq = 0.5
 
-    dt = 0.001
+    dt = 0.01
     Tmax =10
     muestras = int(Tmax / dt)
 
@@ -75,7 +75,7 @@ class Parametros_1:
     amplitud= 0.8
     freq = 0.5
 
-    dt = 0.1
+    dt = 0.01
     Tmax =20
     muestras = int(Tmax / dt)
 
@@ -116,7 +116,7 @@ plt.show()
 
 tiempo_2 = np.linspace(0, Parametros_2.Tmax, Parametros_2.muestras + 1)
 fuerza_2 = generar_fuerza(tiempo_2, Parametros_2.amplitud, Parametros_2.freq)
-#fuerza_2 = generar_fuerza_2(tiempo_2)
+
 
 # Estado inicial
 x1_modelo2 = []
@@ -133,7 +133,6 @@ for fz in fuerza_2:
 plt.figure()
 plt.plot(tiempo_2, fuerza_2, label='Fuerza')
 plt.plot(tiempo_2, x1_modelo2, label='x1(t)=y(t)')
-#plt.plot(tiempo_2, x2_modelo2, label='x2(t)', color='limegreen')
 plt.title('Modelo de Segundo Orden')
 plt.xlabel('Tiempo (s)')
 plt.ylabel('Respuesta')

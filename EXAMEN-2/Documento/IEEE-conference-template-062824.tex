@@ -55,11 +55,11 @@ La primera parte consiste en determinar los modelos de estudio, en este caso un 
 % Modelado en Espacio de Estados
 % Sensor d Segundo Orden
 
-El comportamiento de este modelo se describe tal que:\\
+El comportamiento de este modelo se describe tal que:
 \begin{equation}
 	\frac{d^2y}{dt^2} + 2\zeta\omega_n \frac{dy}{dt} + \omega_n^2 y = \frac{K_s}{m} F(t)
 \end{equation}
-Donde la se\~nal $y(t)$ es la salida del sensor, $\zeta$ es un coeficiente de amortiguamiento, $\omega_n$ se conoce como la frecuencia natual de oscilaci\'on del sistema, ${K_s}$ es una constante de rigidez y $m$ es una masa asociada al sistema de amortiguamiento.\\
+Donde la se\~nal $y(t)$ es la salida del sensor, $\zeta$ es un coeficiente de amortiguamiento, $\omega_n$ se conoce como la frecuencia natual de oscilaci\'on del sistema, ${K_s}$ es una constante de rigidez y $m$ es una masa asociada al sistema de amortiguamiento.
 
 Esta ecuaci\'on diferencial puede transformarse en un modelo en el espacio de estados de la siguiente forma:
 \[
@@ -251,10 +251,10 @@ En este caso simularemos una DAQ de 8bits de resolución y un rango de 20 V, por
 
 
 \[
-2^{8}=256 niveles
+2^{8}=256 \text{ niveles}
 \]
 \[
-\frac{{20V}{256}=0.078125 V
+\frac{20\text{ V}}{256}=0.078125 \text{ V}
 \]
 
 \subsection{Fourier}
@@ -362,14 +362,14 @@ Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de tra
 	\centering
 	\includegraphics[width=0.5\textwidth]{../CodigoPython/segundo_orden.png}
 	\caption{Descripción de la imagen.}
-	\label{fig:etiqueta}
+	\label{fig:segundo_orden}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{../CodigoPython/estimacion_f_modelo_2.png}
 	\caption{Descripción de la imagen.}
-	\label{fig:etiqueta}
+	\label{fig:f_modelo_2}
 \end{figure}
 
 
@@ -400,14 +400,14 @@ Imagen generada mediante hardware in the loop(Borra esta fras)
 	\centering
 	\includegraphics[width=0.5\textwidth]{../CodigoPython/primer_orden.png}
 	\caption{Descripción de la imagen.}
-	\label{fig:etiqueta}
+	\label{fig:primer_orden}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{../CodigoPython/estimacion_u_modelo_1.png}
 	\caption{Descripción de la imagen.}
-	\label{fig:etiqueta}
+	\label{fig:u_modelo_1}
 \end{figure}
 
 \subsection{An\'alisis de error} 

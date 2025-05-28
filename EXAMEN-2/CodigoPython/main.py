@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
 
     for i in range(len(tiempo_1)):
-        z = x1_modelo1[i] + np.random.normal(0, Modelo1.r_u ** (1/2))
+        z = x1_modelo1[i]
 
         kf_1.predict()
         kf_1.update(np.array([[z]]))
@@ -167,21 +167,29 @@ if __name__ == "__main__":
 
     u_fourier = fourier_1(x1_modelo1)
 
-    
-    plt.plot(tiempo_1, u_1, label='u1(t) ideal')
-    plt.plot(tiempo_1, u_fourier, label='u1(t) fourier')
-    plt.plot(tiempo_1, u_kalman, label='u1(t) kalman')
+    plt.plot(tiempo_1, u_1, label='u(t) ideal')
+    plt.plot(tiempo_1, u_fourier, label='u(t) fourier', alpha=0.5)
+    plt.ylim(-2, 2)
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Respuesta')
-    plt.title('Estimacion de u(t) modelo 1')
-    plt.ylim(-1, 1)
+    plt.title('Estimacion de u(t) modelo 1 con Fourier')
     plt.legend()
     plt.grid()
-    plt.savefig('estimacion_u_modelo_1.png')
+    plt.savefig('estimacion_u_fourier_modelo_1.png')
     plt.show()
 
-
-
+    
+    plt.plot(tiempo_1, u_1, label='u(t) ideal')
+    plt.plot(tiempo_1, u_kalman, label='u(t) kalman')
+    plt.ylim(-2, 2)
+    plt.xlabel('Tiempo (s)')
+    plt.ylabel('Respuesta')
+    plt.title('Estimacion de u(t) modelo 1 con Kalman')
+    plt.legend()
+    plt.grid()
+    plt.savefig('estimacion_u_kalman_modelo_1.png')
+    plt.show()
+    plt.figure()
 
 
     ##################################################################
@@ -221,8 +229,8 @@ if __name__ == "__main__":
 
     plt.plot(tiempo_2, fuerza_kalman, label='F(t) kalman')
     plt.plot(tiempo_2, fuerza_2, label='F(t) ideal')
-    plt.plot(tiempo_2, fuerza_fourier, label='F(t) Fourier')
     plt.ylim(-2, 2)
+    plt.title('Estimacion de F(t) modelo 2 con Kalman')
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Respuesta')
     plt.legend()
@@ -230,6 +238,40 @@ if __name__ == "__main__":
     plt.savefig('estimacion_f_modelo_2.png')
     plt.show()
 
+
+    plt.plot(tiempo_2, fuerza_2, label='F(t) ideal')
+    plt.plot(tiempo_2, fuerza_fourier, label='F(t) Fourier', alpha=0.5)
+    plt.ylim(-2, 2)
+    plt.xlabel('Tiempo (s)')
+    plt.title('Estimacion de F(t) modelo 2 con Fourier')
+    plt.ylabel('Respuesta')
+    plt.legend()
+    plt.grid()
+    plt.savefig('estimacion_f_fourier_modelo_2.png')
+    plt.show()
+
+
     
+    ########################################
+    ############### ERRORES ################
+
+    error_kalman_1 = np.array(x1_modelo1) - np.array(x1_kalman_1)
+    error_kalman_2 = np.array(x1_modelo2) - np.array(x1_kalman_2)
+    error_fourier_1 = np.array(u_1) - np.array(u_fourier)
+    error_fourier_2 = np.array(fuerza_2) - np.array(fuerza_fourier)
+
+    # Elevan al cuadrado los errores
+    error_kalman_1 = np.square(error_kalman_1)
+    error_kalman_2 = np.square(error_kalman_2)
+    error_fourier_1 = np.square(error_fourier_1)
+    error_fourier_2 = np.square(error_fourier_2)
+
+    print("Error cuadratico medio modelo 1 (Kalman):", np.mean(error_kalman_1))
+    print("Error cuadratico medio modelo 2 (Kalman):", np.mean(error_kalman_2))
+    print("Error cuadratico medio modelo 1 (Fourier):", np.mean(error_fourier_1))
+    print("Error cuadratico medio modelo 2 (Fourier):", np.mean(error_fourier_2))
+
+
+
 
 
