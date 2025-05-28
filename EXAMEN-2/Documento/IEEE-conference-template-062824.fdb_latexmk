@@ -1,11 +1,11 @@
 # Fdb version 4
-["pdflatex"] 1748396864.44425 "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" "IEEE-conference-template-062824.pdf" "IEEE-conference-template-062824" 1748396865.28437 0
+["pdflatex"] 1748398303.92234 "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" "IEEE-conference-template-062824.pdf" "IEEE-conference-template-062824" 1748398304.70332 2
   "../CodigoPython/estimacion_f_modelo_2.png" 1748392389.58175 54606 db730b964fd001acaa817cd32e6e57dc ""
   "../CodigoPython/estimacion_u_modelo_1.png" 1748392388.36675 85270 f4f56a21030a4ac350ff879ed81ae3c3 ""
   "../CodigoPython/primer_orden.png" 1748392386.19776 76186 dbfdc1e2b4312a7d62ef6f5f2cda4c44 ""
   "../CodigoPython/segundo_orden.png" 1748392387.52176 54662 ccadd929c6e99b0baf0bd7f8d00b6b32 ""
   "/etc/texmf/web2c/texmf.cnf" 1733040025.17723 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" 1748396863.30667 13428 8d16c7f28f46b724fdb383dce29be937 ""
+  "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" 1748398302.82322 14913 9026a13f1795dbe499001c0f474739bf ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -122,8 +122,8 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1733040039.93121 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1733040058 8214733 ccab769c05f7268fb99667dc9f055334 ""
-  "IEEE-conference-template-062824.aux" 1748396865.21067 3591 0199104dd2819ba22318f6cfae94b392 "pdflatex"
-  "IEEE-conference-template-062824.tex" 1748396863.30667 13428 8d16c7f28f46b724fdb383dce29be937 ""
+  "IEEE-conference-template-062824.aux" 1748398304.60225 3591 8e8097ab1bed139b73520038c275a512 "pdflatex"
+  "IEEE-conference-template-062824.tex" 1748398302.82322 14913 9026a13f1795dbe499001c0f474739bf ""
   (generated)
   "IEEE-conference-template-062824.aux"
   "IEEE-conference-template-062824.log"
