@@ -363,11 +363,39 @@ Imagen generada mediante hardware in the loop(Borra esta fras)
 	\label{fig:etiqueta}
 \end{figure}
 
+\subsection{An\'alisis de error} 
 
+\begin{table}[h]
+	\centering
+	\caption{Errores de los m\'etodos}
+	\label{tab:errores}
+	\begin{tabular}{|c|c|}
+		\hline
+		
+		\textbf{M\'etodo} & \textbf{Error} \\
+		\hline
+		\multicolumn{2}{|c|}{Modelo orden 1} \\
+		\hline
+		\textit{Kalman}  &  0 \\
+		\textit{Fourier} & 0 \\
+		\hline
+		\multicolumn{2}{|c|}{Modelo orden 2} \\
+		\hline
+		\textit{Kalman}  &  0 \\
+		\textit{Fourier} & 0 \\
+		\hline
+	\end{tabular}
+	
+\end{table}
 
 \section{Conclusiones}
 
-Aqui van las conclusiones
+En este trabajo se realizo la recuperacion de dos variables fisicas simuladas a partir de la medicion del voltaje sobre dos sensores de primer y segundo orden con una DAQ. Para realizar esta recuperacion se utiliz\'o la transformada discreta de fourier y el filtro de Kalman. A partir de este trabajo se puso establecer dos cosas.
+
+\begin{itemize}
+	\item El metodo de Fourier es pesimo para aplicaciones en tiempo real. Mientras que Kalman es capaz de estimar la variable fisica en cada instante de tiempo, Fourier necesita conocer toda la secuencia de datos para poder ser aplicado.
+	\item Fourier presenta grandes errores al inicio y final de la senial recuperada debido al fenomeno de \textit{fenomeno de Gibbs} generada porque la disconinuidad entre un el inicio y final de un periodo.
+\end{itemize}
 
 \begin{thebibliography}{00}
 
