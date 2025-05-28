@@ -36,28 +36,32 @@
 \maketitle
 
 \begin{IEEEkeywords}
-	Filtro de kalman,
+	Filtro de kalman, Fourier, modelo, se\~nal
 \end{IEEEkeywords}
 
 \section{Introducción}
 
-Este trabajo consiste en recuperar dos variables físicas a partir de las mediciones y de los modelos de cada sensor, utilizando el filtro de Kalman y series de Fourier. En este caso, se utilizaron dos sensores diferentes: el primero es un sensor de fuerza con un modelo de segundo orden, y el segundo es un sensor desconocido con un modelo de primer orden. Dado que no se cuenta con el hardware necesario para hacer el experimento, se realizo la simulacion mediante \textit{hardware-in-the-loop} en el cual se simula cada una de las variables fisicas y se simula sistema el sistema dinamico de cada sensor.
+Este trabajo tiene como objetivo recuperar dos variables físicas a partir de mediciones simuladas, utilizando modelos dinámicos de sensores, el filtro de Kalman y series de Fourier. Se emplearon dos sensores distintos: el primero, un sensor de fuerza modelado como un sistema de segundo orden; y el segundo, un sensor desconocido representado mediante un modelo de primer orden. Ante la imposibilidad de realizar pruebas experimentales por falta de hardware, se implementó una simulación mediante un entorno hardware-in-the-loop (HIL), en el cual se reproduce el comportamiento dinámico de cada sensor. Posteriormente, se aplicó un proceso de acondicionamiento de señal, similar al utilizado para la adquisición de datos a través de una DAQ (Data Acquisition System). Finalmente, se aplicaron técnicas de filtrado de Kalman y análisis en series de Fourier para recuperar las señales ideales correspondientes a cada sensor.
+
+
 
 \section{Metodolog\'ia}
 
 
-
+La primera parte consiste en determinar los modelos de estudio, en este caso un modelo de segundo orden inspirado en un sensor de fuerza y el segundo un modelo de primer orden general.
 
 \subsection{Modelo segundo orden}
 
 % Modelado en Espacio de Estados
 % Sensor d Segundo Orden
+
+El comportamiento de este modelo se describe tal que:\\
 \begin{equation}
 	\frac{d^2y}{dt^2} + 2\zeta\omega_n \frac{dy}{dt} + \omega_n^2 y = \frac{K_s}{m} F(t)
 \end{equation}
-Donde la se\~nal $y(t)$ es la salida del sensor, $\zeta$ es un coeficiente de amortiguamiento, $\omega_n$ se conoce como la frecuencia natual de oscilaci\'on del sistema, ${K_s}$ es una constante de rigidez y $m$ es una masa asociada al sistema de amortiguamiento.
+Donde la se\~nal $y(t)$ es la salida del sensor, $\zeta$ es un coeficiente de amortiguamiento, $\omega_n$ se conoce como la frecuencia natual de oscilaci\'on del sistema, ${K_s}$ es una constante de rigidez y $m$ es una masa asociada al sistema de amortiguamiento.\\
 
-Esta ecuaci\'on diferencial puede transformarse en un modelo en el espacio de estados
+Esta ecuaci\'on diferencial puede transformarse en un modelo en el espacio de estados de la siguiente forma:
 \[
 \dot{x}(t) = \mathbf{A}\mathbf{x}(t) + \mathbf{w}(t)
 \]
@@ -89,7 +93,7 @@ Por otro lado, la variacion temporal de la fuerza se modela como un proceso esto
 \[
 	\dot{x}_3 =  \omega_{F}(t)
 \]
-Dicho lo anterior, se puede establecer que el modelo de espacios de estados es el siguiente.
+Dicho lo anterior, se puede establecer que el modelo de espacios de estados es el siguiente:
 
 
 \begin{equation*}
@@ -121,7 +125,7 @@ Dicho lo anterior, se puede establecer que el modelo de espacios de estados es e
 	}_{\mathbf{w}(t)}	
 \end{equation*}
 
-dicho lo anterior:
+Dicho lo anterior y discretizando se obtiene:
 \[
 \mathbf{F} = 
 \begin{bmatrix}
@@ -136,7 +140,7 @@ dicho lo anterior:
 \]
 
 
-Mientras que 
+Mientras que para el ruido del proceso y la medición se tiene que:
 
 
 \[
@@ -153,17 +157,18 @@ Por ultimo, el vector de medicion es
 
 \[
 \textbf{z}[n] = \textbf{H} \textbf{x}[n] + \textbf{v}[n] ,
-\mathbf{v} = \sqrt[]{r}
+\mathbf{v} = \sqrt[]{r}\sim N (0,r_F)
 \]
 
 
-\subsection{Modelo primero orden}
+\subsection{Modelo primer orden}
 
+El comportamiento de este modelo se describe mediante:
 \[
 \tau \frac{dy}{dt} + y = K_s u(t)
 \]
 
-Siguiendo un procedimiento similar al del modelo de segundo orden. se puede demostrar que:
+Siguiendo un procedimiento similar al del modelo de segundo orden. se puede demostrar en resumen que:
 \begin{equation*}
 	\underbrace{
 		\begin{bmatrix}
@@ -209,6 +214,48 @@ Siguiendo un procedimiento similar al del modelo de segundo orden. se puede demo
 \]
 
 
+\subsection{Acondicionamiento de la señal}
+
+Al simular el comportamiento real de los sensores se debe tener en cuenta que la salida de los mismo en un entorno real necesita un acondicionamiento de señal bien sea a 4..20 mA o en voltaje, en este caso se simulara el uso de una DAQ de -10 a 10 V, este paso es una etapa fundamental en los sistemas de medición y control, ya que permite adaptar la salida de los sensores al rango y formato requeridos por el sistema de adquisición de datos (DAQ) o por el procesador de control. En este ejercicio las salidas simulan lecturas físicas sujetas a dinámica, ruido e incertidumbre.\\
+
+Para esto es necesario saber que señales son las que se digitalizaran (pasaran a la DAQ), dichas señales deben pasar por los siguientes procesos:
+
+\subsubsection{Escalamiento}
+
+El objetivo del escalamiento es adaptar la salida del modelo simulado (normalmente en unidades físicas arbitrarias) al rango operativo del sistema de adquisición. En este caso, se considera que el sistema DAQ acepta señales analógicas en el rango de -10 V a 10 V, es decir, un rango total de 20 V.
+
+La función escalar se encarga de esta transformación lineal utilizando la fórmula:
+
+% \[
+% 	se\~nal.escalada = rango \cdot \frac{se\~nal-se\~n.min}{se\~n.max-se\~n.-min} - \frac{rango}{2}
+% \]
+
+% \[
+% 	se\~nal.escalada = 20 \cdot \frac{se\~nal-se\~n.min}{se\~n.max-se\~n.min} - 10
+% \]
+
+Observemos que primero se realiza una normalización de 0 a 1 o tambien llamada Min-Max, para posteriormente multiplicar dicha señal por amplitud 20, quedando de 0 a 20V, y luego se procede a una centralización restando la mitad del rango con el objetivo de que el ecuador del rango este en 0.
+
+\subsubsection{Cuatizar}
+
+Una vez escalada, la señal debe ser cuantizada para simular el comportamiento de un conversor analógico-digital (ADC). Este proceso convierte el valor continuo en un valor discreto, según una resolución determinada por el número de bits, en un caso real la resolución dependera de las capacidad del sistema de adquisición de datos. La función cuantizar emplea la siguiente lógica:
+
+\[
+paso = \frac{rango.total}{2^{bits}}
+\]
+\[
+senal.cuantizada = round(\frac{senal.escalada}{paso})\cdot paso
+\]
+
+En este caso simularemos una DAQ de 8bits de resolución y un rango de 20 V, por lo que obtenemos en cuanto a niveles y resolución de un paso de:
+
+
+\[
+2^{8}=256 niveles
+\]
+\[
+\frac{{20V}{256}=0.078125 V
+\]
 
 \subsection{Fourier}
 
