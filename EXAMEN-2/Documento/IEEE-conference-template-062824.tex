@@ -212,7 +212,7 @@ Siguiendo un procedimiento similar al del modelo de segundo orden. se puede demo
 
 \subsection{Fourier}
 
-
+\subsubsection{Modelo de segundo orden}
 \[
 	\mathcal{F}\left\{ \frac{d^2y}{dt^2} \right\} + 2\zeta\omega_n \mathcal{F}\left\{\frac{dy}{dt}\right\} + \omega_n^2 \mathcal{F}\left\{y\right\} = \frac{K_s}{m} \mathcal{F}\left\{F(t)\right\}
 \]
@@ -229,8 +229,23 @@ Siguiendo un procedimiento similar al del modelo de segundo orden. se puede demo
 \]
 
 
+
+\subsubsection{Modelo de primer orden}
+
 \[
-	 F(\omega) = m/K_s [A(\omega)] = 
+	\tau \frac{dy}{dt} + y = K_s u(t)
+\]
+
+\[
+	\tau \mathcal{F}\left\{\frac{dy}{dt}\right\} + \mathcal{F} \left\{y\right\} = k_s \mathcal{F} \left\{u(t) \right\}
+\]
+
+\[
+	 j\omega \tau  Y(\omega) + \ Y(\omega) = k_s U(\omega)
+\]
+
+\[
+	U(\omega) = \frac{1}{k_s} (j\omega \tau + 1) Y(\omega)
 \]
 
 \subsection{Filtro de Kalman Lineal(LKF)}
@@ -298,14 +313,14 @@ Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de tra
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/EstimacionX1.png}
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/segundo_orden.png}
 	\caption{Descripción de la imagen.}
 	\label{fig:etiqueta}
 \end{figure}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/EstimacionF.png}
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/estimacion_f_modelo_2.png}
 	\caption{Descripción de la imagen.}
 	\label{fig:etiqueta}
 \end{figure}
@@ -333,13 +348,20 @@ Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de tra
 
 Imagen generada mediante hardware in the loop(Borra esta fras)
 
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/SegundoOrden.png}
-	\caption{Descripción de la imagen}
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/primer_orden.png}
+	\caption{Descripción de la imagen.}
 	\label{fig:etiqueta}
 \end{figure}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{../CodigoPython/estimacion_u_modelo_1.png}
+	\caption{Descripción de la imagen.}
+	\label{fig:etiqueta}
+\end{figure}
 
 
 

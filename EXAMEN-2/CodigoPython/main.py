@@ -5,7 +5,7 @@ from hardwareInTheLoop import Parametros_1, x1_modelo1, tiempo_1, u_1
 
 
 
-class KalmanFilter:
+class KalmanFilter3:
     def __init__(self, F, H, Q, R, P0):
         self.F = F  # Matriz de transición
         self.H = H  # Matriz de medición
@@ -22,6 +22,26 @@ class KalmanFilter:
         K = self.P @ self.H.T @ np.linalg.inv(self.H @ self.P @ self.H.T + self.R)
         self.x += K @ (z - self.H @ self.x)
         self.P = (np.eye(3) - K @ self.H) @ self.P
+
+
+class KalmanFilter2:
+    def __init__(self, F, H, Q, R, P0):
+        self.F = F  # Matriz de transición
+        self.H = H  # Matriz de medición
+        self.Q = Q  # Covarianza del proceso
+        self.R = R  # Covarianza del sensor
+        self.P = P0  # Covarianza del error
+        self.x = np.array([[0.0], [0.0]])  # Estado inicial
+
+    def predict(self):
+        self.x = self.F @ self.x
+        self.P = self.F @ self.P @ self.F.T + self.Q
+
+    def update(self, z):
+        K = self.P @ self.H.T @ np.linalg.inv(self.H @ self.P @ self.H.T + self.R)
+        self.x += K @ (z - self.H @ self.x)
+        self.P = (np.eye(2) - K @ self.H) @ self.P
+
 
 
 def fourier_2(y):
@@ -44,13 +64,32 @@ def fourier_2(y):
     return F
 
 
+def fourier_1(y):
+    dt = Parametros_1.dt
+    N = len(tiempo_1)
+
+
+    Y = np.fft.fft(y)
+    
+
+    tau = Parametros_1.tau
+    k_s = Parametros_1.k_s
+    omega = 2 * np.pi * np.fft.fftfreq(N, dt)
+
+    U_omega = (tau * 1j * omega + 1) * Y / k_s
+
+    u = np.fft.ifft(U_omega).real
+    return u
+
 
 
 class Modelo2:
     # Varianza de la tasa de cambio de la fuerza 
-    q_F = 0.001
+    q_F = 2.0
     # Varianza en las mediciones del sensor
+    #r_F = 0.039
     r_F = 0.039
+
     # Covarianza inicial
     P0 = np.eye(3) * 0.001  
 
@@ -75,7 +114,7 @@ class Modelo2:
 
 class Modelo1:
     # Varianza de la tasa de cambio de u(t)
-    q_u = 0.001
+    q_u = 0.1
     # Varianza en las mediciones del sensor
     r_u = 0.039
 
@@ -92,34 +131,7 @@ class Modelo1:
     ])
     R = np.array([[r_u]])
 
-
-def aplicar_fft(tiempo, señal):
-    """
-    Aplica la Transformada Rápida de Fourier (FFT) a una señal dada.
-
-    Parámetros:
-    - tiempo: vector de tiempo (numpy array)
-    - señal: señal a analizar (numpy array)
-
-    Retorna:
-    - freqs: frecuencias correspondientes (Hz)
-    - amplitud: espectro de amplitud (magnitud normalizada)
-    """
-    N = len(señal)                      # Número de puntos
-    dt = tiempo[1] - tiempo[0]         # Paso de tiempo
-    fs = 1 / dt                        # Frecuencia de muestreo
-
-    # FFT
-    fft_result = np.fft.fft(señal)
-    fft_result = fft_result[:N // 2]  # Solo parte positiva
-
-    # Frecuencias
-    freqs = np.fft.fftfreq(N, dt)[:N // 2]
-
-    # Amplitud normalizada
-    amplitud = np.abs(fft_result) * 2 / N
-
-    return freqs, amplitud
+    P0 = np.eye(2) * 0.001  # Covarianza inicial
 
 
 if __name__ == "__main__":
@@ -130,26 +142,45 @@ if __name__ == "__main__":
     ##################################################################
 
 
-    # kf_1 = KalmanFilter(
-    #     Modelo1.F,
-    #     Modelo1.H,
-    #     Modelo1.Q,
-    #     Modelo1.R,
-    #     Modelo1.P0
-    # )
+    kf_1 = KalmanFilter2(
+        Modelo1.F,
+        Modelo1.H,
+        Modelo1.Q,
+        Modelo1.R,
+        Modelo1.P0
+    )
 
-    # x1_kalman_1 = []
-    # u_kalman = []
-
-    # for i in range(len(Parametros_1.tiempo)):
-    #     z = Parametros_1.x1_vector[i] + np.random.normal(0, Modelo1.r_u ** (1/2))
-
-    #     kf_1.predict()
-    #     kf_1.update(np.array([[z]]))
+    x1_kalman_1 = []
+    u_kalman = []
+    
 
 
-    #     x1_kalman_1.append(kf_1.x[0, 0])
-    #     u_kalman.append([1, 0])
+    for i in range(len(tiempo_1)):
+        z = x1_modelo1[i] + np.random.normal(0, Modelo1.r_u ** (1/2))
+
+        kf_1.predict()
+        kf_1.update(np.array([[z]]))
+
+
+        x1_kalman_1.append(kf_1.x[0, 0])
+        u_kalman.append([1, 0])
+
+    u_fourier = fourier_1(x1_modelo1)
+
+    
+    plt.plot(tiempo_1, u_1, label='u1(t) ideal')
+    plt.plot(tiempo_1, u_fourier, label='u1(t) fourier')
+    plt.plot(tiempo_1, u_kalman, label='u1(t) kalman')
+    plt.xlabel('Tiempo (s)')
+    plt.ylabel('Respuesta')
+    plt.title('Estimacion de u(t) modelo 1')
+    plt.ylim(-1, 1)
+    plt.legend()
+    plt.grid()
+    plt.savefig('estimacion_u_modelo_1.png')
+    plt.show()
+
+
 
 
 
@@ -157,9 +188,9 @@ if __name__ == "__main__":
     ####################### MODELO SEGUNDO ORDEN #####################
     ##################################################################
 
-    ########################################
-    ########### KALMAN #####################
-    kf_2 = KalmanFilter(
+    #######################################
+    ########## KALMAN #####################
+    kf_2 = KalmanFilter3(
         Modelo2.F,
         Modelo2.H,
         Modelo2.Q,
@@ -187,41 +218,18 @@ if __name__ == "__main__":
 
     fuerza_fourier = fourier_2(x1_modelo2)
 
-    plt.plot(tiempo_2, x1_modelo2, label='x1(t)')
-    plt.plot(tiempo_2, x1_kalman_2, label='x1(t) estimado')
+
+    plt.plot(tiempo_2, fuerza_kalman, label='F(t) kalman')
+    plt.plot(tiempo_2, fuerza_2, label='F(t) ideal')
+    plt.plot(tiempo_2, fuerza_fourier, label='F(t) Fourier')
+    plt.ylim(-2, 2)
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Respuesta')
     plt.legend()
     plt.grid()
-    plt.savefig('EstimacionX1.png')
+    plt.savefig('estimacion_f_modelo_2.png')
     plt.show()
 
-    plt.plot(tiempo_2, fuerza_2, label='Fuerza')
-    plt.plot(tiempo_2, fuerza_kalman, label='Fuerza kalman')
-    plt.plot(tiempo_2, fuerza_fourier, label='Fuerza Fourier')
-    plt.xlabel('Tiempo (s)')
-    plt.ylabel('Respuesta')
-    plt.legend()
-    plt.grid()
-    plt.savefig('EstimacionF.png')
-    plt.show()
+    
 
-
-
-
-    # Aplicar FFT a la fuerza real y estimada
-    freqs_f, amp_f = aplicar_fft(tiempo_2, fuerza_2)
-    freqs_f_est, amp_f_est = aplicar_fft(tiempo_2, fuerza_kalman)
-
-    # Graficar
-    plt.figure()
-    plt.plot(freqs_f, amp_f, label="Fuerza real")
-    plt.plot(freqs_f_est, amp_f_est, label="Fuerza estimada (Kalman)")
-    plt.xlabel("Frecuencia (Hz)")
-    plt.ylabel("Amplitud")
-    plt.title("Espectro de la fuerza")
-    plt.grid(True)
-    plt.legend()
-    plt.savefig("FFT_Fuerza.png")
-    plt.show()
 

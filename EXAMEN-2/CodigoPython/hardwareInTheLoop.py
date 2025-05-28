@@ -2,7 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# def generar_fuerza_2(tiempo):
+#     fuerza = []
+#     for t in tiempo:
+#         perfiles = [1/3, 0, 1/3, 0, 1/6, 0, -5/18, -5/18, -5/18, -5/18]
+#         fuerza.append(perfiles[min(t // 600, len(perfiles)-1)])
+#     return np.array(fuerza)
+
 def generar_fuerza(tiempo, amplitud, freq, ruido = 0.05):
+
     return amplitud * np.sin(2 * np.pi * freq * tiempo) #+ np.random.normal(0.0, ruido,len(tiempo))
 
 def generar_u(tiempo, amplitud, freq, ruido= 0.05):
@@ -53,10 +61,10 @@ class Parametros_2:
     masa = 1.0
     
     amplitud = 0.8
-    freq = 2
+    freq = 0.5
 
-    dt = 0.03
-    Tmax =20
+    dt = 0.001
+    Tmax =10
     muestras = int(Tmax / dt)
 
 
@@ -65,10 +73,10 @@ class Parametros_1:
     k_s = 1.0
 
     amplitud= 0.8
-    freq = 0.1
+    freq = 0.5
 
-    dt = 0.02
-    Tmax =10
+    dt = 0.1
+    Tmax =20
     muestras = int(Tmax / dt)
 
 
@@ -91,14 +99,14 @@ for u in u_1:
 
 
 plt.figure()
-plt.plot(tiempo_1, u_1, label='Fuerza')
+plt.plot(tiempo_1, u_1, label='u(t)')
 plt.plot(tiempo_1, x1_modelo1, label='x1(t)=y(t)')
 plt.title('Modelo de Primer Orden')
 plt.xlabel('Tiempo (s)')
 plt.ylabel('Respuesta')
 plt.legend()
 plt.grid()
-plt.savefig('PrimerOrden.png')
+plt.savefig('primer_orden.png')
 plt.show()
 
 
@@ -108,6 +116,7 @@ plt.show()
 
 tiempo_2 = np.linspace(0, Parametros_2.Tmax, Parametros_2.muestras + 1)
 fuerza_2 = generar_fuerza(tiempo_2, Parametros_2.amplitud, Parametros_2.freq)
+#fuerza_2 = generar_fuerza_2(tiempo_2)
 
 # Estado inicial
 x1_modelo2 = []
@@ -124,13 +133,13 @@ for fz in fuerza_2:
 plt.figure()
 plt.plot(tiempo_2, fuerza_2, label='Fuerza')
 plt.plot(tiempo_2, x1_modelo2, label='x1(t)=y(t)')
-plt.plot(tiempo_2, x2_modelo2, label='x2(t)', color='limegreen')
+#plt.plot(tiempo_2, x2_modelo2, label='x2(t)', color='limegreen')
 plt.title('Modelo de Segundo Orden')
 plt.xlabel('Tiempo (s)')
 plt.ylabel('Respuesta')
 plt.legend()
 plt.grid()
-plt.savefig('SegundoOrden.png')
+plt.savefig('segundo_orden.png')
 plt.show()
 
 #######################################################################
@@ -143,7 +152,7 @@ def escalar(signal, min_sim, max_sim):
 
 def cuantizar(signal_esc, bits=8, rango_total=20.0):
     niveles = 2 ** bits
-    paso = rango_total / niveles  # 20V / 256
+    paso = rango_total / niveles  # 20V / 256 0.078125 V
     return np.round(signal_esc / paso) * paso
 
 
@@ -157,23 +166,23 @@ x1_escalada = escalar(x1_modelo2, x1_min, x1_max)
 # Cuantización 8 bits
 x1_cuantizada = cuantizar(x1_escalada, bits=8, rango_total=20.0)
 
-# Guardar para posible reconstrucción o recuperación
-np.savez('salida_para_DAQ_10V.npz',
-         tiempo=tiempo_2,
-         x1_original=x1_modelo2,
-         x1_escalada=x1_escalada,
-         x1_cuantizada=x1_cuantizada,
-         rango_simulado=(x1_min, x1_max),
-         rango_daq=(-10.0, 10.0),
-         resolucion_bits=8)
+# # Guardar para posible reconstrucción o recuperación
+# np.savez('salida_para_DAQ_10V.npz',
+#          tiempo=tiempo_2,
+#          x1_original=x1_modelo2,
+#          x1_escalada=x1_escalada,
+#          x1_cuantizada=x1_cuantizada,
+#          rango_simulado=(x1_min, x1_max),
+#          rango_daq=(-10.0, 10.0),
+#          resolucion_bits=8)
 
 # Graficar comparación
-plt.figure()
-plt.plot(tiempo_2, x1_modelo2, label='Original (Simulada)')
-plt.plot(tiempo_2, x1_cuantizada, '--', label='Escalada y Cuantizada (±10V, 8 bits)')
-plt.title('Señal simulada vs acondicionada para DAQ ±10V')
-plt.xlabel('Tiempo (s)')
-plt.ylabel('Voltaje (V)')
-plt.legend()
-plt.grid()
-plt.show()
+# plt.figure()
+# plt.plot(tiempo_2, x1_modelo2, label='Original (Simulada)')
+# plt.plot(tiempo_2, x1_cuantizada, '--', label='Escalada y Cuantizada (±10V, 8 bits)')
+# plt.title('Señal simulada vs acondicionada para DAQ ±10V')
+# plt.xlabel('Tiempo (s)')
+# plt.ylabel('Voltaje (V)')
+# plt.legend()
+# plt.grid()
+# plt.show()
