@@ -1,9 +1,9 @@
 # Fdb version 4
-["pdflatex"] 1748399652.10489 "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" "IEEE-conference-template-062824.pdf" "IEEE-conference-template-062824" 1748399652.80725 0
+["pdflatex"] 1748404531.70162 "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" "IEEE-conference-template-062824.pdf" "IEEE-conference-template-062824" 1748404532.48494 0
   "../CodigoPython/estimacion_f_modelo_2.png" 1748392389.58175 54606 db730b964fd001acaa817cd32e6e57dc ""
   "../CodigoPython/estimacion_u_modelo_1.png" 1748392388.36675 85270 f4f56a21030a4ac350ff879ed81ae3c3 ""
-  "../CodigoPython/primer_orden.png" 1748392386.19776 76186 dbfdc1e2b4312a7d62ef6f5f2cda4c44 ""
-  "../CodigoPython/segundo_orden.png" 1748392387.52176 54662 ccadd929c6e99b0baf0bd7f8d00b6b32 ""
+  "../CodigoPython/primer_orden.png" 1748404528.74695 63205 07b4229d6ba94087f569f03c644d8797 ""
+  "../CodigoPython/segundo_orden.png" 1748404531.24796 51720 586612121e92b5d8d2da237d7f63abd8 ""
   "/etc/texmf/web2c/texmf.cnf" 1733040025.17723 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" 1748399651.15023 13897 65bcbbf15e7e60c557fad51b87e1de68 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -122,7 +122,7 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1733040039.93121 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1733040058 8214733 ccab769c05f7268fb99667dc9f055334 ""
-  "IEEE-conference-template-062824.aux" 1748399652.74224 3592 4a3d17ac71cafcf0445c55832fb40bc2 "pdflatex"
+  "IEEE-conference-template-062824.aux" 1748404532.41097 3587 33632fdc68b0b9e6c85fa9f0c2a08a38 "pdflatex"
   "IEEE-conference-template-062824.tex" 1748399651.15023 13897 65bcbbf15e7e60c557fad51b87e1de68 ""
   (generated)
   "IEEE-conference-template-062824.aux"
