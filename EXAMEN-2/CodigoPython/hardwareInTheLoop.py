@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 def generar_fuerza(tiempo, amplitud, freq, ruido = 0.02):
 
-    return amplitud * np.sin(2 * np.pi * freq * tiempo) + np.random.normal(0.0, ruido,len(tiempo))
+    return amplitud * np.sin(2 * np.pi * freq * tiempo) #+ np.random.normal(0.0, ruido,len(tiempo))
 
 def generar_u(tiempo, amplitud, freq, ruido= 0.02):
     return amplitud * np.sin(2 * np.pi * freq * tiempo) + np.random.normal(0.0, ruido,len(tiempo))
@@ -86,21 +86,21 @@ class Parametros_1:
 #######################################################################
 
 tiempo_1 = np.linspace(0, Parametros_1.Tmax, Parametros_1.muestras + 1)
-u_1 = generar_u(tiempo_1, Parametros_1.amplitud, Parametros_1.freq)
+u_1_original = generar_u(tiempo_1, Parametros_1.amplitud, Parametros_1.freq)
 
-x1_modelo1 = []
+x1_modelo1_original = []
 
 # Aplicar la entrada al modelo de primer orden
 modelo_1 = PrimerOrden(Parametros_1.tau, Parametros_1.k_s, Parametros_1.dt)
 
-for u in u_1:
+for u in u_1_original:
     x1 = modelo_1.actualizar(u)
-    x1_modelo1.append(x1)
+    x1_modelo1_original.append(x1)
 
 
 plt.figure()
-plt.plot(tiempo_1, u_1, label='u(t)')
-plt.plot(tiempo_1, x1_modelo1, label='x1(t)=y(t)')
+plt.plot(tiempo_1, u_1_original, label='u(t)')
+plt.plot(tiempo_1, x1_modelo1_original, label='x1(t)=y(t)')
 plt.title('Modelo de Primer Orden')
 plt.xlabel('Tiempo (s)')
 plt.ylabel('Respuesta')
@@ -115,24 +115,25 @@ plt.show()
 #######################################################################
 
 tiempo_2 = np.linspace(0, Parametros_2.Tmax, Parametros_2.muestras + 1)
-fuerza_2 = generar_fuerza(tiempo_2, Parametros_2.amplitud, Parametros_2.freq)
-
+fuerza_2_original = generar_fuerza(tiempo_2, Parametros_2.amplitud, Parametros_2.freq)
+#fuerza_2 = generar_fuerza_2(tiempo_2)
 
 # Estado inicial
-x1_modelo2 = []
-x2_modelo2 = []
+x1_modelo2_original = []
+x2_modelo2_original = []
 
 # Aplicar la entrada al modelo de segundo orden
 modelo_2 = SegundoOrden(Parametros_2.omega_n, Parametros_2.zeta, Parametros_2.k_s, Parametros_2.masa, Parametros_2.dt)
 
-for fz in fuerza_2:
+for fz in fuerza_2_original:
     x1, x2 = modelo_2.Actualizar(fz)
-    x1_modelo2.append(x1)
-    x2_modelo2.append(x2)
+    x1_modelo2_original.append(x1)
+    x2_modelo2_original.append(x2)
 
 plt.figure()
-plt.plot(tiempo_2, fuerza_2, label='Fuerza')
-plt.plot(tiempo_2, x1_modelo2, label='x1(t)=y(t)')
+plt.plot(tiempo_2, fuerza_2_original, label='Fuerza')
+plt.plot(tiempo_2, x1_modelo2_original, label='x1(t)=y(t)')
+#plt.plot(tiempo_2, x2_modelo2, label='x2(t)', color='limegreen')
 plt.title('Modelo de Segundo Orden')
 plt.xlabel('Tiempo (s)')
 plt.ylabel('Respuesta')
@@ -155,33 +156,24 @@ def cuantizar(signal_esc, bits=8, rango_total=20.0):
     return np.round(signal_esc / paso) * paso
 
 
-# --- Postprocesamiento para salida DAQ ±10 V, resolución 8 bits ---
-x1_min = min(x1_modelo2)
-x1_max = max(x1_modelo2)
 
-# Escalado al rango [-10V, 10V]
-x1_escalada = escalar(x1_modelo2, x1_min, x1_max)
 
 # Cuantización 8 bits
-x1_cuantizada = cuantizar(x1_escalada, bits=8, rango_total=20.0)
+x1_modelo2 = cuantizar(escalar(x1_modelo2_original, min(x1_modelo2_original), max(x1_modelo2_original)), bits=8, rango_total=20.0)
+x2_modelo2 = cuantizar(escalar(x2_modelo2_original, min(x2_modelo2_original), max(x2_modelo2_original)), bits=8, rango_total=20.0)
+fuerza_2 = cuantizar(escalar(fuerza_2_original, min(fuerza_2_original), max(fuerza_2_original)), bits=8, rango_total=20.0)
 
-# # Guardar para posible reconstrucción o recuperación
-# np.savez('salida_para_DAQ_10V.npz',
-#          tiempo=tiempo_2,
-#          x1_original=x1_modelo2,
-#          x1_escalada=x1_escalada,
-#          x1_cuantizada=x1_cuantizada,
-#          rango_simulado=(x1_min, x1_max),
-#          rango_daq=(-10.0, 10.0),
-#          resolucion_bits=8)
+x1_modelo1 = cuantizar(escalar(x1_modelo1_original, min(x1_modelo1_original), max(x1_modelo1_original)), bits=8, rango_total=20.0)
+u_1 = cuantizar(escalar(u_1_original, min(u_1_original), max(u_1_original)), bits=8, rango_total=20.0)
+
 
 # Graficar comparación
-# plt.figure()
-# plt.plot(tiempo_2, x1_modelo2, label='Original (Simulada)')
-# plt.plot(tiempo_2, x1_cuantizada, '--', label='Escalada y Cuantizada (±10V, 8 bits)')
-# plt.title('Señal simulada vs acondicionada para DAQ ±10V')
-# plt.xlabel('Tiempo (s)')
-# plt.ylabel('Voltaje (V)')
-# plt.legend()
-# plt.grid()
-# plt.show()
+plt.figure()
+plt.plot(tiempo_2, x1_modelo2_original, label='Original (Simulada)')
+plt.plot(tiempo_2, x1_modelo2, '--', label='Escalada y Cuantizada (±10V, 8 bits)')
+plt.title('Señal simulada vs acondicionada para DAQ ±10V modelo 2orden')
+plt.xlabel('Tiempo (s)')
+plt.ylabel('Voltaje (V)')
+plt.legend()
+plt.grid()
+plt.show()

@@ -169,7 +169,7 @@ if __name__ == "__main__":
 
     plt.plot(tiempo_1, u_1, label='u(t) ideal')
     plt.plot(tiempo_1, u_fourier, label='u(t) fourier', alpha=0.5)
-    plt.ylim(-2, 2)
+    # plt.ylim(-20, 20)
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Respuesta')
     plt.title('Estimacion de u(t) modelo 1 con Fourier')
@@ -181,7 +181,7 @@ if __name__ == "__main__":
     
     plt.plot(tiempo_1, u_1, label='u(t) ideal')
     plt.plot(tiempo_1, u_kalman, label='u(t) kalman')
-    plt.ylim(-2, 2)
+    plt.ylim(-10, 10)
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Respuesta')
     plt.title('Estimacion de u(t) modelo 1 con Kalman')
@@ -229,7 +229,7 @@ if __name__ == "__main__":
 
     plt.plot(tiempo_2, fuerza_kalman, label='F(t) kalman')
     plt.plot(tiempo_2, fuerza_2, label='F(t) ideal')
-    plt.ylim(-2, 2)
+    plt.ylim(-10, 10)
     plt.title('Estimacion de F(t) modelo 2 con Kalman')
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Respuesta')
@@ -241,7 +241,7 @@ if __name__ == "__main__":
 
     plt.plot(tiempo_2, fuerza_2, label='F(t) ideal')
     plt.plot(tiempo_2, fuerza_fourier, label='F(t) Fourier', alpha=0.5)
-    plt.ylim(-2, 2)
+    plt.ylim(-50, 50)
     plt.xlabel('Tiempo (s)')
     plt.title('Estimacion de F(t) modelo 2 con Fourier')
     plt.ylabel('Respuesta')
