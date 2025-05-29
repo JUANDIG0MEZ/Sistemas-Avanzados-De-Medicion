@@ -67,7 +67,7 @@ class Parametros_1:
     amplitud= 0.8
     freq = 0.5
 
-    dt = 0.0001
+    dt = 0.01
     Tmax =20
     muestras = int(Tmax / dt)
 
@@ -138,7 +138,7 @@ plt.show()
 #######################################################################
 
 
-def simular_daq(valores, n_bits=16, v_min=-10, v_max=10):
+def simular_daq(valores, n_bits=8, v_min=-10, v_max=10):
     niveles = 2 ** n_bits
     resolucion = (v_max - v_min) / (niveles - 1)
 
@@ -155,13 +155,7 @@ def simular_daq(valores, n_bits=16, v_min=-10, v_max=10):
 
     return valores_reconstruidos
 
-plt.plot(tiempo_1, x1_modelo1)
-plt.plot(tiempo_1, x1_modelo1, label='x1(t) cuantizada')
-plt.title('Señal simulada vs acondicionada para DAQ ±10V')
-plt.xlabel('Tiempo (s)')
-plt.ylabel('Voltaje (V)')
-plt.legend()
-plt.grid()
-plt.savefig('señal_acondicionada.png')
-plt.show()
+x1_modelo1_cua = simular_daq(x1_modelo1, n_bits=8, v_min=-10, v_max=10)
+x1_modelo2_cua = simular_daq(x1_modelo2, n_bits=8, v_min=-10, v_max=10)
+
 

@@ -1,6 +1,5 @@
 \documentclass[conference]{IEEEtran}
-\IEEEoverridecommandlockouts
-% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+
 %Template version as of 6/27/2024
 
 \usepackage{cite}
@@ -36,19 +35,28 @@
 \maketitle
 
 \begin{IEEEkeywords}
-	Filtro de kalman, Fourier, modelo, se\~nal
+	Filtro de kalman, Fourier
 \end{IEEEkeywords}
 
 \section{Introducción}
 
-Este trabajo tiene como objetivo recuperar dos variables físicas a partir de mediciones simuladas, utilizando modelos dinámicos de sensores, el filtro de Kalman y series de Fourier. Se emplearon dos sensores distintos: el primero, un sensor de fuerza modelado como un sistema de segundo orden; y el segundo, un sensor desconocido representado mediante un modelo de primer orden. Ante la imposibilidad de realizar pruebas experimentales por falta de hardware, se implementó una simulación mediante un entorno hardware-in-the-loop (HIL), en el cual se reproduce el comportamiento dinámico de cada sensor. Posteriormente, se aplicó un proceso de acondicionamiento de señal, similar al utilizado para la adquisición de datos a través de una DAQ (Data Acquisition System). Finalmente, se aplicaron técnicas de filtrado de Kalman y análisis en series de Fourier para recuperar las señales ideales correspondientes a cada sensor.
-
-
+La recuperación precisa de variables físicas a partir de mediciones indirectas o ruidosas 
+representa un desafío fundamental en los sistemas modernos de medición y control. En este 
+contexto, el uso de modelos dinámicos y técnicas de filtrado permite mejorar significativamente 
+la calidad de la estimación de las señales originales. Este trabajo se enfoca en el análisis 
+y procesamiento de señales simuladas provenientes de sensores con dinámicas conocidas, 
+mediante la aplicación del filtro de Kalman y el análisis en series de Fourier.Se consideraron
+dos tipos de sensores: uno de fuerza, modelado como un sistema de segundo orden, y 
+otro de características desconocidas, aproximado mediante un modelo de primer orden. 
+Dado que no se contaba con el hardware necesario para realizar pruebas experimentales, 
+se implementó una plataforma de simulación tipo hardware-in-the-loop \textit{(HIL)}, 
+que permitió emular el comportamiento dinámico de los sensores en condiciones controladas.
 
 \section{Metodolog\'ia}
 
+A continuacion se presenta el modelo de los sensores, el acondicionamiento de la se\~nal 
+y la estimaci\'on de la variable f\'isica a partir de la salida del sensor utilizando \textit{Kalman} y \textit{Fourier}.
 
-La primera parte consiste en determinar los modelos de estudio, en este caso un modelo de segundo orden inspirado en un sensor de fuerza y el segundo un modelo de primer orden general.
 
 \subsection{Modelo segundo orden}
 
@@ -132,7 +140,9 @@ Dicho lo anterior y discretizando se obtiene:
 	1           & \Delta t            & 0 \\
 	-\omega_n^2 \cdot \Delta t   & 1 -2\zeta\omega_n \cdot \Delta t   &  \frac{K_s}{m} \cdot \Delta t  \\
 	0			& 0				   & 1
-\end{bmatrix}, 
+\end{bmatrix}
+\]
+\[
 \mathbf{H} = 
 \begin{bmatrix}
 	1 & 0 & 0
@@ -168,7 +178,8 @@ El comportamiento de este modelo se describe mediante:
 \tau \frac{dy}{dt} + y = K_s u(t)
 \]
 
-Siguiendo un procedimiento similar al del modelo de segundo orden. Se puede demostrar en resumen que:\\
+Siguiendo un procedimiento similar al del modelo de segundo orden. se puede demostrar que:
+
 
 \begin{equation*}
 	\underbrace{
@@ -217,15 +228,21 @@ Siguiendo un procedimiento similar al del modelo de segundo orden. Se puede demo
 
 \subsection{Acondicionamiento de la señal}
 
-Al simular el comportamiento real de los sensores se debe tener en cuenta que la salida de los mismo en un entorno real necesita un acondicionamiento de señal bien sea a 4..20 mA o en voltaje, en este caso se simulara el uso de una DAQ de -10 a 10 V, este paso es una etapa fundamental en los sistemas de medición y control, ya que permite adaptar la salida de los sensores al rango y formato requeridos por el sistema de adquisición de datos (DAQ) o por el procesador de control. En este ejercicio las salidas simulan lecturas físicas sujetas a dinámica, ruido e incertidumbre.\\
+Al simular el comportamiento real de los sensores se debe tener en cuenta que la salida de los mismo en un entorno real necesita un acondicionamiento de señal bien sea a 4..20 mA o
+en voltaje, en este caso se simulara el uso de una DAQ de -10 a 10 V, este paso es una etapa fundamental en los sistemas de medición y control, ya que permite adaptar la salida de los sensores al
+rango y formato requeridos por el sistema de adquisición de datos (DAQ) o por el procesador de control. En este ejercicio las salidas simulan lecturas físicas sujetas a dinámica, ruido e incertidumbre.
 
-Para esto es necesario saber que señales son las que se digitalizaran (pasaran a la DAQ), dichas señales deben pasar por los siguientes procesos:\\
+Para esto es necesario saber que señales son las que se digitalizaran (pasaran a la DAQ), dichas señales deben pasar por los siguientes procesos:
 
 \subsubsection{Escalamiento}
 
-El objetivo del escalamiento es adaptar la salida del modelo simulado (normalmente en unidades físicas arbitrarias) al rango operativo del sistema de adquisición. En este caso, se considera que el sistema DAQ acepta se\~nales analógicas en el rango de –10V a 10V, es decir, un rango total de 20V.\\
+
+El objetivo del escalamiento es adaptar la salida del modelo simulado (normalmente en unidades físicas arbitrarias) al rango operativo del sistema de adquisición. En este caso, se considera que el sistema DAQ acepta señales analógicas en el rango de 
+-10 V a 10 V, es decir, un rango total de 20 V.
 
 La función escalar se encarga de esta transformación lineal utilizando la fórmula:
+
+
 
 \[
 senal.escalada = rango \cdot \frac{senal-sen.min}{sen.max-sen.-min} - \frac{rango}{2}
@@ -239,8 +256,8 @@ Observemos que primero se realiza una normalización de 0 a 1 o tambien llamada 
 
 \subsubsection{Cuantizar}
 
-Una vez escalada, la señal debe ser cuantizada para simular el comportamiento de un conversor analógico-digital (ADC). Este proceso convierte el valor continuo en un valor discreto, según una resolución determinada por el número de bits, en un caso real la resolución dependera de las capacidad del sistema de adquisición de datos. La función cuantizar emplea la siguiente lógica:\\
-
+Una vez escalada, la señal debe ser cuantizada para simular el comportamiento de un conversor analógico-digital (ADC). Este proceso convierte el valor continuo en un valor discreto, según una resolución determinada por el
+número de bits, en un caso real la resolución dependera de las capacidad del sistema de adquisición de datos. La función cuantizar emplea la siguiente lógica:
 \[
 \Delta = \frac{FSR}{2^{bits} - 1}
 \]
@@ -255,16 +272,19 @@ En este caso simularemos una DAQ de 8bits de resolución y un rango de 20 V, por
 2^{8}=256 \text{ niveles}
 \]
 \[
-\frac{20V}{256} \approx 0.08 V
+\frac{20\text{ V}}{256}=0.078 \text{ V}
+\frac{20V}{256}=0.078 V
 \]
 
 
 
-\subsection{Fourier}
+\subsection{Transformada de Fourier}
 
-Ahora para reconstruir la magnitud física continua a partir de la señal adquirida, se ha implementado una metodología basada en el análisis de Fourier, que aprovecha el conocimiento del modelo dinámico del sistema (sensor) en el dominio de la frecuencia.\\
-
-Esta técnica permite invertir el efecto dinámico del sensor directamente en el dominio espectral, para así recuperar la señal original antes del acondicionamiento dinámico, a continuación el paso a paso:\\
+Ahora para reconstruir la magnitud física a partir de
+la señal adquirida, se ha implementado una metodología basada en
+el análisis de Fourier, que aprovecha el conocimiento del modelo dinámico 
+del sistema (sensor) en el dominio de la frecuencia.
+Esta técnica permite invertir el efecto dinámico del sensor directamente en el dominio espectral, para así recuperar la señal original antes del acondicionamiento dinámico, a continuación el paso a paso:
 
 \subsubsection{Modelo de segundo orden}
 \[
@@ -302,10 +322,20 @@ Esta técnica permite invertir el efecto dinámico del sensor directamente en el
 	U(\omega) = \frac{1}{k_s} (j\omega \tau + 1) Y(\omega)
 \]
 
+Una vez se tiene $U(\omega)$ y $F(\omega)$ se procede a calcular
+sus transfomadas inversas para encontrar nuevamente la variable en
+funcion del tiempo: 
+
+\[
+	F(t) = \mathcal{F}^{-1}\left\{F(\omega) \right\} , u(t) = \mathcal{F}^{-1}\left\{U(\omega)\right\}
+\]
+
+
+
 \subsection{Filtro de Kalman Lineal(LKF)}
 
-El filtro de Kalman estima los estados $\textbf{x} = [x_1, x_2, x_3]^T$ a partir de dos pasos 1) prediccion y 2) actualizacion.
-
+El filtro de Kalman estimar el estado $\textbf{x} = [x_1, x_2, F(t)]^T$ en el caso del modelo de segundo
+orden y el estado $\textbf{x} = [x_1, u(t)]^T$ a partir de dos pasos 1) prediccion y 2) actualizacion.
 
 
 \subsubsection{Predicci\'on}
@@ -338,9 +368,11 @@ Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de tra
 
 
 
-\section{Resultados (hardware in the loop)}
+\section{Resultados}
 
 \subsection{Modelo segundo orden}
+
+Con los parametros de la siguiente tabla es posible simular el comportamiento del sensor con una entrada de fuerza $F = A * \sin (2 * \pi * f * t)$ :
 
 \begin{table}[h]
 	\centering
@@ -350,37 +382,56 @@ Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de tra
 		\hline
 		\textbf{Parametros} & \textbf{Valores} \\
 		\hline
-		$\zeta$  &  0.01 \\
-		$\omega_n$      & 2.00 \\
-		$m$ & 1.00 \\
-		$\omega_F$ & 4.00 \\
-		$ q_F $  &  2.00\\
-		$\Delta t$ & 0.01\\  
-		$r_F$ & 0.04 \\ 
+		$K_s$ & 4.0 \\
+		$\zeta$  & 0.01 \\
+		$\omega_n$      & 2.0 \\
+		$m$ & 1.0 \\
+		$\omega_F$ &  0.5 \\
+		$ q_F $  &  2.0 \\
+		$\Delta t$ & 0.01 \\  
+		$r_F$ & 0.039 \\ 
 		\hline
 	\end{tabular}
 	
 \end{table}
 
+Dando como resultado la siguiente grafica:
 
 
-
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/segundo_orden.png}
-	\caption{Descripción de la imagen.}
+	\includegraphics[width=1.0\columnwidth]{../CodigoPython/segundo_orden.png}
+	\caption{Modelo de segundo orden}
 	\label{fig:segundo_orden}
 \end{figure}
 
+Postetiormente a la generación de simulación del sensor y el procesamiento de analogo a digital,
+la señal resultante a traves de utilizar filtro de kalman lineal es el siguiente:
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/estimacion_f_modelo_2.png}
-	\caption{Descripción de la imagen.}
+	\includegraphics[width=1.0\columnwidth]{../CodigoPython/estimacion_f_kalman_modelo_2.png}
+	\caption{Estimaci\'on con \textit{Kalman}.}
 	\label{fig:f_modelo_2}
 \end{figure}
 
 
+
+
+En paralelo se hace la estimación por medio de la transformada de Fourier, lo que da como resultado:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{../CodigoPython/estimacion_f_fourier_modelo_2.png}
+	\caption{Estimacion con \textit{Forurier}}
+	\label{fig:f_modelo_2}
+\end{figure}
+
+
+
 \subsection{Modelo de primer orden}
+
+A continuación se detallan los parametros de modelamiento para el sensor de primer orden:
 
 \begin{table}[h]
 	\centering
@@ -390,34 +441,49 @@ Donde $\mathbf{F}\approx \mathbf{I} - \mathbf{A}(\Delta t) $ es la matriz de tra
 		\hline
 		\textbf{Parametros} & \textbf{Valores} \\
 		\hline
-		$\tau$  &  0 \\
-		$K_s$      & 0 \\
-		$q_u$ & 0 \\
-		$\Delta t$ & 0\\  
-		$r_u$ & 0 \\ 
+		$\tau$  &  1.0 \\
+		$K_s$      & 1.0 \\
+		$q_u$ & 0.1 \\
+		$\Delta t$ & 0.01 	\\  
+		$r_u$ & 0.039 \\ 
 		\hline
 	\end{tabular}
 	
 \end{table}
 
-Imagen generada mediante hardware in the loop(Borra esta fras)
+\newpage
 
+La simulación para el respectivo sensor da como resultado:
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/primer_orden.png}
-	\caption{Descripción de la imagen.}
+	\includegraphics[width=1.0\columnwidth]{../CodigoPython/primer_orden.png}
+	\caption{Modelo de primer orden}
 	\label{fig:primer_orden}
 \end{figure}
 
+Se procede con la estimación mediante Kalman:
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.5\textwidth]{../CodigoPython/estimacion_u_modelo_1.png}
-	\caption{Descripción de la imagen.}
+	\includegraphics[width=1.0\columnwidth]{../CodigoPython/estimacion_u_kalman_modelo_1.png}
+	\caption{Estimaci\'on con \textit{Kalman}}
+	\label{fig:u_modelo_1}
+\end{figure}
+
+Finalmente la estimación con series de Fourier:
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{../CodigoPython/estimacion_u_fourier_modelo_1.png}
+	\caption{Estimaci\'on con \textit{Fourier}}
 	\label{fig:u_modelo_1}
 \end{figure}
 
 \subsection{An\'alisis de error} 
+
+Por \'ultimo se calculo el error respecto a la se\~nal ideal ruidosa para cada uno de los modelos sobre los modelos. Los resultados fueron los siguientes.
 
 \begin{table}[h]
 	\centering
@@ -430,13 +496,13 @@ Imagen generada mediante hardware in the loop(Borra esta fras)
 		\hline
 		\multicolumn{2}{|c|}{Modelo orden 1} \\
 		\hline
-		\textit{Kalman}  &  0 \\
-		\textit{Fourier} & 0 \\
+		\textit{Kalman}  &  0.04 \\
+		\textit{Fourier} & 0.12 \\
 		\hline
 		\multicolumn{2}{|c|}{Modelo orden 2} \\
 		\hline
-		\textit{Kalman}  &  0 \\
-		\textit{Fourier} & 0 \\
+		\textit{Kalman}  &  36.120 \\
+		\textit{Fourier} & 14967787.39 \\
 		\hline
 	\end{tabular}
 	
@@ -444,12 +510,14 @@ Imagen generada mediante hardware in the loop(Borra esta fras)
 
 \section{Conclusiones}
 
-En este trabajo se realizo la recuperacion de dos variables fisicas simuladas a partir de la medicion del voltaje sobre dos sensores de primer y segundo orden con una DAQ. Para realizar esta recuperacion se utiliz\'o la transformada discreta de fourier y el filtro de Kalman. A partir de este trabajo se puso establecer dos cosas.
+En este trabajo se realizó la recuperación de dos variables físicas simuladas a partir de la medición del voltaje sobre dos sensores de primer y segundo orden con una DAQ. Para llevar a cabo esta recuperación se utilizó la transformada discreta de Fourier
+y el filtro de Kalman. A partir de este trabajo se pudieron establecer dos conclusiones:
 
 \begin{itemize}
-	\item El metodo de Fourier es pesimo para aplicaciones en tiempo real. Mientras que Kalman es capaz de estimar la variable fisica en cada instante de tiempo, Fourier necesita conocer toda la secuencia de datos para poder ser aplicado.
-	\item Fourier presenta grandes errores al inicio y final de la senial recuperada debido al fenomeno de \textit{fenomeno de Gibbs} generada porque la disconinuidad entre un el inicio y final de un periodo.
+	\item El método de Fourier es pésimo para aplicaciones en tiempo real. Mientras que Kalman es capaz de estimar la variable física en cada instante de tiempo, Fourier necesita conocer toda la secuencia de datos para poder ser aplicado.
+	\item Fourier presenta grandes errores al inicio y al final de la señal recuperada debido al fenómeno de Gibbs, generado por la discontinuidad entre el inicio y el final de un periodo.
 \end{itemize}
+
 
 \begin{thebibliography}{00}
 

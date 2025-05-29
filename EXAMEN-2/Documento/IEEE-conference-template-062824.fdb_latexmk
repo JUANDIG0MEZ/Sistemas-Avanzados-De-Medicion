@@ -1,11 +1,13 @@
 # Fdb version 4
-["pdflatex"] 1748404531.70162 "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" "IEEE-conference-template-062824.pdf" "IEEE-conference-template-062824" 1748404532.48494 0
-  "../CodigoPython/estimacion_f_modelo_2.png" 1748392389.58175 54606 db730b964fd001acaa817cd32e6e57dc ""
-  "../CodigoPython/estimacion_u_modelo_1.png" 1748392388.36675 85270 f4f56a21030a4ac350ff879ed81ae3c3 ""
-  "../CodigoPython/primer_orden.png" 1748404528.74695 63205 07b4229d6ba94087f569f03c644d8797 ""
-  "../CodigoPython/segundo_orden.png" 1748404531.24796 51720 586612121e92b5d8d2da237d7f63abd8 ""
+["pdflatex"] 1748489945.35771 "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" "IEEE-conference-template-062824.pdf" "IEEE-conference-template-062824" 1748489947.47315 0
+  "../CodigoPython/estimacion_f_fourier_modelo_2.png" 1748489683.71096 44094 2fcbd218e45ecb4341759b33865af090 ""
+  "../CodigoPython/estimacion_f_kalman_modelo_2.png" 1748489682.54597 48104 0daea301196c10d8e3b421d77ae3712a ""
+  "../CodigoPython/estimacion_u_fourier_modelo_1.png" 1748489680.41497 58365 05dbade572d93cc6c81285ae55d0670e ""
+  "../CodigoPython/estimacion_u_kalman_modelo_1.png" 1748489681.48997 64522 95b19585e2cbef0396c6181f4758f516 ""
+  "../CodigoPython/primer_orden.png" 1748489676.26598 79372 f6128cf93f34a188a4d71a9cc6a390f4 ""
+  "../CodigoPython/segundo_orden.png" 1748489678.00797 51842 11687554f3d94fa1bfb71d1ab2cb0e9f ""
   "/etc/texmf/web2c/texmf.cnf" 1733040025.17723 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" 1748399651.15023 13897 65bcbbf15e7e60c557fad51b87e1de68 ""
+  "/home/juangomez/Desktop/UNIVERSIDAD/SEMESTRES/Semestre 3/Sistemas Avanzados de Medicion/EXAMEN-2/Documento/IEEE-conference-template-062824.tex" 1748489942.71054 15502 5998b17d3f14c183789d6e5d31472762 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -122,8 +124,8 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1733040039.93121 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1733040058 8214733 ccab769c05f7268fb99667dc9f055334 ""
-  "IEEE-conference-template-062824.aux" 1748404532.41097 3587 33632fdc68b0b9e6c85fa9f0c2a08a38 "pdflatex"
-  "IEEE-conference-template-062824.tex" 1748399651.15023 13897 65bcbbf15e7e60c557fad51b87e1de68 ""
+  "IEEE-conference-template-062824.aux" 1748489947.29553 3950 39d2bd67eae408bf137c7b118823e5fb "pdflatex"
+  "IEEE-conference-template-062824.tex" 1748489942.71054 15502 5998b17d3f14c183789d6e5d31472762 ""
   (generated)
   "IEEE-conference-template-062824.aux"
   "IEEE-conference-template-062824.log"

@@ -89,7 +89,6 @@ class Modelo2:
     # Varianza en las mediciones del sensor
     #r_F = 0.039
     r_F = 0.039
-
     # Covarianza inicial
     P0 = np.eye(3) * 0.001  
 
@@ -167,29 +166,7 @@ if __name__ == "__main__":
 
     u_fourier = fourier_1(x1_modelo1)
 
-    plt.plot(tiempo_1, u_1, label='u(t) ideal')
-    plt.plot(tiempo_1, u_fourier, label='u(t) fourier', alpha=0.5)
-    plt.ylim(-2, 2)
-    plt.xlabel('Tiempo (s)')
-    plt.ylabel('Respuesta')
-    plt.title('Estimacion de u(t) modelo 1 con Fourier')
-    plt.legend()
-    plt.grid()
-    plt.savefig('estimacion_u_fourier_modelo_1.png')
-    plt.show()
-
-    
-    plt.plot(tiempo_1, u_1, label='u(t) ideal')
-    plt.plot(tiempo_1, u_kalman, label='u(t) kalman')
-    plt.ylim(-2, 2)
-    plt.xlabel('Tiempo (s)')
-    plt.ylabel('Respuesta')
-    plt.title('Estimacion de u(t) modelo 1 con Kalman')
-    plt.legend()
-    plt.grid()
-    plt.savefig('estimacion_u_kalman_modelo_1.png')
-    plt.show()
-    plt.figure()
+ 
 
 
     ##################################################################
@@ -227,6 +204,32 @@ if __name__ == "__main__":
     fuerza_fourier = fourier_2(x1_modelo2)
 
 
+
+
+    plt.plot(tiempo_1, u_1, label='u(t) ideal')
+    plt.plot(tiempo_1, u_fourier, label='u(t) fourier', alpha=0.5)
+    plt.ylim(-2, 2)
+    plt.xlabel('Tiempo (s)')
+    plt.ylabel('Respuesta')
+    plt.title('Estimacion de u(t) modelo 1 con Fourier')
+    plt.legend()
+    plt.grid()
+    plt.savefig('estimacion_u_fourier_modelo_1.png')
+    plt.show()
+
+    
+    plt.plot(tiempo_1, u_1, label='u(t) ideal')
+    plt.plot(tiempo_1, u_kalman, label='u(t) kalman')
+    plt.ylim(-2, 2)
+    plt.xlabel('Tiempo (s)')
+    plt.ylabel('Respuesta')
+    plt.title('Estimacion de u(t) modelo 1 con Kalman')
+    plt.legend()
+    plt.grid()
+    plt.savefig('estimacion_u_kalman_modelo_1.png')
+    plt.show()
+    plt.figure()
+
     plt.plot(tiempo_2, fuerza_kalman, label='F(t) kalman')
     plt.plot(tiempo_2, fuerza_2, label='F(t) ideal')
     plt.ylim(-2, 2)
@@ -235,7 +238,7 @@ if __name__ == "__main__":
     plt.ylabel('Respuesta')
     plt.legend()
     plt.grid()
-    plt.savefig('estimacion_f_modelo_2.png')
+    plt.savefig('estimacion_f_kalman_modelo_2.png')
     plt.show()
 
 
@@ -249,8 +252,6 @@ if __name__ == "__main__":
     plt.grid()
     plt.savefig('estimacion_f_fourier_modelo_2.png')
     plt.show()
-
-
     
     ########################################
     ############### ERRORES ################
